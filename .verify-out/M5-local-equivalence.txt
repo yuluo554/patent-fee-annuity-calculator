@@ -1,0 +1,27 @@
+== patfee M5 本地等价校验（2026-10-14）==
+
+[1] 干净 venv（py3.12 + 全部 extras）
+226 passed in 30.37s
+
+[2] py -3.12（PYTHONPATH=src）
+226 passed in 30.06s
+
+[3] py -3.8（PYTHONPATH=src）
+226 passed in 31.17s
+  （注：py3.8 首轮曾出现 3 项间歇失败——temp 目录竞态与子进程崩溃 0xC0000005，隔离复跑与连续三轮全量复跑均 226 全绿，判定为环境间歇非代码缺陷；CI 首跑如有复现再立条目）
+
+[4] 冻结三项
+FROZEN_RULESETS_OK (5 份文件逐字节一致)
+SYNTHETIC_FROZEN_OK (3 份文件逐字节一致)
+AUTHORITY_SNAPSHOTS_OK (8 份快照 sha256 与台账一致)
+
+[5] CLI 冒烟（py3.12 源码态）
+  判定: b1_ladder=达标, b2_late=达标, b3_reduction=达标, b4_portfolio=达标
+  bench exit=0
+
+[6] exe 冻结态自检
+  patfee-cli.exe --selftest -> exit 0, frozen=True, 六项检查全绿（含 within_exe=True）
+  patfee-gui.exe --selftest -> exit 0, frozen=True, 六项检查全绿（GUI offscreen 冒烟真实执行）
+
+[7] dist 构建后断言
+  双 exe 数据对账 9 份 sha256 一致、禁区成分 0、data/ 白名单外目录 0

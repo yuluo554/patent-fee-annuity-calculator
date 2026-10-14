@@ -6,8 +6,8 @@
 
 **全本地处理、零上传**：专利组合台账含专利权人与代理信息，工具默认不联网、不做任何数据外发。
 
-> **状态：✅ M1 数据先行完成 + ✅ M2 计算引擎完成 + ✅ M3 组合排期与对账完成 + ✅ M4 基准收尾完成（2026-10-14），M5（桌面交付）待启动。**
-> 32 条规则条目已**逐项回到官方原文/费率表页复核，全部 `status=verified`**（复核痕迹在每条 `basis.note`）；《专利法实施细则》（国务院令第 769 号）第 115 条 / 第 5 条已定位，滞纳金 6 个月补缴期与自然月口径落值入库。`calc` 正常计算（退出码 0）；`--preview` 退出码仍为 1（预览不是达标）；M2 新增 `calc --with-late`（滞纳金）与 `patfee reduction`（费减判定）；M3 新增 `patfee scan`（组合批量排期 + 失败隔离 + 到期预警 + 跨轮对账 + 报告落盘）；M4 基准指标固化（B1–B4 达标率与实测耗时进评测基准表，计时门槛 `max_seconds` 随 manifest 下发并实际生效）、探活矩阵补全。
+> **状态：✅ M1 数据先行 + ✅ M2 计算引擎 + ✅ M3 组合排期与对账 + ✅ M4 基准收尾 + ✅ M5 桌面交付（2026-10-14），M6（脱敏发布）待启动。**
+> 32 条规则条目已**逐项回到官方原文/费率表页复核，全部 `status=verified`**（复核痕迹在每条 `basis.note`）；《专利法实施细则》（国务院令第 769 号）第 115 条 / 第 5 条已定位，滞纳金 6 个月补缴期与自然月口径落值入库。`calc` 正常计算（退出码 0）；`--preview` 退出码仍为 1（预览不是达标）；M2 新增 `calc --with-late`（滞纳金）与 `patfee reduction`（费减判定）；M3 新增 `patfee scan`（组合批量排期 + 失败隔离 + 到期预警 + 跨轮对账 + 报告落盘）；M4 基准指标固化（B1–B4 达标率与实测耗时进评测基准表，计时门槛 `max_seconds` 随 manifest 下发并实际生效）、探活矩阵补全；M5 新增 `patfee gui`（PySide6 桌面界面，AST 门禁三条锁定零判定逻辑）、`scan --format xlsx`（XLSX 双格式逐字节可复现导出）、`--selftest`（冻结态自检）与 PyInstaller onedir 双 exe 打包、技术报告（plan/技术报告.md）。
 
 ---
 
@@ -21,7 +21,7 @@
 | 同时能享受多项减免时怎么选？ | 多政策择一判定（择实缴最小、候选全留痕、不叠加，依公告第 594 号） | ✅ M2 |
 | 组合几十上百件，哪件快到期？ | 批量排期 + 到期预警清单（按期限升序），坏件隔离不中断 | ✅ M3（`patfee scan`） |
 | 缴费是循环的，"这轮比上轮清了没" | 跨轮对账：新增到期 / 已缴清 / 持续未缴（配对主键 = 专利号；内容变化另立标记） | ✅ M3 |
-| 结论要能交给内部/客户/存档 | 报告导出（Markdown + 证据 JSON 指纹；XLSX 双格式在 M5）+ 组合 sha256 指纹 | 🔶 M3 起步（MD + evidence.json） |
+| 结论要能交给内部/客户/存档 | 报告导出（Markdown + XLSX 双格式，同一渲染源内容对等；XLSX 逐字节可复现）+ 证据 JSON 指纹 | ✅ M5 双格式齐备 |
 
 ## 快速开始（M0 已可跑通）
 
@@ -47,6 +47,8 @@ patfee reduction data/samples/applicants-demo.json    # 费减资格与减免额
 patfee scan data/samples/portfolio-demo.json          # 组合批量排期 + 到期预警 + 跨轮对账
 patfee scan data/samples/portfolio-demo.json --out 报告目录   # 同上 + 报告落盘（MD + evidence.json）
 patfee bench                    # 内置评测基准
+patfee gui                      # 桌面界面（PySide6；缺依赖 exit 3 提示安装 extras）
+patfee --selftest 自检结果.json  # 冻结态/源码态自检（数据+规则+calc+基准+GUI 冒烟）
 ```
 
 **`calc` 正常计算、预览仍降级**（M1 后规则已逐项复核；门控与预览语义不随数据状态改变）——
@@ -151,7 +153,7 @@ $ echo $?
 
 ```console
 $ patfee selfcheck | grep 零字面量
-零字面量门禁: 扫描 23 文件, 硬门命中 0, 行内放行 0, selftest=通过
+零字面量门禁: 扫描 31 文件, 硬门命中 0, 行内放行 0, selftest=通过
 ```
 
 门禁自带**阳性对照**：`selfcheck` 会把一个禁用 token 写进临时探针文件并断言扫描必须报红 —— 防"门禁全绿其实什么都没查"（token 集为空同样报配置错误）。
@@ -182,8 +184,8 @@ $ patfee selfcheck | grep 零字面量
 | `patfee bench [--only <套件>]` | 内置评测基准（达标率 + 失败数 + 计时门槛，随 manifest 下发） | ✅ B1–B4 全实装（M4 收尾固化指标） |
 | `patfee rules diff <id>` | 政策差异报告（316 号前后阈值、594 号新增项目与同口径互证） | ✅ M1 实装 |
 | `patfee reduction <主体.json>` | 费减资格与减免额判定 | ✅ M2 |
-| `patfee scan <组合.json> [--out <目录>] [--window-months N]` | 组合批量排期 + 失败隔离 + 到期预警 + 跨轮对账；`--out` 落盘报告（Markdown + evidence.json） | ✅ M3 |
-| `patfee gui` | 桌面界面 | ⬜ M5 |
+| `patfee scan <组合.json> [--out <目录>] [--format md\|xlsx] [--window-months N]` | 组合批量排期 + 失败隔离 + 到期预警 + 跨轮对账；`--out` 落盘报告（Markdown + XLSX 双格式 + evidence.json 指纹；XLSX 逐字节可复现） | ✅ M3 / M5 XLSX |
+| `patfee gui` | 桌面界面（PySide6 多页签：年费/滞纳金、费减、组合排期；只渲染引擎结果，AST 门禁三条锁定零判定逻辑） | ✅ M5 |
 
 ### 退出码
 
@@ -239,16 +241,19 @@ data/
 src/patfee/      包源码
   rules/         loader / gate / literals / literals_gate（零字面量门禁）
   domain/        模型（PatentType / Decimal 金额 / Tier / LateResult / ReductionResult）
-  calc/          annuity（阶梯）/ late（滞纳金）/ reduction（费减）/ pipeline（编排层）
+  calc/          annuity（阶梯）/ late（滞纳金）/ reduction（费减）/ portfolio（组合）/ pipeline（编排层）
+  report/        报告层（单一渲染源 Section + Markdown/XLSX 双渲染器，XLSX 可复现）
+  gui/           桌面界面（PySide6，只消费 pipeline，AST 门禁三条守门）
   benchmark/     基准套件（B1 阶梯 / B2 滞纳金 / B3 费减 / B4 组合）
+packaging/       PyInstaller spec + 入口启动器（onedir 双 exe）
 tools/           生成器与审计脚本（gen_rulesets / gen_synthetic / fetch_authorities）
-tests/           pytest（M4 后 196 项）
+tests/           pytest（M5 后 226 项）
 ```
 
 ## 开发
 
 ```bash
-python -m pytest -q                          # 全量测试（M4 后 196 项）
+python -m pytest -q                          # 全量测试（M5 后 226 项）
 python tools/gen_rulesets.py --check         # 规则包冻结位级一致 → FROZEN_RULESETS_OK
 python tools/gen_synthetic.py --check        # 合成真值库位级一致 → SYNTHETIC_FROZEN_OK
 python tools/fetch_authorities.py --verify   # 原文快照 sha256 复核
@@ -267,7 +272,7 @@ python tools/audit_desensitize.py --selftest # 只跑审计器的阳性/阴性�
 | M2 | 计算引擎：滞纳金 + 费减判定 + 多政策择一，算例回归 | ✅ 完成（2026-10-14） |
 | M3 | 组合排期与对账：批量排期 + 失败隔离 + 到期预警 + 跨轮对账 + 报告落盘 + 基准 B4 | ✅ 完成（2026-10-14） |
 | M4 | 基准：阶梯边界/滞纳金/费减判定/合成组合四类扫描，指标进 README | ✅ 完成（2026-10-14，计时门槛实装 + 探活矩阵 9 条 + 指标表固化） |
-| M5 | 桌面交付：PySide6 界面 + PyInstaller 打包 + 报告导出 + 技术报告 | ⬜ |
+| M5 | 桌面交付：PySide6 界面 + PyInstaller 打包 + 报告导出 + 技术报告 | ✅ 完成（2026-10-14，AST 门禁三条 + exe --selftest 六项全绿 + 三方对账 + XLSX 可复现） |
 | M6 | 脱敏发布 GitHub + Release（exe）+ 收尾固化 | ⬜ |
 
 ## 限制与免责

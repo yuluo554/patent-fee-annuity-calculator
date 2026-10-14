@@ -314,7 +314,8 @@ def cmd_scan(args: argparse.Namespace, library: RuleLibrary) -> int:
     out_dir = getattr(args, "out", None)
     if out_dir:
         written = _write_scan_report(
-            Path(out_dir), result, reconciliation, library, args.preview
+            Path(out_dir), result, reconciliation, library, args.preview,
+            fmt=getattr(args, "format", "md") or "md",
         )
         if not getattr(args, "json", False):
             for line in written:
@@ -343,67 +344,47 @@ def _write_scan_report(
     reconciliation: Any,
     library: RuleLibrary,
     preview: bool,
+    fmt: str = "md",
 ) -> List[str]:
-    """报告落盘：Markdown（人类读）+ evidence JSON（机读指纹）。
+    """报告落盘：Markdown + XLSX 双格式（单一渲染源）+ evidence JSON（机读指纹）。
 
-    M3 只做 Markdown 单一渲染源；XLSX 双格式与逐字节可复现导出在 M5
-    （plan/04 §七切分）。无外链纪律从 M3 起守：报告正文不写 URL。
+    M5 起 Markdown 与 XLSX 渲染器消费同一份结构化章节
+    （``report.scan_report_sections``）——两格式内容对等是结构性质；
+    XLSX 逐字节可复现（两次导出 sha256 一致，测试守门）。无外链纪律
+    （K42）两格式同守：报告正文不写 URL。
     """
-    from .calc.pipeline import DISCLAIMER, portfolio_lines
     import hashlib
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    lines: List[str] = []
-    lines.append("# 专利组合费用排期报告")
-    lines.append("")
-    lines.append("- 基准日: %s" % result.today)
-    lines.append("- 预警窗口: 未来 %d 个月" % result.window_months)
-    coord = library.coordinate()
-    lines.append("- 规则包: %s" % ", ".join(
-        "%s@%s" % (rs["id"], rs["version"]) for rs in coord.get("rulesets", [])
-    ))
-    if preview:
-        lines.append("- 口径: **预览（--preview），结论不得作为缴费依据**")
-    lines.append("")
-    lines.append("## 一、输入事实")
-    lines.append("")
-    lines.append("逐件输入与排期结论（含失败隔离件）：")
-    lines.append("")
-    lines.append("| 件 | 专利号 | 类型 | 年度 | 到期日 | 缴费日 | 结论 | 应缴年费 |")
-    lines.append("|---|---|---|---|---|---|---|---|")
-    for e in result.entries:
-        lines.append(
-            "| %s | %s | %s | %s | %s | %s | %s | %s |" % (
-                e.id, e.patent_no or "—", e.patent_type or "—",
-                "" if e.year is None else e.year, e.due_on or "—", e.paid_on or "—",
-                e.kind,
-                "" if e.amount is None else "%s 元" % e.amount,
-            )
-        )
-    lines.append("")
-    lines.append("## 二、逐项结论与计算过程")
-    lines.append("")
-    for line in portfolio_lines(result, reconciliation):
-        lines.append(line)
-    lines.append("")
-    lines.append("## 三、未启用章节")
-    lines.append("")
-    for key, text in _scan_not_enabled_sections().items():
-        lines.append("- **%s**: %s" % (key, text))
-    lines.append("")
-    lines.append("## 四、适用依据与免责声明")
-    lines.append("")
-    for rs in coord.get("rulesets", []):
-        lines.append("- %s@%s %s（锚点 %s ~ %s）" % (
-            rs["id"], rs["version"], rs.get("doc_no") or "",
-            rs.get("anchor_from") or "?", rs.get("anchor_to") or "现行"))
-    lines.append("")
-    lines.append(DISCLAIMER)
-    lines.append("")
+    from .calc import pipeline
+    from .report import scan_report_sections
+    from .report.markdown_render import render_markdown
 
-    md_bytes = ("\n".join(lines)).encode("utf-8")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    sections = scan_report_sections(
+        result, reconciliation, library, preview,
+        _scan_not_enabled_sections(), pipeline.DISCLAIMER,
+    )
+    written: List[str] = []
+
+    md_bytes = render_markdown(sections).encode("utf-8")
     md_path = out_dir / "scan-report.md"
     md_path.write_bytes(md_bytes)
+    written.append("报告已写出: %s" % md_path)
+
+    xlsx_path = None
+    if fmt == "xlsx":
+        from .report.xlsx_render import render_xlsx_bytes
+
+        try:
+            xlsx_bytes = render_xlsx_bytes(sections)
+        except PatfeeError as exc:
+            if exc.reason_code != "missing_dependency":
+                raise
+            written.append("XLSX 未导出: %s" % exc.message)
+        else:
+            xlsx_path = out_dir / "scan-report.xlsx"
+            xlsx_path.write_bytes(xlsx_bytes)
+            written.append("XLSX 已写出: %s" % xlsx_path)
 
     evidence = {
         "today": result.today,
@@ -414,8 +395,8 @@ def _write_scan_report(
             "due_soon": len(result.due_soon),
         },
         "reconciliation": reconciliation.as_dict(),
-        "coordinate": coord,
-        "disclaimer": DISCLAIMER,
+        "coordinate": library.coordinate(),
+        "disclaimer": pipeline.DISCLAIMER,
         "not_enabled_sections": _scan_not_enabled_sections(),
         "report": {
             "name": md_path.name,
@@ -423,16 +404,21 @@ def _write_scan_report(
             "sha256": hashlib.sha256(md_bytes).hexdigest(),
         },
         "preview": bool(preview),
+        "formats": ["md"] + (["xlsx"] if xlsx_path is not None else []),
     }
+    if xlsx_path is not None:
+        evidence["report_xlsx"] = {
+            "name": xlsx_path.name,
+            "bytes": xlsx_path.stat().st_size,
+            "sha256": hashlib.sha256(xlsx_path.read_bytes()).hexdigest(),
+        }
     evidence_path = out_dir / "evidence.json"
     evidence_path.write_text(
         json.dumps(evidence, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
-    return [
-        "报告已写出: %s" % md_path,
-        "证据已写出: %s（含报告 sha256 指纹）" % evidence_path,
-    ]
+    written.append("证据已写出: %s（含报告 sha256 指纹）" % evidence_path)
+    return written
 
 
 def cmd_bench(args: argparse.Namespace, library: RuleLibrary) -> int:
@@ -468,9 +454,9 @@ def cmd_bench(args: argparse.Namespace, library: RuleLibrary) -> int:
 def cmd_gui(args: argparse.Namespace, library: Optional[RuleLibrary]) -> int:
     """桌面界面入口（M5 实装）。惰性导入的 try 包住"从 import 到调用完成"整段。"""
     try:
-        from .gui import main_window  # type: ignore
+        from .gui import main  # type: ignore
 
-        return int(main_window.main())
+        return int(main())
     except ImportError as exc:
         # 关键：真正的缺依赖异常可能在 build_app() 这类函数体内才抛，
         # 所以 try 必须覆盖到调用完成，而不是只覆盖 import 这一行。
@@ -540,6 +526,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_scan.add_argument("input", help="组合输入 JSON 文件（items 或 baseline/current 两轮台账）")
     p_scan.add_argument("--out", default=None,
                         help="报告输出目录（Markdown + evidence.json；缺省只打印）")
+    p_scan.add_argument("--format", default="md", choices=["md", "xlsx"],
+                        help="报告格式：md（缺省）或 xlsx（需 extras report；双格式时 md 仍始终写出）")
     p_scan.add_argument("--window-months", type=int, default=None,
                         help="到期预警窗口（月数；缺省取输入的 window_months 或 3）")
     p_scan.add_argument("--preview", action="store_true",
@@ -571,9 +559,127 @@ def _library_or_none(need_library: bool) -> Optional[RuleLibrary]:
         raise
 
 
+def _frozen_selftest(out_path: Optional[str]) -> int:
+    """冻结态自检（plan/04 §十一）：数据目录在 exe 目录内 + 规则加载 +
+    calc 全链路 + 基准 + GUI offscreen 冒烟。退出码携带成败；结果落 JSON。"""
+    import json as _json
+    import os
+
+    checks: List[Dict[str, Any]] = []
+
+    def _check(name: str, ok: bool, detail: str = "") -> None:
+        checks.append({"name": name, "ok": bool(ok), "detail": detail})
+
+    # 1. 数据目录定位 + 冻结态落点断言
+    from . import data_paths
+    from .console import is_frozen
+
+    try:
+        data_dir = data_paths.find_data_dir()
+        _check("data_dir_found", True, str(data_dir))
+    except FileNotFoundError as exc:
+        _check("data_dir_found", False, str(exc))
+        data_dir = None
+    if data_dir is not None:
+        within = data_paths.data_dir_within_exe(data_dir)
+        # onedir 布局下 _internal 与 exe 同树；within 只可能 True/None
+        _check("data_dir_within_exe", within is not False, "within=%r" % within)
+
+    # 2. 规则加载 + status 计数
+    library = None
+    try:
+        from .rules.loader import load_library
+
+        library = load_library()
+        counts = library.status_counts()
+        _check(
+            "rules_loaded",
+            counts.get("verified", 0) > 0,
+            "verified=%d" % counts.get("verified", 0),
+        )
+    except Exception as exc:
+        _check("rules_loaded", False, str(exc))
+
+    # 3. calc 全链路（合成算例：invention 第 3 年 → 金额来自规则包）
+    if library is not None:
+        try:
+            from .calc import pipeline
+            from .domain.models import PatentType
+
+            request = pipeline.CalcRequest(
+                patent_type=PatentType("invention"), year=3
+            )
+            result = pipeline.compute_full_calc(request, library)
+            amount = str(result.amount) if result.computed else ""
+            _check("calc_pipeline", result.computed and bool(amount), "amount=%s" % amount)
+        except Exception as exc:
+            _check("calc_pipeline", False, str(exc))
+
+        # 4. 基准（B1–B4 全达标）
+        try:
+            from .benchmark import suites
+
+            _results, verdicts, _implemented = suites.run_suites(library)
+            ok = bool(verdicts) and all(v.endswith("=达标") for v in verdicts)
+            _check("benchmark_suites", ok, "; ".join(verdicts))
+        except Exception as exc:
+            _check("benchmark_suites", False, str(exc))
+
+    # 5. GUI offscreen 冒烟（缺 PySide6 不阻断自检——CLI exe 可无 GUI）
+    if importlib_util_find_spec("PySide6") is not None:
+        try:
+            os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+            from PySide6.QtWidgets import QApplication
+
+            from .gui import compute_lines
+            from .gui.main_window import MainWindow
+
+            app = QApplication.instance() or QApplication([])
+            window = MainWindow(service=compute_lines)
+            window.show()
+            window.close()
+            _check("gui_offscreen_smoke", True, "")
+        except Exception as exc:
+            _check("gui_offscreen_smoke", False, str(exc))
+    else:
+        _check("gui_offscreen_smoke", True, "PySide6 未内嵌（CLI-only 包），跳过")
+
+    all_ok = all(c["ok"] for c in checks)
+    payload = {
+        "frozen": is_frozen(),
+        "ok": all_ok,
+        "checks": checks,
+    }
+    text = _json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    if out_path:
+        Path(out_path).write_text(text, encoding="utf-8")
+        print("自检结果已写出: %s" % out_path)
+    print(text)
+    return ExitCode.OK.value if all_ok else ExitCode.DEGRADED.value
+
+
+def importlib_util_find_spec(module: str):
+    import importlib.util
+
+    return importlib.util.find_spec(module)
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
+    argv_list = list(argv) if argv is not None else None
+    # 冻结态自检：`patfee --selftest <输出json>`（顶层 flag，先于子命令解析）
+    if argv_list is not None:
+        if "--selftest" in argv_list:
+            idx = argv_list.index("--selftest")
+            rest = argv_list[:idx] + argv_list[idx + 1:]
+            out_arg = rest[0] if rest and not rest[0].startswith("-") else None
+            return _frozen_selftest(out_arg)
+    elif sys.argv[1:2] == ["--selftest"]:
+        rest = sys.argv[2:]
+        out_arg = rest[0] if rest and not rest[0].startswith("-") else None
+        return _frozen_selftest(out_arg)
+
     parser = build_parser()
-    args = parser.parse_args(list(argv) if argv is not None else None)
+    args = parser.parse_args(argv_list)
 
     if not getattr(args, "command", None):
         parser.print_help()

@@ -1,0 +1,120 @@
+{
+  "coordinate": {
+    "manifest_schema": "patfee.rules.manifest/v1",
+    "rulesets": [
+      {
+        "anchor_from": "2024-08-06",
+        "anchor_to": "",
+        "doc_no": "国家知识产权局专利收费标准（专利业务办理系统公示）",
+        "id": "fee_schedule",
+        "sha256": "7d3824b326668c8088d76c2f04846c03c30ee5bb04e7899d3f4c42b9b8c33139",
+        "status_counts": {
+          "input_required": 0,
+          "pending": 0,
+          "verified": 16
+        },
+        "title": "专利收费标准表",
+        "version": "v2024"
+      },
+      {
+        "anchor_from": "2019-07-01",
+        "anchor_to": "",
+        "doc_no": "国家知识产权局公告第 316 号",
+        "id": "reduction_316",
+        "sha256": "65b526ba4cafb3f50f1369c63f5237bed7838672cc2c8ddce144136d11b4c428",
+        "status_counts": {
+          "input_required": 0,
+          "pending": 0,
+          "verified": 7
+        },
+        "title": "调整专利收费减缴条件（阈值）",
+        "version": "v2019"
+      },
+      {
+        "anchor_from": "2024-08-06",
+        "anchor_to": "",
+        "doc_no": "国家知识产权局公告第 594 号",
+        "id": "reduction_594",
+        "sha256": "75ab07e6334103eb7956c1c3b8b7724de3baa2b6f7e48ddbb858d5b7cffe5ced",
+        "status_counts": {
+          "input_required": 0,
+          "pending": 0,
+          "verified": 5
+        },
+        "title": "调整部分专利收费标准和减缴政策（新增项目与减免）",
+        "version": "v2024"
+      },
+      {
+        "anchor_from": "2016-09-01",
+        "anchor_to": "",
+        "doc_no": "《专利收费减缴办法》财税〔2016〕78 号",
+        "id": "reduction_78",
+        "sha256": "aed8ac01cfc5094a97eab5c3cb38fdbf3e34aa192dc597365f13e0c3bfb53d79",
+        "status_counts": {
+          "input_required": 0,
+          "pending": 0,
+          "verified": 4
+        },
+        "title": "专利收费减缴办法（减缴比例与减缴项目）",
+        "version": "v2016"
+      }
+    ],
+    "scope_gate": [
+      "calc",
+      "late",
+      "reduction",
+      "check"
+    ]
+  },
+  "counts": {
+    "due_soon": 2,
+    "entries": 7,
+    "failed": 1
+  },
+  "disclaimer": "本输出为基于官方费率表与政策文本的费用测算，不构成法律或代理意见；正式缴费金额以国家知识产权局规定与缴费通知为准。",
+  "formats": [
+    "md",
+    "xlsx"
+  ],
+  "not_enabled_sections": {
+    "late": "本次组合排期未启用逐件滞纳金测算（对已逾期件用 `patfee calc <件.json> --with-late` 启用）",
+    "reduction": "本次组合排期未启用费减资格判定（对单件用 `patfee reduction <主体.json>` 启用）"
+  },
+  "preview": false,
+  "reconciliation": {
+    "content_changed": [],
+    "counts": {
+      "content_changed": 0,
+      "new_due": 4,
+      "settled": 2,
+      "still_unpaid": 1,
+      "vanished": 0
+    },
+    "new_due": [
+      "#y5",
+      "990000000004SYN#y3",
+      "990000000005SYN#y2",
+      "990000000006SYN#y2"
+    ],
+    "settled": [
+      "990000000001SYN#y3",
+      "990000000002SYN#y2"
+    ],
+    "still_unpaid": [
+      "990000000003SYN#y3"
+    ],
+    "vanished": []
+  },
+  "report": {
+    "bytes": 3347,
+    "name": "scan-report.md",
+    "sha256": "2119916252206ebf10dc5fdf9f88f062880b00ab3049ef43bc0e24e87cdf6ab3"
+  },
+  "report_xlsx": {
+    "bytes": 35497,
+    "name": "scan-report.xlsx",
+    "sha256": "47fb69c61e12a88943b4b385c6e25c0c108e3718fa57285c6dd3dda7e8fd2bf7"
+  },
+  "today": "2026-10-14",
+  "window_months": 3
+}

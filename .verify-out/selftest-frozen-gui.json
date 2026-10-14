@@ -1,0 +1,36 @@
+{
+  "checks": [
+    {
+      "detail": "<repo-root>\\dist\\patfee-gui\\_internal\\data",
+      "name": "data_dir_found",
+      "ok": true
+    },
+    {
+      "detail": "within=True",
+      "name": "data_dir_within_exe",
+      "ok": true
+    },
+    {
+      "detail": "verified=32",
+      "name": "rules_loaded",
+      "ok": true
+    },
+    {
+      "detail": "amount=900.00",
+      "name": "calc_pipeline",
+      "ok": true
+    },
+    {
+      "detail": "b1_ladder=达标; b2_late=达标; b3_reduction=达标; b4_portfolio=达标",
+      "name": "benchmark_suites",
+      "ok": true
+    },
+    {
+      "detail": "",
+      "name": "gui_offscreen_smoke",
+      "ok": true
+    }
+  ],
+  "frozen": true,
+  "ok": true
+}

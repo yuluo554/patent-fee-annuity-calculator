@@ -1,0 +1,36 @@
+{
+  "patfee-cli": {
+    "forbidden": [],
+    "top_dirs": [
+      "_internal"
+    ],
+    "data_files": {
+      "data\\rules\\fee_schedule.v2024.json": "7d3824b326668c8088d76c2f04846c03c30ee5bb04e7899d3f4c42b9b8c33139",
+      "data\\rules\\manifest.json": "6e350445e5bad59401242c2f58fc8fc841b024fa1cf43ba0ddff854b2664425a",
+      "data\\rules\\reduction_316.v2019.json": "65b526ba4cafb3f50f1369c63f5237bed7838672cc2c8ddce144136d11b4c428",
+      "data\\rules\\reduction_594.v2024.json": "75ab07e6334103eb7956c1c3b8b7724de3baa2b6f7e48ddbb858d5b7cffe5ced",
+      "data\\rules\\reduction_78.v2016.json": "aed8ac01cfc5094a97eab5c3cb38fdbf3e34aa192dc597365f13e0c3bfb53d79",
+      "data\\truth\\manifest.json": "b41fbe6ed29565535c1057b7feeca0e873f0010aef475ef70086165cc31c29e1",
+      "data\\truth\\portfolio.json": "acb3839ec9b683c21c019981606e6f78fdd7f026f820f544a62fae18605a5452",
+      "data\\truth\\truth.json": "8f91e608c502cce2c7a7640119399eef27de3da28c85bb658fb8090b79cfc54f",
+      "data\\knowledge\\clauses.json": "ff40e492034eb7315ebac4013e9f98043734916228f4be114c5472e8419b41e3"
+    }
+  },
+  "patfee-gui": {
+    "forbidden": [],
+    "top_dirs": [
+      "_internal"
+    ],
+    "data_files": {
+      "data\\rules\\fee_schedule.v2024.json": "7d3824b326668c8088d76c2f04846c03c30ee5bb04e7899d3f4c42b9b8c33139",
+      "data\\rules\\manifest.json": "6e350445e5bad59401242c2f58fc8fc841b024fa1cf43ba0ddff854b2664425a",
+      "data\\rules\\reduction_316.v2019.json": "65b526ba4cafb3f50f1369c63f5237bed7838672cc2c8ddce144136d11b4c428",
+      "data\\rules\\reduction_594.v2024.json": "75ab07e6334103eb7956c1c3b8b7724de3baa2b6f7e48ddbb858d5b7cffe5ced",
+      "data\\rules\\reduction_78.v2016.json": "aed8ac01cfc5094a97eab5c3cb38fdbf3e34aa192dc597365f13e0c3bfb53d79",
+      "data\\truth\\manifest.json": "b41fbe6ed29565535c1057b7feeca0e873f0010aef475ef70086165cc31c29e1",
+      "data\\truth\\portfolio.json": "acb3839ec9b683c21c019981606e6f78fdd7f026f820f544a62fae18605a5452",
+      "data\\truth\\truth.json": "8f91e608c502cce2c7a7640119399eef27de3da28c85bb658fb8090b79cfc54f",
+      "data\\knowledge\\clauses.json": "ff40e492034eb7315ebac4013e9f98043734916228f4be114c5472e8419b41e3"
+    }
+  }
+}
