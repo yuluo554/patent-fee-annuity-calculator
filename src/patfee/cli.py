@@ -272,6 +272,169 @@ def cmd_reduction(args: argparse.Namespace, library: RuleLibrary) -> int:
     return pipeline.reduction_exit_code_for(result, preview=args.preview)
 
 
+def cmd_scan(args: argparse.Namespace, library: RuleLibrary) -> int:
+    """组合批量排期 + 到期预警 + 跨轮对账（M3）。
+
+    * 失败件隔离：单件坏格式不中断整批、**不改变退出码**——退出码由
+      "是否检出问题"决定（未缴清 / 未判定 / 窗口内到期 / 失败件）；
+    * ``--out`` 指定输出目录时落盘报告（Markdown）+ 证据 JSON；
+      未给出时只打印 stdout。
+    * **未启用章节显式写出**：本次导出未覆盖的能力（滞纳金/费减判定）
+      在报告里显式声明"未启用"，不留空（"没查"≠"查了没问题"）。
+    """
+    from .calc import pipeline
+    from .calc.portfolio import compare_rounds
+
+    payload = _load_json_file(Path(args.input))
+    window_months = getattr(args, "window_months", None)
+    if window_months is not None:
+        payload = dict(payload)
+        payload["window_months"] = window_months
+    request = pipeline.build_portfolio_request(payload, preview=args.preview)
+    result = pipeline.compute_full_portfolio(request, library)
+    baseline, current = pipeline.portfolio_rounds(request)
+    reconciliation = compare_rounds(baseline, current)
+    exit_code = pipeline.portfolio_exit_code_for(result, preview=args.preview)
+
+    if getattr(args, "json", False):
+        print(_dump({
+            "result": result.as_dict(),
+            "reconciliation": reconciliation.as_dict(),
+            "disclaimer": pipeline.DISCLAIMER,
+            "not_enabled_sections": _scan_not_enabled_sections(),
+        }))
+    else:
+        for line in pipeline.portfolio_lines(result, reconciliation):
+            print(line)
+        for line in _scan_not_enabled_lines():
+            print(line)
+        if args.preview:
+            print("注意: --preview 仅用于预览口径，不得作为缴费依据。")
+
+    out_dir = getattr(args, "out", None)
+    if out_dir:
+        written = _write_scan_report(
+            Path(out_dir), result, reconciliation, library, args.preview
+        )
+        if not getattr(args, "json", False):
+            for line in written:
+                print(line)
+    return exit_code
+
+
+def _scan_not_enabled_sections() -> Dict[str, str]:
+    """本次 scan 导出**未启用**的能力清单（显式写出，不留空）。"""
+    return {
+        "late": "本次组合排期未启用逐件滞纳金测算（对已逾期件用 `patfee calc <件.json> --with-late` 启用）",
+        "reduction": "本次组合排期未启用费减资格判定（对单件用 `patfee reduction <主体.json>` 启用）",
+    }
+
+
+def _scan_not_enabled_lines() -> List[str]:
+    lines = ["== 未启用章节（没查 ≠ 查了没问题）=="]
+    for key, text in _scan_not_enabled_sections().items():
+        lines.append("  - %s" % text)
+    return lines
+
+
+def _write_scan_report(
+    out_dir: Path,
+    result: Any,
+    reconciliation: Any,
+    library: RuleLibrary,
+    preview: bool,
+) -> List[str]:
+    """报告落盘：Markdown（人类读）+ evidence JSON（机读指纹）。
+
+    M3 只做 Markdown 单一渲染源；XLSX 双格式与逐字节可复现导出在 M5
+    （plan/04 §七切分）。无外链纪律从 M3 起守：报告正文不写 URL。
+    """
+    from .calc.pipeline import DISCLAIMER, portfolio_lines
+    import hashlib
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    lines: List[str] = []
+    lines.append("# 专利组合费用排期报告")
+    lines.append("")
+    lines.append("- 基准日: %s" % result.today)
+    lines.append("- 预警窗口: 未来 %d 个月" % result.window_months)
+    coord = library.coordinate()
+    lines.append("- 规则包: %s" % ", ".join(
+        "%s@%s" % (rs["id"], rs["version"]) for rs in coord.get("rulesets", [])
+    ))
+    if preview:
+        lines.append("- 口径: **预览（--preview），结论不得作为缴费依据**")
+    lines.append("")
+    lines.append("## 一、输入事实")
+    lines.append("")
+    lines.append("逐件输入与排期结论（含失败隔离件）：")
+    lines.append("")
+    lines.append("| 件 | 专利号 | 类型 | 年度 | 到期日 | 缴费日 | 结论 | 应缴年费 |")
+    lines.append("|---|---|---|---|---|---|---|---|")
+    for e in result.entries:
+        lines.append(
+            "| %s | %s | %s | %s | %s | %s | %s | %s |" % (
+                e.id, e.patent_no or "—", e.patent_type or "—",
+                "" if e.year is None else e.year, e.due_on or "—", e.paid_on or "—",
+                e.kind,
+                "" if e.amount is None else "%s 元" % e.amount,
+            )
+        )
+    lines.append("")
+    lines.append("## 二、逐项结论与计算过程")
+    lines.append("")
+    for line in portfolio_lines(result, reconciliation):
+        lines.append(line)
+    lines.append("")
+    lines.append("## 三、未启用章节")
+    lines.append("")
+    for key, text in _scan_not_enabled_sections().items():
+        lines.append("- **%s**: %s" % (key, text))
+    lines.append("")
+    lines.append("## 四、适用依据与免责声明")
+    lines.append("")
+    for rs in coord.get("rulesets", []):
+        lines.append("- %s@%s %s（锚点 %s ~ %s）" % (
+            rs["id"], rs["version"], rs.get("doc_no") or "",
+            rs.get("anchor_from") or "?", rs.get("anchor_to") or "现行"))
+    lines.append("")
+    lines.append(DISCLAIMER)
+    lines.append("")
+
+    md_bytes = ("\n".join(lines)).encode("utf-8")
+    md_path = out_dir / "scan-report.md"
+    md_path.write_bytes(md_bytes)
+
+    evidence = {
+        "today": result.today,
+        "window_months": result.window_months,
+        "counts": {
+            "entries": len(result.entries),
+            "failed": len(result.failed),
+            "due_soon": len(result.due_soon),
+        },
+        "reconciliation": reconciliation.as_dict(),
+        "coordinate": coord,
+        "disclaimer": DISCLAIMER,
+        "not_enabled_sections": _scan_not_enabled_sections(),
+        "report": {
+            "name": md_path.name,
+            "bytes": len(md_bytes),
+            "sha256": hashlib.sha256(md_bytes).hexdigest(),
+        },
+        "preview": bool(preview),
+    }
+    evidence_path = out_dir / "evidence.json"
+    evidence_path.write_text(
+        json.dumps(evidence, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return [
+        "报告已写出: %s" % md_path,
+        "证据已写出: %s（含报告 sha256 指纹）" % evidence_path,
+    ]
+
+
 def cmd_bench(args: argparse.Namespace, library: RuleLibrary) -> int:
     from .benchmark import suites
 
@@ -372,6 +535,17 @@ def build_parser() -> argparse.ArgumentParser:
     p_red.add_argument("--json", action="store_true")
     p_red.set_defaults(func=cmd_reduction)
 
+    p_scan = sub.add_parser("scan", help="组合批量排期 + 到期预警 + 跨轮对账")
+    p_scan.add_argument("input", help="组合输入 JSON 文件（items 或 baseline/current 两轮台账）")
+    p_scan.add_argument("--out", default=None,
+                        help="报告输出目录（Markdown + evidence.json；缺省只打印）")
+    p_scan.add_argument("--window-months", type=int, default=None,
+                        help="到期预警窗口（月数；缺省取输入的 window_months 或 3）")
+    p_scan.add_argument("--preview", action="store_true",
+                        help="预览口径：退出码仍为 1，绝不返回 0")
+    p_scan.add_argument("--json", action="store_true")
+    p_scan.set_defaults(func=cmd_scan)
+
     p_bench = sub.add_parser("bench", help="内置评测基准")
     p_bench.add_argument("--only", action="append", default=[],
                          help="只跑指定套件（可重复）；未知套件名 exit 2")
@@ -410,7 +584,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         parser.parse_args([args.command, "--help"])
         return ExitCode.USAGE.value
 
-    needs_library = args.command in ("selfcheck", "rules", "calc", "reduction", "bench")
+    needs_library = args.command in ("selfcheck", "rules", "calc", "reduction", "scan", "bench")
     try:
         library = _library_or_none(needs_library)
         if needs_library and library is None:

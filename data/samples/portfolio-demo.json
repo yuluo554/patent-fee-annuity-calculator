@@ -1,0 +1,79 @@
+{
+  "schema": "patfee.portfolio.input/v1",
+  "note": "组合批量排期演示输入（合成数据）：baseline 为上一轮台账，current 为本轮台账。",
+  "today": "2026-10-14",
+  "window_months": 3,
+  "baseline": [
+    {
+      "patent_no": "990000000001SYN",
+      "patent_type": "invention",
+      "year": 3,
+      "due_on": "2022-12-01",
+      "paid_on": "2022-11-01"
+    },
+    {
+      "patent_no": "990000000002SYN",
+      "patent_type": "utility_model",
+      "year": 2,
+      "due_on": "2024-02-14",
+      "paid_on": ""
+    },
+    {
+      "patent_no": "990000000003SYN",
+      "patent_type": "design",
+      "year": 3,
+      "due_on": "2018-10-09",
+      "paid_on": ""
+    }
+  ],
+  "current": [
+    {
+      "patent_no": "990000000001SYN",
+      "patent_type": "invention",
+      "year": 3,
+      "due_on": "2022-12-01",
+      "paid_on": "2022-11-01"
+    },
+    {
+      "patent_no": "990000000002SYN",
+      "patent_type": "utility_model",
+      "year": 2,
+      "due_on": "2024-02-14",
+      "paid_on": "2024-01-20"
+    },
+    {
+      "patent_no": "990000000003SYN",
+      "patent_type": "design",
+      "year": 3,
+      "due_on": "2018-10-09",
+      "paid_on": ""
+    },
+    {
+      "patent_no": "990000000004SYN",
+      "patent_type": "invention",
+      "year": 3,
+      "due_on": "2026-11-15",
+      "paid_on": ""
+    },
+    {
+      "patent_no": "990000000005SYN",
+      "patent_type": "utility_model",
+      "year": 2,
+      "due_on": "2026-10-20",
+      "paid_on": ""
+    },
+    {
+      "patent_no": "990000000006SYN",
+      "patent_type": "design",
+      "year": 2,
+      "due_on": "2018-07-08",
+      "paid_on": ""
+    },
+    {
+      "patent_type": "invention",
+      "year": 5,
+      "due_on": "2026-10-01",
+      "note": "坏格式演示件：缺 patent_no（失败隔离用）"
+    }
+  ]
+}

@@ -6,8 +6,8 @@
 
 **全本地处理、零上传**：专利组合台账含专利权人与代理信息，工具默认不联网、不做任何数据外发。
 
-> **状态：✅ M1 数据先行完成 + ✅ M2 计算引擎完成（2026-10-14），M3（组合排期与对账）待启动。**
-> 32 条规则条目已**逐项回到官方原文/费率表页复核，全部 `status=verified`**（复核痕迹在每条 `basis.note`）；《专利法实施细则》（国务院令第 769 号）第 115 条 / 第 5 条已定位，滞纳金 6 个月补缴期与自然月口径落值入库。`calc` 正常计算（退出码 0）；`--preview` 退出码仍为 1（预览不是达标）；M2 新增 `calc --with-late`（滞纳金）与 `patfee reduction`（费减判定），基准 B1/B2/B3 全达标、算例回归 46/100%。
+> **状态：✅ M1 数据先行完成 + ✅ M2 计算引擎完成 + ✅ M3 组合排期与对账完成（2026-10-14），M4（基准收尾）待启动。**
+> 32 条规则条目已**逐项回到官方原文/费率表页复核，全部 `status=verified`**（复核痕迹在每条 `basis.note`）；《专利法实施细则》（国务院令第 769 号）第 115 条 / 第 5 条已定位，滞纳金 6 个月补缴期与自然月口径落值入库。`calc` 正常计算（退出码 0）；`--preview` 退出码仍为 1（预览不是达标）；M2 新增 `calc --with-late`（滞纳金）与 `patfee reduction`（费减判定）；M3 新增 `patfee scan`（组合批量排期 + 失败隔离 + 到期预警 + 跨轮对账 + 报告落盘），基准 B1–B4 全达标、算例回归 100%。
 
 ---
 
@@ -19,9 +19,9 @@
 | 逾期了滞纳金怎么算？ | 逐月累加（每超期 1 个月加收当年全额年费 5%；上限 6 个月、自然月口径，依细则第 115 条核实），跨月可溯 | ✅ M2（`calc --with-late`） |
 | 我够不够格申请费减？减多少？ | 费减资格判定（公告第 316 号阈值，**严格低于**才合格）+ 减缴比例（单主体 85% / 共同主体 70%） | ✅ M2（`patfee reduction`） |
 | 同时能享受多项减免时怎么选？ | 多政策择一判定（择实缴最小、候选全留痕、不叠加，依公告第 594 号） | ✅ M2 |
-| 组合几十上百件，哪件快到期？ | 批量排期 + 到期预警清单（按期限升序） | ⬜ M3 |
-| 缴费是循环的，"这轮比上轮清了没" | 跨轮对账：新增到期 / 已缴清 / 持续未缴 | ⬜ M3 |
-| 结论要能交给内部/客户/存档 | 报告导出（Markdown + XLSX）+ 组合 sha256 指纹 | ⬜ M3/M5 |
+| 组合几十上百件，哪件快到期？ | 批量排期 + 到期预警清单（按期限升序），坏件隔离不中断 | ✅ M3（`patfee scan`） |
+| 缴费是循环的，"这轮比上轮清了没" | 跨轮对账：新增到期 / 已缴清 / 持续未缴（配对主键 = 专利号；内容变化另立标记） | ✅ M3 |
+| 结论要能交给内部/客户/存档 | 报告导出（Markdown + 证据 JSON 指纹；XLSX 双格式在 M5）+ 组合 sha256 指纹 | 🔶 M3 起步（MD + evidence.json） |
 
 ## 快速开始（M0 已可跑通）
 
@@ -44,6 +44,8 @@ patfee rules show fee_schedule  # 逐条查看费率表条目与依据坐标
 patfee calc data/samples/patent-demo.json --preview   # 单件年费（预览口径）
 patfee calc data/samples/patent-late-demo.json --with-late   # 年费 + 滞纳金
 patfee reduction data/samples/applicants-demo.json    # 费减资格与减免额判定
+patfee scan data/samples/portfolio-demo.json          # 组合批量排期 + 到期预警 + 跨轮对账
+patfee scan data/samples/portfolio-demo.json --out 报告目录   # 同上 + 报告落盘（MD + evidence.json）
 patfee bench                    # 内置评测基准
 ```
 
@@ -103,6 +105,34 @@ $ echo $?
 0        # 不合格也是有效结论（退出码 0）；未判定（门控拒绝）才是 1
 ```
 
+**组合批量排期**（M3，`patfee scan`；失败件隔离单列、不改变退出码——退出码由"是否检出问题"决定；跨轮对账配对主键 = 专利号）——
+
+```console
+$ patfee scan data/samples/portfolio-demo.json
+== 组合批量排期 ==
+基准日: 2026-10-14
+件数合计: 7（失败隔离 1）
+已缴清: 2 件
+已到期未缴清: 2 件
+尚未到期: 2 件
+失败件（单列，不改变退出码语义）:
+  - item[6]: bad_format
+未来 3 个月内到期清单（按剩余天数升序）:
+  - 990000000005SYN  第 2 年  2026-10-20 到期（还有 6 天）  应缴年费 600.00 元
+  ...
+== 跨轮对账（配对主键 patent_no）==
+新增到期: 990000000004SYN#y3, ...
+已缴清: 990000000001SYN#y3, 990000000002SYN#y2
+持续未缴: 990000000003SYN#y3
+== 未启用章节（没查 ≠ 查了没问题）==
+  - 本次组合排期未启用逐件滞纳金测算（对已逾期件用 `patfee calc <件.json> --with-late` 启用）
+  ...
+$ echo $?
+1        # 检出未缴清件 / 窗口内到期件 / 失败件 → 1；全部缴清且无到期 → 0
+```
+
+加 `--out <目录>` 落盘 `scan-report.md` + `evidence.json`（含报告 sha256 指纹，可对账防篡改）。
+
 ## 规则库版本化与 status 门控（本项目的核心纪律）
 
 规则库按 **`依据文件 × 版本`** 组织（`data/rules/`），费率与费减规则编码为可执行规则（JSON）。每条挂文号/费率表条款/URL/抓取日期与 `status`：
@@ -121,7 +151,7 @@ $ echo $?
 
 ```console
 $ patfee selfcheck | grep 零字面量
-零字面量门禁: 扫描 22 文件, 硬门命中 0, 行内放行 0, selftest=通过
+零字面量门禁: 扫描 23 文件, 硬门命中 0, 行内放行 0, selftest=通过
 ```
 
 门禁自带**阳性对照**：`selfcheck` 会把一个禁用 token 写进临时探针文件并断言扫描必须报红 —— 防"门禁全绿其实什么都没查"（token 集为空同样报配置错误）。
@@ -152,7 +182,7 @@ $ patfee selfcheck | grep 零字面量
 | `patfee bench [--only <套件>]` | 内置评测基准 | ✅ B1/B2/B3（M2 实装）；B4 未实装（显式标出） |
 | `patfee rules diff <id>` | 政策差异报告（316 号前后阈值、594 号新增项目与同口径互证） | ✅ M1 实装 |
 | `patfee reduction <主体.json>` | 费减资格与减免额判定 | ✅ M2 |
-| `patfee scan <目录> --out <目录>` | 组合批量排期 + 到期预警 + 对账 + 报告导出 | ⬜ M3 |
+| `patfee scan <组合.json> [--out <目录>] [--window-months N]` | 组合批量排期 + 失败隔离 + 到期预警 + 跨轮对账；`--out` 落盘报告（Markdown + evidence.json） | ✅ M3 |
 | `patfee gui` | 桌面界面 | ⬜ M5 |
 
 ### 退出码
@@ -171,7 +201,7 @@ $ patfee selfcheck | grep 零字面量
 | `b1_ladder` | 年费阶梯边界：区间连续无缝、逐年覆盖唯一、恰好跳档年归新档 | ✅ 99/99 达标（规则驱动） |
 | `b2_late` | 滞纳金跨月累加与上限边界（真值对账 + 规则驱动端点枚举 + 月数口径零头语义） | ✅ M2 实装，达标率 1.0 |
 | `b3_reduction` | 费减阈值边界（收入/所得额恰好等于阈值、共同主体数 1 与 2、历史锚点） | ✅ M2 实装，达标率 1.0 |
-| `b4_portfolio` | 合成组合真值全量重算与跨轮对账 | ⬜ M3 |
+| `b4_portfolio` | 合成组合 18 件真值全量重算（金额锚定冻结真值）+ 失败隔离 + controls 误报对照集 + 跨轮对账口径 | ✅ M3 实装，达标率 1.0 |
 
 - **门槛随 `manifest.json` 下发**（数据非代码）：调门槛改数据不改代码；门槛缺失即报配置错误（退出码 2），不回落代码默认值。
 - **未实装套件显式标出**：跑 `bench` 会打印"未实装（M2 实装）"，未知名走退出码 2，绝不静默通过。
@@ -209,13 +239,13 @@ src/patfee/      包源码
   calc/          annuity（阶梯）/ late（滞纳金）/ reduction（费减）/ pipeline（编排层）
   benchmark/     基准套件（B1 阶梯 / B2 滞纳金 / B3 费减 / B4 组合）
 tools/           生成器与审计脚本（gen_rulesets / gen_synthetic / fetch_authorities）
-tests/           pytest（M2 后 166 项）
+tests/           pytest（M3 后 191 项）
 ```
 
 ## 开发
 
 ```bash
-python -m pytest -q                          # 全量测试（M2 后 166 项）
+python -m pytest -q                          # 全量测试（M3 后 191 项）
 python tools/gen_rulesets.py --check         # 规则包冻结位级一致 → FROZEN_RULESETS_OK
 python tools/gen_synthetic.py --check        # 合成真值库位级一致 → SYNTHETIC_FROZEN_OK
 python tools/fetch_authorities.py --verify   # 原文快照 sha256 复核
@@ -232,8 +262,8 @@ python tools/audit_desensitize.py --selftest # 只跑审计器的阳性/阴性�
 | M0 | 计划 00–06 定稿 + 可运行骨架（规则加载/门控/阶梯引擎/CLI/基准 B1/测试/CI） | ✅ 完成（2026-10-14） |
 | M1 | 数据先行：费率表与政策规则逐项挂原文复核 + 合成专利组合真值库 | ✅ 完成（2026-10-14） |
 | M2 | 计算引擎：滞纳金 + 费减判定 + 多政策择一，算例回归 | ✅ 完成（2026-10-14） |
-| M3 | 组合排期与对账：批量排期 + 到期预警 + 跨轮对账 + 报告/证据链 | ⬜ |
-| M4 | 基准：阶梯边界/滞纳金/费减判定/合成组合四类扫描，指标进 README | ⬜ |
+| M3 | 组合排期与对账：批量排期 + 失败隔离 + 到期预警 + 跨轮对账 + 报告落盘 + 基准 B4 | ✅ 完成（2026-10-14） |
+| M4 | 基准：阶梯边界/滞纳金/费减判定/合成组合四类扫描，指标进 README | ⬜（B1–B4 已随 M2/M3 实装达标，M4 收尾固化指标） |
 | M5 | 桌面交付：PySide6 界面 + PyInstaller 打包 + 报告导出 + 技术报告 | ⬜ |
 | M6 | 脱敏发布 GitHub + Release（exe）+ 收尾固化 | ⬜ |
 

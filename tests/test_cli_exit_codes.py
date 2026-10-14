@@ -185,7 +185,7 @@ def test_bench_exit_0_when_implemented_suites_pass(capsys):
     assert run(["bench"]) == 0
     out = capsys.readouterr().out
     assert "b1_ladder" in out
-    assert "b4_portfolio" in out, "未实装套件必须显式标出，不许静默通过"
+    assert "b4_portfolio" in out, "全部套件（含 B4）都须出现在 bench 输出里"
 
 
 # ------------------------------------------------------------ M2：reduction / --with-late

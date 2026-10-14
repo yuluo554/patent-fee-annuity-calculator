@@ -104,11 +104,11 @@ def test_unknown_suite_raises_usage_error(lib):
         suites.run_suites(lib, only=["nope"])
 
 
-def test_unimplemented_suites_not_judged(lib):
-    """B4 未实装，不参与达标判定："没测"既不是达标也不是未达标（B2/B3 自 M2 起实装）。"""
+def test_all_suites_implemented_and_judged(lib):
+    """M3 起 B1–B4 全部实装并参与达标判定；未实装语义由空库路径守护
+    （B1 无条目 → implemented=False 显式标出，不静默算达标）。"""
     results, verdicts, implemented = suites.run_suites(lib)
-    assert "b1_ladder" in implemented
-    assert "b4_portfolio" not in implemented
+    assert set(implemented) == {"b1_ladder", "b2_late", "b3_reduction", "b4_portfolio"}
     assert all(v.endswith("=达标") for v in verdicts)
 
 

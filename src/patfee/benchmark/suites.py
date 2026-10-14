@@ -9,6 +9,9 @@ M2 起 B2/B3 为**两层**：
    真值库不可得（非仓库环境）时显式留 note，不冒充分母；
 2. **规则驱动层** —— 从规则包参数独立推导端点期望（套件内自算，不经引擎），
    引擎结果与期望逐项断言。分母不许悄悄做小。
+
+M3 起 B4 为**三层**（组合全量重算 / controls 误报对照集 / 跨轮对账口径），
+对照集只读 truth manifest 的 ``controls`` 声明，不自行挑选。
 """
 
 from __future__ import annotations
@@ -165,6 +168,27 @@ def _load_truth_cases(library: RuleLibrary) -> Optional[List[dict]]:
     except (OSError, ValueError):
         return None
     return list(doc.get("cases") or [])
+
+
+def _load_truth_doc(library: RuleLibrary) -> Optional[dict]:
+    """读整份真值库（含 controls 对照集声明）—— B4 只读该声明，不自行挑选对照档案。"""
+    truth_dir = _find_truth_dir(library)
+    if truth_dir is None:
+        return None
+    try:
+        return json.loads((truth_dir / "truth.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def _load_truth_portfolio(library: RuleLibrary) -> Optional[dict]:
+    truth_dir = _find_truth_dir(library)
+    if truth_dir is None:
+        return None
+    try:
+        return json.loads((truth_dir / "portfolio.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
 
 
 def _scalar_entry(library: RuleLibrary, key: str) -> Optional[Decimal]:
@@ -475,8 +499,250 @@ def suite_b3_reduction(library: RuleLibrary) -> CheckResult:
 
 
 def suite_b4_portfolio(library: RuleLibrary) -> CheckResult:
-    """B4 合成组合（M3 实装）。"""
-    return CheckResult(suite="b4_portfolio", implemented=False, notes=["M3 实装：合成组合真值全量重算与跨轮对账"])
+    """B4 合成组合（M3）：真值全量重算对账 + 跨轮对账口径 + 误报对照集。
+
+    三层断言（分母不许做小）：
+
+    1. **组合全量重算** —— ``data/truth/portfolio.json`` 的 18 件专利逐件走
+       年费阶梯引擎（按合成 ``as_of_date`` 推当前年度），金额与规则包阶梯对账；
+    2. **误报对照集** —— 只读 truth manifest 的 ``controls`` 声明：``clean``
+       件（按期缴费）排期必须零命中（kind=settled 且不进 unpaid），
+       ``degrade`` 件（超上限）必须降级为 warning 而非 fail；
+    3. **跨轮对账口径** —— 用对照集缴费记录构造两轮台账，``compare_rounds``
+       的三集合与辅助集必须与构造语义一致（单一实现源的行为锁定）。
+
+    真值库不可得（非仓库环境）时显式留 note，不冒充分母。
+    """
+    result = CheckResult(suite="b4_portfolio")
+
+    portfolio = _load_truth_portfolio(library)
+    truth = _load_truth_doc(library)
+    if portfolio is None:
+        result.implemented = False
+        result.notes.append("合成组合真值库不可得（非仓库环境）—— 无可判定内容")
+        return result
+
+    from ..calc.portfolio import (
+        KIND_FAILED,
+        KIND_NOT_DUE,
+        KIND_SETTLED,
+        KIND_UNCOMPUTED,
+        KIND_UNPAID,
+        PortfolioRequest,
+        compare_rounds,
+        scan_portfolio,
+    )
+
+    as_of = str(portfolio.get("as_of_date") or "")
+    try:
+        today = date.fromisoformat(as_of)
+    except ValueError:
+        result.implemented = False
+        result.notes.append("合成组合 as_of_date 非法: %r" % (as_of,))
+        return result
+
+    patents = {p["patent_no"]: p for p in portfolio.get("patents") or []}
+    payments = portfolio.get("payments") or []
+
+    # ---- 第一层：全部缴费记录重算排期，逐条对账 ----
+    sources = []
+    for idx, pay in enumerate(payments):
+        patent = patents.get(pay.get("patent_no")) or {}
+        item = dict(pay)
+        item["patent_type"] = patent.get("patent_type")
+        sources.append(("payment[%d]" % idx, item))
+    request = PortfolioRequest(
+        sources=tuple(sources), today=today, window_months=_B4_WINDOW_MONTHS
+    )
+    scan = scan_portfolio(request, library)
+
+    # 期望金额锚定**冻结真值**（不经引擎、不读现行规则包）：
+    # 按类型找真值年金算例，用其 tier_from/tier_to 判定缴费年度所在档，
+    # 期望 = 该算例生成时冻结的 amount —— 探活注入（改阶梯）才会被检出，
+    # 防"期望与引擎读同一份（被改的）规则包"的自证。
+    annuity_expect = {}
+    for case in (truth or {}).get("cases") or []:
+        if case.get("kind") != "annuity":
+            continue
+        key = (str(case.get("patent_type")), int(case["expect"]["tier_from"]),
+               int(case["expect"]["tier_to"]))
+        annuity_expect.setdefault(key, case["expect"]["amount"])
+
+    def _expect_amount(patent_type, year):
+        if patent_type is None or year is None:
+            return None
+        for (ptype, lo, hi), amount in annuity_expect.items():
+            if ptype == str(patent_type) and lo <= int(year) <= hi:
+                return quantize_amount(Decimal(str(amount)))
+        return None
+
+    for entry, (source, item) in zip(scan.entries, sources):
+        result.total += 1
+        if entry.kind == KIND_FAILED:
+            result.failures.append("%s: 合成缴费记录被判失败（%s）" % (entry.id, entry.reason))
+            continue
+        if entry.kind == KIND_UNCOMPUTED:
+            result.failures.append("%s: 未判定（%s）" % (entry.id, "; ".join(entry.reasons)))
+            continue
+        if entry.kind != KIND_SETTLED:
+            # 按期缴纳的合成记录统一 paid_on < due_on → settled；
+            # 走到 not_due/unpaid 说明 paid_on 解析或分类语义漂移
+            result.failures.append(
+                "%s: kind=%s（合成按期记录应为 settled）" % (entry.id, entry.kind)
+            )
+            continue
+        expect_amount = _expect_amount(item.get("patent_type"), item.get("year"))
+        if expect_amount is not None and entry.amount != expect_amount:
+            result.failures.append(
+                "%s: 年费 %s 期望 %s（阶梯独立推导）"
+                % (entry.id, entry.amount, expect_amount)
+            )
+            continue
+        result.passed += 1
+
+    # 失败隔离：无 patent_no / 坏类型的条目必须单列 failed 且不影响其余件
+    bad_sources = (
+        ("bad[0]", None),
+        ("bad[1]", {"patent_type": "invention", "year": 5, "due_on": "2026-01-01"}),
+        ("bad[2]", {"patent_no": "990000000001SYN", "patent_type": "unicorn",
+                    "year": 5, "due_on": "2026-01-01"}),
+    )
+    bad_scan = scan_portfolio(
+        PortfolioRequest(sources=bad_sources, today=today, window_months=_B4_WINDOW_MONTHS),
+        library,
+    )
+    result.total += 1
+    failed_ids = {e.source for e in bad_scan.failed}
+    if len(bad_scan.failed) == len(bad_sources) and failed_ids == {"bad[0]", "bad[1]", "bad[2]"}:
+        result.passed += 1
+    else:
+        result.failures.append("失败隔离失效: failed=%s" % failed_ids)
+    result.total += 1
+    if all(e.kind == KIND_FAILED for e in bad_scan.entries if e.source.startswith("bad[")) \
+            and len(bad_scan.entries) == len(bad_sources):
+        result.passed += 1
+    else:
+        result.failures.append("失败件未与正常件同列表留痕或条目数不符")
+
+    # ---- 第二层：误报对照集（只读 controls 声明）----
+    controls = (truth or {}).get("controls") or {}
+    clean_ids = list(controls.get("clean") or [])
+    degrade_ids = list(controls.get("degrade") or [])
+    if not clean_ids:
+        result.notes.append("真值库未声明 controls.clean（对照集未生成）")
+    by_case_id = {c.get("id"): c for c in (truth or {}).get("cases") or []}
+
+    # clean 声明的 payment.* 件：重算必须 settled（零命中 = 无 unpaid / 无 failed）
+    clean_payment_count = 0
+    for cid in clean_ids:
+        parts = cid.split(".")
+        if len(parts) != 3 or parts[0] != "payment":
+            continue
+        no, y = parts[1], parts[2]
+        patent = patents.get(no)
+        pay = next((p for p in payments
+                    if p.get("patent_no") == no and "y%02d" % p.get("year", 0) == y), None)
+        if patent is None or pay is None:
+            continue
+        clean_payment_count += 1
+        result.total += 1
+        item = dict(pay)
+        item["patent_type"] = patent.get("patent_type")
+        entry = scan_portfolio(
+            PortfolioRequest(sources=(("ctl", item),), today=today,
+                             window_months=_B4_WINDOW_MONTHS),
+            library,
+        ).entries[0]
+        if entry.kind == KIND_SETTLED:
+            result.passed += 1
+        else:
+            result.failures.append("clean 件 %s 应零命中，实得 kind=%s" % (cid, entry.kind))
+    if clean_payment_count == 0:
+        result.notes.append("controls.clean 无可对应的组合缴费记录（该类用例未生成）")
+
+    # degrade 声明的件（超上限滞纳金）：走滞纳金引擎必须降级 warning 而非拦截
+    from ..calc.late import LateRequest, compute_late
+
+    for cid in degrade_ids:
+        case = by_case_id.get(cid)
+        if case is None or case.get("kind") != "late":
+            result.notes.append("degrade 件 %s 无对应算例（该类用例未生成）" % cid)
+            continue
+        result.total += 1
+        inputs = case.get("inputs") or {}
+        try:
+            res = compute_late(library, LateRequest(
+                patent_type=parse_patent_type(case["patent_type"]),
+                year=int(case["year"]),
+                due_on=date.fromisoformat(inputs["due_on"]),
+                paid_on=date.fromisoformat(inputs["paid_on"]),
+            ))
+        except Exception as exc:
+            result.failures.append("degrade 件 %s 计算异常: %s" % (cid, exc))
+            continue
+        if res.computed and res.exceeds_cap and res.surcharge is not None:
+            result.passed += 1
+        else:
+            result.failures.append(
+                "degrade 件 %s 应照算金额并超上限降级（computed=%s exceeds=%s）"
+                % (cid, res.computed, res.exceeds_cap)
+            )
+
+    # ---- 第三层：跨轮对账口径（compare_rounds 单一实现源行为锁定）----
+    settled_pays = [p for p in payments if p.get("on_time")]
+    baseline: List[dict] = []
+    current: List[dict] = []
+    for pay in settled_pays:
+        baseline.append({
+            "patent_no": pay.get("patent_no"), "year": pay.get("year"),
+            "due_on": pay.get("due_on"), "paid_on": "",
+        })
+        current.append({
+            "patent_no": pay.get("patent_no"), "year": pay.get("year"),
+            "due_on": pay.get("due_on"), "paid_on": pay.get("paid_on") or "",
+        })
+    if not baseline:
+        result.notes.append("组合无按期缴费记录 —— 对账口径层该类用例未生成")
+    rec = compare_rounds(baseline, current)
+    for key in baseline:
+        result.total += 1
+        pid = "%s#y%s" % (key["patent_no"], key["year"])
+        if pid in rec.settled and pid not in rec.new_due and pid not in rec.vanished:
+            result.passed += 1
+        else:
+            result.failures.append("对账口径: %s 应配对 settled，实得 new_due=%s settled=%s vanished=%s"
+                                   % (pid, pid in rec.new_due, pid in rec.settled, pid in rec.vanished))
+    # 期限变化必须报 content_changed 且不退化成"新增+消失"（D13）
+    if current:
+        drifted = [dict(current[0])]
+        drifted[0]["due_on"] = _shift_year(current[0].get("due_on"))
+        rec2 = compare_rounds([baseline[0]], drifted)
+        result.total += 1
+        pid = "%s#y%s" % (current[0]["patent_no"], current[0]["year"])
+        if pid in rec2.content_changed and pid not in rec2.new_due and pid not in rec2.vanished:
+            result.passed += 1
+        else:
+            result.failures.append(
+                "对账口径: %s 期限变化应报 content_changed（实得 changed=%s new=%s vanished=%s）"
+                % (pid, pid in rec2.content_changed, pid in rec2.new_due, pid in rec2.vanished)
+            )
+
+    if result.total == 0:
+        result.implemented = False
+        result.notes.append("组合重算与对照集均无可用用例 —— 本套件无可判定内容")
+    return result
+
+
+def _shift_year(iso: Optional[str]) -> str:
+    """把 ISO 日期推一年（对账口径用例：期限漂移 → content_changed）。"""
+    if not iso:
+        return ""
+    d = date.fromisoformat(str(iso))
+    try:
+        return d.replace(year=d.year + 1).isoformat()
+    except ValueError:
+        # 2-29 → 平年回退 2-28（仅测试用例构造，非政策语义）
+        return d.replace(year=d.year + 1, day=d.day - 1).isoformat()
 
 
 SUITES: Dict[str, Callable[[RuleLibrary], CheckResult]] = {
@@ -487,6 +753,9 @@ SUITES: Dict[str, Callable[[RuleLibrary], CheckResult]] = {
 }
 
 SUITE_ORDER: Tuple[str, ...] = ("b1_ladder", "b2_late", "b3_reduction", "b4_portfolio")
+
+# B4 预警窗口（结构参数，非政策数值；窗口语义见 calc/portfolio.py）
+_B4_WINDOW_MONTHS = 3
 
 
 def suite_names() -> Tuple[str, ...]:

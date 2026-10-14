@@ -311,8 +311,7 @@ def test_b3_detects_threshold_defect():
 
 
 def test_bench_full_run_all_implemented_pass(lib):
-    """M2 出口判据：B1/B2/B3 全达标（B4 仍未实装、显式标出）。"""
+    """基准全量运行：B1–B4 全实装（M3 起 B4 实装）、全达标。"""
     results, verdicts, implemented = suites.run_suites(lib)
-    assert "b1_ladder" in implemented and "b2_late" in implemented and "b3_reduction" in implemented
-    assert "b4_portfolio" not in implemented
+    assert {"b1_ladder", "b2_late", "b3_reduction", "b4_portfolio"} <= set(implemented)
     assert all(v.endswith("=达标") for v in verdicts)
