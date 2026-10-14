@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "patfee"
+version = "0.1.0"
+description = "专利年费与费减合规计算工作台（官费费率表规则化 · 年费阶梯 · 滞纳金 · 费减判定 · 组合批量排期对账 · 证据链留痕）"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "yuluo554" }]
+keywords = ["patent", "annuity", "fee", "cnipa", "compliance", "offline"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Legal Industry",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Office/Business :: Financial",
+]
+
+# 核心层零第三方依赖：以下 extras 一律不得进入运行时必需面
+dependencies = []
+
+[project.optional-dependencies]
+# 测试期依赖必须写在 dev 里：CI 只用 core-only 装包时，pytest 与 pyyaml 缺席
+# 会让守门测试整批 ImportError（不是 skip），而"本地一直绿"看不出来。
+dev = [
+  "pytest>=7,<9",
+  "pyyaml>=6",
+]
+report = [
+  "openpyxl>=3.0",
+]
+# PySide6 6.7+ 元数据要求 requires-python>=3.9；3.8 通道需钉上限
+gui = [
+  "PySide6>=6.6,<6.7; python_version < '3.9'",
+  "PySide6>=6.6; python_version >= '3.9'",
+]
+# PyInstaller 仍 import pkg_resources，而 setuptools 81 起移除它
+build = [
+  "pyinstaller>=6.0",
+  "setuptools<81",
+]
+
+[project.scripts]
+patfee = "patfee.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yuluo554/patent-fee-annuity-calculator"
+Source = "https://github.com/yuluo554/patent-fee-annuity-calculator"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+# 冻结产物与基准必须跨平台可复现：缓存与字节码不参与判定
+filterwarnings = ["error::DeprecationWarning:patfee.*"]

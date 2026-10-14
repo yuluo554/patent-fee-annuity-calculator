@@ -1,0 +1,94 @@
+{
+  "schema": "patfee.ruleset/v1",
+  "id": "reduction_78",
+  "version": "v2016",
+  "title": "专利收费减缴办法（减缴比例与减缴项目）",
+  "doc_no": "《专利收费减缴办法》财税〔2016〕78 号",
+  "anchor_from": "2016-09-01",
+  "anchor_to": "",
+  "source": {
+    "channel": "财政部 财政文告（mof.gov.cn）",
+    "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
+    "retrieved": "2026-10-14",
+    "verification": "anchor_verified",
+    "raw_snapshot": "data/knowledge/raw/mof_2016_78.html"
+  },
+  "entries": [
+    {
+      "key": "reduction.rate.sole",
+      "label": "单主体减缴比例",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": "0.85",
+      "basis": {
+        "doc_no": "《专利收费减缴办法》财税〔2016〕78 号",
+        "clause": "第四条：专利申请人或者专利权人为个人或者单位的，减缴本办法第二条规定收费的 85%",
+        "unit": "ratio",
+        "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
+        "retrieved": "2026-10-14",
+        "channel": "财政部 财政文告（mof.gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对第四条/第十二条；待 M1 完成条目级复核后置 verified。【口径要点】比例取决于主体是否『共同』，与个人/单位无关"
+    },
+    {
+      "key": "reduction.rate.combined",
+      "label": "共同主体减缴比例",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": "0.70",
+      "basis": {
+        "doc_no": "《专利收费减缴办法》财税〔2016〕78 号",
+        "clause": "第四条：两个或者两个以上的个人或者单位为共同专利申请人或者共有专利权人的，减缴本办法第二条规定收费的 70%",
+        "unit": "ratio",
+        "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
+        "retrieved": "2026-10-14",
+        "channel": "财政部 财政文告（mof.gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对第四条/第十二条；待 M1 完成条目级复核后置 verified。【口径要点】比例取决于主体是否『共同』，与个人/单位无关"
+    },
+    {
+      "key": "reduction.effective_from",
+      "label": "本办法施行日期",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": "2016-09-01",
+      "basis": {
+        "doc_no": "《专利收费减缴办法》财税〔2016〕78 号",
+        "clause": "第十二条：本办法自 2016 年 9 月 1 日起施行",
+        "unit": "date",
+        "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
+        "retrieved": "2026-10-14",
+        "channel": "财政部 财政文告（mof.gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对第四条/第十二条；待 M1 完成条目级复核后置 verified。【口径要点】比例取决于主体是否『共同』，与个人/单位无关"
+    },
+    {
+      "key": "reduction.eligible_categories",
+      "label": "可减缴的收费种类",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": "申请费（不含公布印刷费、申请附加费）、发明专利申请实质审查费、复审费、年费（自授予专利权当年起十年内的年费）",
+      "basis": {
+        "doc_no": "《专利收费减缴办法》财税〔2016〕78 号",
+        "clause": "第二条 + 费率表『费减种类』栏（现行口径已含开放实施许可期间的年费）",
+        "unit": "text",
+        "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
+        "retrieved": "2026-10-14",
+        "channel": "财政部 财政文告（mof.gov.cn）"
+      },
+      "note": "【待核对】减缴项目清单随 594 号与现行费率表口径扩展，M1 逐项核对后定稿"
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "schema": "patfee.rules.manifest/v1",
+  "generated_by": "tools/gen_rulesets.py",
+  "generated_at": "1970-01-01T00:00:00Z",
+  "retrieved": "2026-10-14",
+  "rulesets": [
+    {
+      "id": "fee_schedule",
+      "version": "v2024",
+      "title": "专利收费标准表",
+      "doc_no": "国家知识产权局专利收费标准（专利业务办理系统公示）",
+      "anchor_from": "2024-08-06",
+      "anchor_to": "",
+      "source": {
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
+        "retrieved": "2026-10-14",
+        "verification": "anchor_verified",
+        "raw_snapshot": "data/knowledge/raw/cnipa_fee_schedule_286.html"
+      },
+      "file": "fee_schedule.v2024.json",
+      "sha256": "84d540698bfdce645a970ca5524579c323a35d9bd08c97627834fbb02cf52d2b",
+      "status_counts": {
+        "verified": 0,
+        "pending": 16,
+        "input_required": 0
+      }
+    },
+    {
+      "id": "reduction_78",
+      "version": "v2016",
+      "title": "专利收费减缴办法（减缴比例与减缴项目）",
+      "doc_no": "《专利收费减缴办法》财税〔2016〕78 号",
+      "anchor_from": "2016-09-01",
+      "anchor_to": "",
+      "source": {
+        "channel": "财政部 财政文告（mof.gov.cn）",
+        "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
+        "retrieved": "2026-10-14",
+        "verification": "anchor_verified",
+        "raw_snapshot": "data/knowledge/raw/mof_2016_78.html"
+      },
+      "file": "reduction_78.v2016.json",
+      "sha256": "b7e8fdabe5b0744140d0a576bebd70bb3f20c9f8e0a41ce65b17659e2e67afba",
+      "status_counts": {
+        "verified": 0,
+        "pending": 4,
+        "input_required": 0
+      }
+    },
+    {
+      "id": "reduction_316",
+      "version": "v2019",
+      "title": "调整专利收费减缴条件（阈值）",
+      "doc_no": "国家知识产权局公告第 316 号",
+      "anchor_from": "2019-07-01",
+      "anchor_to": "",
+      "source": {
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+        "retrieved": "2026-10-14",
+        "verification": "anchor_verified",
+        "raw_snapshot": "data/knowledge/raw/gov_316.html"
+      },
+      "file": "reduction_316.v2019.json",
+      "sha256": "7a1eadc3499e41a1e4e4d0969597b01732e473b49a82e1896dfae36b91ffce97",
+      "status_counts": {
+        "verified": 0,
+        "pending": 7,
+        "input_required": 0
+      }
+    },
+    {
+      "id": "reduction_594",
+      "version": "v2024",
+      "title": "调整部分专利收费标准和减缴政策（新增项目与减免）",
+      "doc_no": "国家知识产权局公告第 594 号",
+      "anchor_from": "2024-08-06",
+      "anchor_to": "",
+      "source": {
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
+        "retrieved": "2026-10-14",
+        "verification": "anchor_verified",
+        "raw_snapshot": "data/knowledge/raw/gov_594.html"
+      },
+      "file": "reduction_594.v2024.json",
+      "sha256": "9c67af5851a8351cf8cd06c04c61d17e119f206e8f2ffb345e499360ed9c92fd",
+      "status_counts": {
+        "verified": 0,
+        "pending": 5,
+        "input_required": 0
+      }
+    }
+  ],
+  "scopes": [
+    "calc",
+    "late",
+    "reduction",
+    "check"
+  ],
+  "exemptions": {
+    "small_int_abs_limit": 100,
+    "exempt_integers": [],
+    "exempt_decimals": [
+      "0.01",
+      "0.1",
+      "0.5",
+      "1.0",
+      "2.0"
+    ],
+    "inline_allow_mark": "literal-ok"
+  },
+  "banned_tokens": {
+    "integers": [
+      50,
+      80,
+      200,
+      500,
+      600,
+      900,
+      1000,
+      1200,
+      2000,
+      2400,
+      2500,
+      3000,
+      3500,
+      4000,
+      5000,
+      6000,
+      8000,
+      42000,
+      60000,
+      300000,
+      1000000
+    ],
+    "decimals": [
+      "0.05",
+      "0.15",
+      "0.70",
+      "0.85"
+    ],
+    "extra_integers": [
+      80,
+      50
+    ]
+  },
+  "benchmarks": {
+    "b1_ladder": {
+      "min_pass_rate": "1.0",
+      "max_fail": 0,
+      "max_seconds": "1.0"
+    },
+    "b2_late": {
+      "min_pass_rate": "1.0",
+      "max_fail": 0,
+      "max_seconds": "1.0"
+    },
+    "b3_reduction": {
+      "min_pass_rate": "1.0",
+      "max_fail": 0,
+      "max_seconds": "1.0"
+    },
+    "b4_portfolio": {
+      "min_pass_rate": "1.0",
+      "max_fail": 0,
+      "max_seconds": "2.0"
+    }
+  },
+  "notes": [
+    "本目录为生成器冻结产物，禁手改；改体例走 tools/gen_rulesets.py 整目录重生成。",
+    "M0：全部条目 status=pending（值可溯源但未逐项复核）——未核对不得进计算路径。"
+  ]
+}

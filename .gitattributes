@@ -1,8 +1,18 @@
 # 统一 LF：跨平台行尾一致是基准可复现与 CI 首跑绿的前置
 * text=auto eol=lf
+
+# 二进制资源
 *.png binary
 *.gif binary
 *.jpg binary
 *.ico binary
 *.exe binary
 *.zip binary
+
+# 冻结快照必须"字节原样" —— 一律 -text，禁止检出时归一化。
+# WHY：data/knowledge/raw/ 的官方原文快照在 _ledger.json 里登记了 sha256，
+# 若被行尾归一化，克隆后 sha256 立即失配（git status 看不出来，只有复算哈希才发现）。
+# 同族：data/rules/ 是生成器冻结产物，比对是"逐字节"，也不得被改写。
+# 注：生成的 JSON 用 write_bytes 写 LF，加 -text 后 git 不会再动它们。
+data/knowledge/raw/** -text
+data/rules/*.json -text

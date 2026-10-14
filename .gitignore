@@ -21,6 +21,11 @@ build-*/
 scan-out*/
 round*.json
 
+# 验证留档：`.verify-out/` 的本地等价校验输出**入仓**（发布前脱敏扫描覆盖它），
+# 故不整体忽略该目录；只挡临时草稿。
+.verify-out/*.tmp
+.verify-out/*.draft
+
 # 环境与密钥
 .env
 *.key

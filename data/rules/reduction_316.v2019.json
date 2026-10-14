@@ -1,0 +1,151 @@
+{
+  "schema": "patfee.ruleset/v1",
+  "id": "reduction_316",
+  "version": "v2019",
+  "title": "调整专利收费减缴条件（阈值）",
+  "doc_no": "国家知识产权局公告第 316 号",
+  "anchor_from": "2019-07-01",
+  "anchor_to": "",
+  "source": {
+    "channel": "中国政府网 政策文件库（gov.cn）",
+    "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+    "retrieved": "2026-10-14",
+    "verification": "anchor_verified",
+    "raw_snapshot": "data/knowledge/raw/gov_316.html"
+  },
+  "entries": [
+    {
+      "key": "reduction.threshold.individual_annual_income",
+      "label": "个人年收入阈值",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": 60000,
+      "basis": {
+        "doc_no": "国家知识产权局公告第 316 号",
+        "clause": "一、……由上年度月均收入低于 3500 元（年 4.2 万元）的个人，调整为上年度月均收入低于 5000 元（年 6 万元）的个人",
+        "unit": "CNY/year",
+        "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对；306→316 的阈值调整前后值均出自本公告原文。待 M1 条目级复核后置 verified"
+    },
+    {
+      "key": "reduction.threshold.individual_monthly_income",
+      "label": "个人月均收入阈值",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": 5000,
+      "basis": {
+        "doc_no": "国家知识产权局公告第 316 号",
+        "clause": "一、……调整为上年度月均收入低于 5000 元（年 6 万元）的个人",
+        "unit": "CNY/month",
+        "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对；306→316 的阈值调整前后值均出自本公告原文。待 M1 条目级复核后置 verified"
+    },
+    {
+      "key": "reduction.threshold.entity_taxable_income",
+      "label": "企业应纳税所得额阈值",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": 1000000,
+      "basis": {
+        "doc_no": "国家知识产权局公告第 316 号",
+        "clause": "一、……由上年度企业应纳税所得额低于 30 万元的企业，调整为上年度企业应纳税所得额低于 100 万元的企业",
+        "unit": "CNY/year",
+        "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对；306→316 的阈值调整前后值均出自本公告原文。待 M1 条目级复核后置 verified"
+    },
+    {
+      "key": "reduction.threshold.effective_from",
+      "label": "调整生效日期",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": "2019-07-01",
+      "basis": {
+        "doc_no": "国家知识产权局公告第 316 号",
+        "clause": "……国家知识产权局将于 2019 年 7 月 1 日起调整专利收费减缴条件",
+        "unit": "date",
+        "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对；306→316 的阈值调整前后值均出自本公告原文。待 M1 条目级复核后置 verified"
+    },
+    {
+      "key": "reduction.threshold.individual_annual_income.prev",
+      "label": "个人年收入阈值（316 号前）",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": 42000,
+      "basis": {
+        "doc_no": "国家知识产权局公告第 316 号",
+        "clause": "一、……由上年度月均收入低于 3500 元（年 4.2 万元）的个人",
+        "unit": "CNY/year",
+        "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "【历史值】用于差异报告与 2019-07-01 前年度回算；不参与当前判定"
+    },
+    {
+      "key": "reduction.threshold.individual_monthly_income.prev",
+      "label": "个人月均收入阈值（316 号前）",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": 3500,
+      "basis": {
+        "doc_no": "国家知识产权局公告第 316 号",
+        "clause": "一、……由上年度月均收入低于 3500 元（年 4.2 万元）的个人",
+        "unit": "CNY/month",
+        "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "【历史值】用于差异报告与 2019-07-01 前年度回算"
+    },
+    {
+      "key": "reduction.threshold.entity_taxable_income.prev",
+      "label": "企业应纳税所得额阈值（316 号前）",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": 300000,
+      "basis": {
+        "doc_no": "国家知识产权局公告第 316 号",
+        "clause": "一、……由上年度企业应纳税所得额低于 30 万元的企业",
+        "unit": "CNY/year",
+        "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "【历史值】用于差异报告与 2019-07-01 前年度回算"
+    }
+  ]
+}

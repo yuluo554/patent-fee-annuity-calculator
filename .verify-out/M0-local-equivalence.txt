@@ -1,0 +1,54 @@
+M0 本地等价校验（无远端 → 不写 CI 绿，只写本地等价）
+执行日期: 2026-10-14
+本机解释器通道: Python 3.8.8 / Python 3.12.10
+干净 venv: .venv（py3.12，按 README 快速开始创建）
+
+### 1) 干净 venv：pip install -e ".[dev]" + pytest
+Successfully installed patfee-0.1.0
+112 tests collected in 0.11s
+112 passed in 1.16s
+
+### 2) 系统 py3.12（PYTHONPATH=src）
+112 tests collected in 0.11s
+112 passed in 1.00s
+
+### 3) 系统 py3.8（解释器底线，CI 只在其 windows 作业守）
+112 tests collected in 0.11s
+112 passed in 1.11s
+
+### 4) 规则包冻结位级一致
+FROZEN_RULESETS_OK (5 份文件逐字节一致)
+
+### 5) 官方原文快照 sha256 复核
+AUTHORITY_SNAPSHOTS_OK (4 份快照 sha256 与台账一致)
+
+### 6) 脱敏审计（四步固化形态：自检 + 三模式）
+  正例 4 项均报红；反例 4 项均未误报
+AUDIT_SELFTEST_OK
+  --mode all:
+审计模式: tracked（扫描 48 个对象）
+审计模式: history（扫描 4 个对象）
+  通道探活: 通道探活通过（首提交内检得 patfee）
+  无命中
+审计模式: messages（扫描 1 个对象）
+  通道探活: 提交信息已读取
+DESENSITIZE_AUDIT_OK
+
+### 7) CLI 退出码（单独跑、不接管道 —— 管道会把 $? 换成 tail 的）
+  patfee version -> exit=0
+  patfee selfcheck -> exit=0
+  patfee rules list -> exit=0
+  patfee rules show fee_schedule -> exit=0
+  patfee bench -> exit=0
+  patfee calc（门控拒绝 pending） -> exit=1
+  patfee calc --preview（预览不返回 0） -> exit=1
+  patfee calc（输入文件不存在） -> exit=2
+  patfee bench（未知套件名） -> exit=2
+  patfee rules show（未知规则集） -> exit=2
+  patfee gui（干净 venv 缺 PySide6） -> exit=3
+
+### 8) 中立目录验收（CWD 在仓库外 → 验数据定位不依赖 CWD）
+  patfee version（中立目录） -> exit=0
+  patfee calc（中立目录） -> exit=1
+  patfee bench（中立目录） -> exit=0
+结论: 三处环境 112 项全绿、收集数一致；冻结与快照守门通过；脱敏审计 OK；退出码全表符合四态语义

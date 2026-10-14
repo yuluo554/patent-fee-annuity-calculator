@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>通知详情</title>
+    <link rel="shortcut icon" href="/prefix/favicon1.ico" />
+    <link rel="stylesheet" href="/prefix/css/common.css" />
+    <link rel="stylesheet" href="/prefix/css/header-menu.css" />
+    <link rel="stylesheet" href="/prefix/css/sub-page.css" />
+    <link rel="stylesheet" href="/prefix/iconfont/iconfont.css" />
+    <script src="/prefix/iconfont/iconfont.js"></script>
+    <script src="/prefix/js/lib/jquery-1.12.4.js"></script>
+  </head>
+  <body>
+    <div class="bl-sub-header">
+      <!--公共头部获取-->
+      <div class="bl-index-header">
+    <img
+        class="bl-index-header-logo"
+        src="/prefix/img/logo.jpg"
+        alt=""
+    />
+    <a href="/index">
+        <div class="bl-index-header-left">
+                    <span class="bl-index-header-sub-title"
+                    >国家知识产权局</span
+                    >
+            <div class="bl-index-header-title">专利业务办理系统</div>
+        </div>
+    </a>
+    <div class="bl-index-header-right">
+                <span class="bl-index-header-login bl-logined">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icongeren"></use>
+                    </svg>
+                    <!--    生产环境：https://tysfjk.cponline.cnipa.gov.cn/portal
+                            测试环境：http://111.205.189.110:8091/portal/#/home/welcome
+                    -->
+                    
+                    
+                    <span
+                    ><a href="https://sso.cponline.cnipa.gov.cn/oauth/authorize?client_id=patent-protal&amp;redirect_uri=https://cponline.cnipa.gov.cn/authorization/callback&amp;response_type=code&amp;scope=openid">登录</a></span
+                    >
+                    <span
+                        onclick="register()"
+                    >注册</span
+                    >
+                </span>
+        <div class="bl-index-header-search">
+                    <span class="bl-index-header-search-class" value="">
+                        <span class="bl-index-header-search-current-class">
+                            <span>全局搜索</span>
+                            <i class="iconfont iconshouqi"></i>
+                        </span>
+                        <ul class="bl-index-header-search-class-select">
+                            <li value="0">全局搜索</li>
+                            <li value="2">通知公告</li>
+                            <li value="1">帮助文档</li>
+                            <li value="3">工具下载</li>
+                            <!--                    <li value="5">帮助文档</li>-->
+                            <!--                    <li value="7">电子申请简介</li>-->
+                        </ul>
+                    </span>
+            <input
+                type="text"
+                id="inputYewubt"
+                onkeydown="if(event.keyCode==13){submitSearchForm()}"
+            />
+            <span
+                class="bl-index-header-search-button"
+                onclick="submitSearchForm()"
+            >
+                        <i class="iconfont iconchaxun"></i>
+                    </span>
+            <div id="register">
+                <ul>
+                    <li>
+                        <a
+                            href="https://tysfjk.cponline.cnipa.gov.cn/portal/#/user/userRegister"
+                        >自然人注册</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://tysfjk.cponline.cnipa.gov.cn/portal/#/user/legalRegister"
+                        >法人注册</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://tysfjk.cponline.cnipa.gov.cn/portal/#/user/agencyOrgRegister"
+                        >代理机构注册</a
+                        >
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <form
+            method="post"
+            action="/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectIndexType"
+            id="searchForm"
+            style="display: none"
+        >
+            <input
+                type="text"
+                name="Yewufl"
+                id="submitYewufl"
+                value="0"
+            />
+            <input type="text" name="yewubt" id="submitYewubt" />
+            <input type="hidden" name="size" value="10" />
+            <input type="hidden" name="current" value="1" />
+        </form>
+    </div>
+    <div class="bl-index-header-phone">
+        <img src="/prefix/img/svg/咨询电话.svg" alt="" />
+        <span>咨询电话：010-62356655</span>
+    </div>
+</div>
+      <div class="bl-header-menu">
+    <span><a href="/index">首页</a></span>
+    <span
+    ><a
+        href="/to?backUrl=https://interactive.cponline.cnipa.gov.cn/public-app-zxsq-guojia/gjsq/fmzlsq/fmzlxg"
+    >专利申请及手续办理</a
+    ></span
+    >
+    <span
+    ><a
+        href="/to?backUrl=https://interactive.cponline.cnipa.gov.cn/public-app-zlswfw/zhengmingwjhwjfb"
+    >专利事务服务</a
+    ></span
+    >
+    <span
+    ><a
+        href="/to?backUrl=https://interactive.cponline.cnipa.gov.cn/public-app-zljffw/onlinePay/fillInList"
+    >专利缴费服务</a
+    ></span
+    >
+    <span>专利审查信息查询</span>
+    <div>
+        <span>专利申请及手续办理</span>
+        <ul></ul>
+    </div>
+    <div>
+        <span>专利事务服务</span>
+        <ul></ul>
+    </div>
+    <div>
+        <span>专利缴费服务</span>
+        <ul></ul>
+    </div>
+    <div>
+        <span>专利审查信息查询</span>
+        <ul></ul>
+    </div>
+</div>
+    </div>
+    <div class="bl-sub-bread">
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icondangqianweizhi"></use>
+      </svg>
+      <a href="/index">首页</a>
+      >
+      <a onclick="PrevLevelForm()" style="cursor: pointer">通知公告</a>
+      >
+      <span>详情</span>
+    </div>
+    <div class="bl-sub-content sp">
+      <div class="bl-article-title">专利收费、集成电路布图设计收费标准</div>
+      <div class="bl-article-title-d">
+        <span class="bl-article-title-d-time">发布时间:2024-08-07</span>
+        <span class="bl-article-title-d-font">【字号：<span>大</span><span>中</span><span>小</span>】</span>
+      </div>
+      <div class="bl-article-content">
+        <div class="bl-p-detail-content-item">
+          <span id="ywnr">%3Cp%20style=%22text-align:center;%22%3E%3Cb%3E%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%20%E4%B8%93%E5%88%A9%E6%94%B6%E8%B4%B9%E6%A0%87%E5%87%86%3C/b%3E%3C/p%3E%3Cp%20style=%22text-align:center;%22%3E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%20%EF%BC%88%E9%87%91%E9%A2%9D%E5%8D%95%E4%BD%8D%EF%BC%9A%E4%BA%BA%E6%B0%91%E5%B8%81%E5%85%83%EF%BC%89%3C/p%3E%3Ctable%3E%3Ctbody%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%E4%B8%93%E5%88%A9%E6%94%B6%E8%B4%B9-%E5%9B%BD%E5%86%85%E9%83%A8%E5%88%86%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%B8%80%EF%BC%89%3C/b%3E%3Cb%3E%E7%94%B3%E8%AF%B7%E8%B4%B9%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E1.%E5%8F%91%E6%98%8E%E4%B8%93%E5%88%A9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E900%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E2.%E5%AE%9E%E7%94%A8%E6%96%B0%E5%9E%8B%E4%B8%93%E5%88%A9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E500%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E3.%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E4%B8%93%E5%88%A9%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E500%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%BA%8C%EF%BC%89%E7%94%B3%E8%AF%B7%E9%99%84%E5%8A%A0%E8%B4%B9%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E1.%E6%9D%83%E5%88%A9%E8%A6%81%E6%B1%82%E9%99%84%E5%8A%A0%E8%B4%B9%E4%BB%8E%E7%AC%AC11%E9%A1%B9%E8%B5%B7%E6%AF%8F%E9%A1%B9%E5%8A%A0%E6%94%B6&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E150%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E2.%E8%AF%B4%E6%98%8E%E4%B9%A6%E9%99%84%E5%8A%A0%E8%B4%B9%E4%BB%8E%E7%AC%AC31%E9%A1%B5%E8%B5%B7%E6%AF%8F%E9%A1%B5%E5%8A%A0%E6%94%B6%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E50%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E%E4%BB%8E%E7%AC%AC301%E9%A1%B5%E8%B5%B7%E6%AF%8F%E9%A1%B5%E5%8A%A0%E6%94%B6%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E100%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%B8%89%EF%BC%89%E5%85%AC%E5%B8%83%E5%8D%B0%E5%88%B7%E8%B4%B9&nbsp;%3C/b%3E%3Cb%3E%3C/b%3E%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E50%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%9B%9B%EF%BC%89%E4%BC%98%E5%85%88%E6%9D%83%E8%A6%81%E6%B1%82%E8%B4%B9%3C/b%3E%3Cb%3E%EF%BC%88%E6%AF%8F%E9%A1%B9%EF%BC%89%3C/b%3E%3Cb%3E%3C/b%3E%3Cb%3E%3C/b%3E%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E80%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%BA%94%EF%BC%89%E5%8F%91%E6%98%8E%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%E5%AE%9E%E8%B4%A8%E5%AE%A1%E6%9F%A5%E8%B4%B9&nbsp;%3C/b%3E%3Cb%3E%3C/b%3E%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E2500%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%85%AD%EF%BC%89%E5%A4%8D%E5%AE%A1%E8%B4%B9%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E1.%E5%8F%91%E6%98%8E%E4%B8%93%E5%88%A9%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E1000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E2.%E5%AE%9E%E7%94%A8%E6%96%B0%E5%9E%8B%E4%B8%93%E5%88%A9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E300%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E3.%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E4%B8%93%E5%88%A9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E300%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%B8%83%EF%BC%89%E5%B9%B4%E8%B4%B9%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E1.%E5%8F%91%E6%98%8E%E4%B8%93%E5%88%A9%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E1-3%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E900%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E4-6%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E1200%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E7-9%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E2000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E10-12%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E4000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E13-15%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E6000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E16-20%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E8000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E2.%E5%AE%9E%E7%94%A8%E6%96%B0%E5%9E%8B%E4%B8%93%E5%88%A9%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E1-3%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E600%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E4-5%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E900%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E6-8%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E1200%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E9-10%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E2000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E3.%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E4%B8%93%E5%88%A9%3C/p%3E%3C/td%3E%3Ctd%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E1-3%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E600%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E4-5%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E900%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E6-8%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E1200%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E9-10%20%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E2000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E11-15%E5%B9%B4%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E3000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%85%AB%EF%BC%89%E5%B9%B4%E8%B4%B9%E6%BB%9E%E7%BA%B3%E9%87%91%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E6%AF%8F%E8%B6%85%E8%BF%87%E8%A7%84%E5%AE%9A%E7%9A%84%E7%BC%B4%E8%B4%B9%E6%97%B6%E9%97%B41%E4%B8%AA%E6%9C%88%EF%BC%8C%E5%8A%A0%E6%94%B6%E5%BD%93%E5%B9%B4%E5%85%A8%E9%A2%9D%E5%B9%B4%E8%B4%B9%E7%9A%845%25%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%B9%9D%EF%BC%89%E6%81%A2%E5%A4%8D%E6%9D%83%E5%88%A9%E8%AF%B7%E6%B1%82%E8%B4%B9&nbsp;%3C/b%3E%3Cb%3E%3C/b%3E%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E1000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%8D%81%EF%BC%89%E5%BB%B6%E9%95%BF%E6%9C%9F%E9%99%90%E8%AF%B7%E6%B1%82%E8%B4%B9%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E1.%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BB%B6%E9%95%BF%E6%9C%9F%E9%99%90%E8%AF%B7%E6%B1%82%E8%B4%B9%EF%BC%88%E6%AF%8F%E6%9C%88%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E300%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E2.%E5%86%8D%E6%AC%A1%E5%BB%B6%E9%95%BF%E6%9C%9F%E9%99%90%E8%AF%B7%E6%B1%82%E8%B4%B9%EF%BC%88%E6%AF%8F%E6%9C%88%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E2000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89%E8%91%97%E5%BD%95%E4%BA%8B%E9%A1%B9%E5%8F%98%E6%9B%B4%E8%B4%B9%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E%E5%8F%91%E6%98%8E%E4%BA%BA%E3%80%81%E7%94%B3%E8%AF%B7%E4%BA%BA%E3%80%81%E4%B8%93%E5%88%A9%E6%9D%83%E4%BA%BA%E7%9A%84%E5%8F%98%E6%9B%B4&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E200%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89%E4%B8%93%E5%88%A9%E6%9D%83%E8%AF%84%E4%BB%B7%E6%8A%A5%E5%91%8A%E8%AF%B7%E6%B1%82%E8%B4%B9%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E1.%E5%AE%9E%E7%94%A8%E6%96%B0%E5%9E%8B%E4%B8%93%E5%88%A9%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E2400%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E2.%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E4%B8%93%E5%88%A9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E2400%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%8D%81%E4%B8%89%EF%BC%89%E6%97%A0%E6%95%88%E5%AE%A3%E5%91%8A%E8%AF%B7%E6%B1%82%E8%B4%B9%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E1.%E5%8F%91%E6%98%8E%E4%B8%93%E5%88%A9%E6%9D%83&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E3000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E2.%E5%AE%9E%E7%94%A8%E6%96%B0%E5%9E%8B%E4%B8%93%E5%88%A9%E6%9D%83&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E1500%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E3.%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E4%B8%93%E5%88%A9%E6%9D%83&nbsp;%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E1500%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%8D%81%E5%9B%9B%EF%BC%89%E4%B8%93%E5%88%A9%E6%96%87%E4%BB%B6%E5%89%AF%E6%9C%AC%E8%AF%81%E6%98%8E%E8%B4%B9%3C/b%3E%3Cb%3E%EF%BC%88%E6%AF%8F%E4%BB%BD%EF%BC%89%3C/b%3E%3Cb%3E%3C/b%3E%3Cb%3E%3C/b%3E%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E30%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%8D%81%E4%BA%94%EF%BC%89%E4%B8%93%E5%88%A9%E6%9D%83%E6%9C%9F%E9%99%90%E8%A1%A5%E5%81%BF%E8%AF%B7%E6%B1%82%E8%B4%B9%EF%BC%88%E6%AF%8F%E4%BB%B6%EF%BC%89%3C/b%3E%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E200%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%225%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E5%8D%81%E5%85%AD%EF%BC%89%E4%B8%93%E5%88%A9%E6%9D%83%E8%A1%A5%E5%81%BF%E6%9C%9F%E5%B9%B4%E8%B4%B9%EF%BC%88%E6%AF%8F%E5%B9%B4%EF%BC%8C%E4%B8%8D%E8%B6%B3%E4%B8%80%E5%B9%B4%E9%83%A8%E5%88%86%E4%B8%8D%E6%94%B6%E5%8F%96%EF%BC%89%3C/b%3E%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E8000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E6%B3%A8%EF%BC%9A%3C/p%3E%3Cp%3E1.%E5%AF%B9%E8%BF%9B%E5%85%A5%E5%AE%9E%E8%B4%A8%E5%AE%A1%E6%9F%A5%E9%98%B6%E6%AE%B5%E7%9A%84%E5%8F%91%E6%98%8E%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%EF%BC%8C%E5%9C%A8%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%A1%E6%9F%A5%E6%84%8F%E8%A7%81%E9%80%9A%E7%9F%A5%E4%B9%A6%E7%AD%94%E5%A4%8D%E6%9C%9F%E9%99%90%E5%B1%8A%E6%BB%A1%E5%89%8D%EF%BC%88%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%AD%94%E5%A4%8D%E6%84%8F%E8%A7%81%E7%9A%84%E9%99%A4%E5%A4%96%EF%BC%89%E4%B8%BB%E5%8A%A8%E7%94%B3%E8%AF%B7%E6%92%A4%E5%9B%9E%E7%9A%84%EF%BC%8C%E5%8F%AF%E4%BB%A5%E8%AF%B7%E6%B1%82%E9%80%80%E8%BF%9850%25%E7%9A%84%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%E5%AE%9E%E8%B4%A8%E5%AE%A1%E6%9F%A5%E8%B4%B9%E3%80%82%3C/p%3E%3Cp%3E2.%E6%89%B9%E9%87%8F%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%E6%9D%83%EF%BC%88%E6%88%96%E4%B8%93%E5%88%A9%E6%9D%83%EF%BC%89%E8%BD%AC%E7%A7%BB%E7%9A%84%EF%BC%8C%E6%8C%89%E7%85%A7%E6%89%80%E6%B6%89%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%EF%BC%88%E6%88%96%E4%B8%93%E5%88%A9%EF%BC%89%E6%95%B0%E9%87%8F%E7%BC%B4%E7%BA%B3%E8%91%97%E5%BD%95%E4%BA%8B%E9%A1%B9%E5%8F%98%E6%9B%B4%E8%B4%B9%E3%80%82%E5%90%8C%E6%97%A5%E6%8F%90%E5%87%BA%E6%89%B9%E9%87%8F%E7%94%B3%E8%AF%B7%E4%BA%BA%EF%BC%88%E6%88%96%E4%B8%93%E5%88%A9%E6%9D%83%E4%BA%BA%EF%BC%89%E5%A7%93%E5%90%8D%E6%88%96%E8%80%85%E5%90%8D%E7%A7%B0%E5%8F%98%E6%9B%B4%E4%B8%94%E4%B8%8D%E6%B6%89%E5%8F%8A%E6%9D%83%E5%88%A9%E8%BD%AC%E7%A7%BB%E7%9A%84%EF%BC%8C%E6%8C%89%E7%85%A7%E4%B8%80%E4%BB%B6%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%EF%BC%88%E6%88%96%E4%B8%93%E5%88%A9%EF%BC%89%E7%BC%B4%E7%BA%B3%E8%91%97%E5%BD%95%E4%BA%8B%E9%A1%B9%E5%8F%98%E6%9B%B4%E8%B4%B9%E3%80%82%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%E4%B8%93%E5%88%A9%E6%94%B6%E8%B4%B9-PCT%E7%94%B3%E8%AF%B7%E6%94%B6%E8%B4%B9%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%B8%80%EF%BC%89PCT%20%E7%94%B3%E8%AF%B7%E5%9B%BD%E9%99%85%E9%98%B6%E6%AE%B5%E9%83%A8%E5%88%86%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E1.%E5%9B%BD%E5%AE%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E5%B1%80%E4%BB%A3%E4%B8%96%E7%95%8C%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E7%BB%84%E7%BB%87%E5%9B%BD%E9%99%85%E5%B1%80%E6%94%B6%E5%8F%96%E7%9A%84%E8%B4%B9%E7%94%A8%3Cb%3E%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E5%9B%BD%E5%AE%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E5%B1%80%E4%BB%A3%E4%B8%96%E7%95%8C%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E7%BB%84%E7%BB%87%E5%9B%BD%E9%99%85%E5%B1%80%E6%94%B6%E5%8F%96%E7%9A%84%E8%B4%B9%E7%94%A8%EF%BC%88%E5%9B%BD%3C/p%3E%3Cp%3E%E9%99%85%E7%94%B3%E8%AF%B7%E8%B4%B9%E3%80%81%E6%89%8B%E7%BB%AD%E8%B4%B9%EF%BC%89%EF%BC%8C%E5%85%B6%E6%94%B6%E8%B4%B9%E6%A0%87%E5%87%86%E5%92%8C%E5%87%8F%E7%BC%B4%E8%A7%84%E5%AE%9A%E5%8F%82%E7%85%A7%E3%80%8A%E4%B8%93%E5%88%A9%E5%90%88%E4%BD%9C%E6%9D%A1%3C/p%3E%3Cp%3E%E7%BA%A6%E5%AE%9E%E6%96%BD%E7%BB%86%E5%88%99%E3%80%8B%E6%89%A7%E8%A1%8C%EF%BC%8C%E5%8F%82%E8%A7%81%E4%B8%96%E7%95%8C%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E7%BB%84%E7%BB%87%E7%BD%91%E7%AB%99PCT%E4%B8%93%E6%A0%8F%E5%85%AC%E5%B8%83%E7%9A%84%E4%BA%BA%E6%B0%91%E5%B8%81%E6%A0%87%E5%87%86%E3%80%82%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E2.%E5%9B%BD%E5%AE%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E5%B1%80%E6%94%B6%E5%8F%96%E7%9A%84%E8%B4%B9%E7%94%A8&nbsp;&nbsp;&nbsp;%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%EF%BC%881%EF%BC%89%E6%A3%80%E7%B4%A2%E8%B4%B9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E2100%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%E9%99%84%E5%8A%A0%E6%A3%80%E7%B4%A2%E8%B4%B9%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E2100%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%EF%BC%882%EF%BC%89%E4%BC%98%E5%85%88%E6%9D%83%E6%96%87%E4%BB%B6%E8%B4%B9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E150%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%EF%BC%883%EF%BC%89%E5%88%9D%E6%AD%A5%E5%AE%A1%E6%9F%A5%E8%B4%B9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E1500%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%E5%88%9D%E6%AD%A5%E5%AE%A1%E6%9F%A5%E9%99%84%E5%8A%A0%E8%B4%B9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E1500%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%EF%BC%884%EF%BC%89%E5%8D%95%E4%B8%80%E6%80%A7%E5%BC%82%E8%AE%AE%E8%B4%B9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E200%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%EF%BC%885%EF%BC%89%E5%89%AF%E6%9C%AC%E5%A4%8D%E5%88%B6%E8%B4%B9%EF%BC%88%E6%AF%8F%E9%A1%B5%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E2%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%EF%BC%886%EF%BC%89%E5%90%8E%E6%8F%90%E4%BA%A4%E8%B4%B9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E200%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%EF%BC%887%EF%BC%89%E6%81%A2%E5%A4%8D%E6%9D%83%E5%88%A9%E8%AF%B7%E6%B1%82%E8%B4%B9&nbsp;%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E1000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%EF%BC%888%EF%BC%89%E6%BB%9E%E7%BA%B3%E9%87%91&nbsp;%20%E6%8C%89%E6%9C%AA%E7%BC%B4%E7%BA%B3%E8%B4%B9%E7%94%A8%E7%9A%8450%25%E8%AE%A1%E6%94%B6%EF%BC%8C%E8%8B%A5%E9%AB%98%E4%BA%8E%E5%9B%BD%E9%99%85%E7%94%B3%E8%AF%B7%E8%B4%B9%EF%BC%88%E4%B8%8D%E5%90%AB%E7%94%B3%E8%AF%B7%E9%99%84%E5%8A%A0%E8%B4%B9%EF%BC%89%E7%9A%8450%25%EF%BC%8C%E6%8C%89%E5%9B%BD%E9%99%85%E7%94%B3%E8%AF%B7%E8%B4%B9%E7%9A%8450%25%E8%AE%A1%E6%94%B6%E3%80%82%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%BA%8C%EF%BC%89PCT%E7%94%B3%E8%AF%B7%E8%BF%9B%E5%85%A5%E4%B8%AD%E5%9B%BD%E5%9B%BD%E5%AE%B6%E9%98%B6%E6%AE%B5%E9%83%A8%E5%88%86&nbsp;%3C/b%3E%3Cb%3E&nbsp;&nbsp;&nbsp;%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E1.%E5%AE%BD%E9%99%90%E8%B4%B9%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E1000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E2.%E8%AF%91%E6%96%87%E6%94%B9%E6%AD%A3%E8%B4%B9%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%E5%88%9D%E5%AE%A1%E9%98%B6%E6%AE%B5%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E300%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%E5%AE%9E%E5%AE%A1%E9%98%B6%E6%AE%B5%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E1200%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E3.%E5%8D%95%E4%B8%80%E6%80%A7%E6%81%A2%E5%A4%8D%E8%B4%B9%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E900%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E4.%E4%BC%98%E5%85%88%E6%9D%83%E6%81%A2%E5%A4%8D%E8%B4%B9%3C/p%3E%3C/td%3E%3Ctd%20colspan=%222%22%3E%3Cp%3E1000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E6%B3%A8:%3C/p%3E%3Cp%3E1.%E7%94%B1%E5%9B%BD%E5%AE%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E5%B1%80%E4%BD%9C%E4%B8%BA%E5%8F%97%E7%90%86%E5%B1%80%E5%8F%97%E7%90%86%E5%B9%B6%E8%BF%9B%E8%A1%8C%E5%9B%BD%E9%99%85%E6%A3%80%E7%B4%A2%E7%9A%84PCT%20%E7%94%B3%E8%AF%B7%EF%BC%8C%E5%9C%A8%E8%BF%9B%E5%85%A5%E4%B8%AD%E5%9B%BD%E5%9B%BD%E5%AE%B6%E9%98%B6%E6%AE%B5%E6%97%B6%E5%85%8D%E7%BC%B4%E7%94%B3%E8%AF%B7%E8%B4%B9%E5%8F%8A%E7%94%B3%E8%AF%B7%E9%99%84%E5%8A%A0%E8%B4%B9%E3%80%82%3C/p%3E%3Cp%3E2.%E7%94%B1%E5%9B%BD%E5%AE%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E5%B1%80%E4%BD%9C%E5%87%BA%E5%9B%BD%E9%99%85%E6%A3%80%E7%B4%A2%E6%8A%A5%E5%91%8A%E3%80%81%E4%B8%93%E5%88%A9%E6%80%A7%E5%9B%BD%E9%99%85%E5%88%9D%E6%AD%A5%E6%8A%A5%E5%91%8A%E7%9A%84PCT%20%E7%94%B3%E8%AF%B7%EF%BC%8C%E5%9C%A8%E8%BF%9B%E5%85%A5%E4%B8%AD%E5%9B%BD%E5%9B%BD%E5%AE%B6%E9%98%B6%E6%AE%B5%E5%B9%B6%E6%8F%90%E5%87%BA%E5%AE%9E%E8%B4%A8%E5%AE%A1%E6%9F%A5%E8%AF%B7%E6%B1%82%E6%97%B6%EF%BC%8C%E5%85%8D%E7%BC%B4%E5%AE%9E%E8%B4%A8%E5%AE%A1%E6%9F%A5%E8%B4%B9%E3%80%82%3C/p%3E%3Cp%3E3.PCT%E7%94%B3%E8%AF%B7%E8%BF%9B%E5%85%A5%E4%B8%AD%E5%9B%BD%E5%9B%BD%E5%AE%B6%E9%98%B6%E6%AE%B5%E7%9A%84%E5%85%B6%E4%BB%96%E6%94%B6%E8%B4%B9%E6%A0%87%E5%87%86%E4%BE%9D%E7%85%A7%E5%9B%BD%E5%86%85%E9%83%A8%E5%88%86%E6%89%A7%E8%A1%8C%E3%80%82%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E4%B8%93%E5%88%A9%E6%94%B6%E8%B4%B9-%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E5%9B%BD%E9%99%85%E6%B3%A8%E5%86%8C%E7%94%B3%E8%AF%B7%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%B8%80%EF%BC%89%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E5%9B%BD%E9%99%85%E6%B3%A8%E5%86%8C%E7%94%B3%E8%AF%B7%E7%9A%84%E5%9B%BD%E9%99%85%E7%A8%8B%E5%BA%8F%E8%B4%B9%E7%94%A8%3C/b%3E%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E1.%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E5%9B%BD%E9%99%85%E6%B3%A8%E5%86%8C%E7%94%B3%E8%AF%B7%E8%B4%B9%EF%BC%88%E5%9F%BA%E6%9C%AC%E8%B4%B9%E3%80%81%E5%85%AC%E5%B8%83%E8%B4%B9%E3%80%81%E9%99%84%E5%8A%A0%E8%B4%B9%E7%AD%89%EF%BC%89%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E2.%E6%8C%87%E5%AE%9A%E4%B8%AD%E5%9B%BD%E7%9A%84%E5%8D%95%E7%8B%AC%E6%8C%87%E5%AE%9A%E8%B4%B9%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%223%22%3E%3Cp%3E%EF%BC%881%EF%BC%89%E6%8C%87%E5%AE%9A%E4%B8%AD%E5%9B%BD%E7%9A%84%E5%8D%95%E7%8B%AC%E6%8C%87%E5%AE%9A%E8%B4%B9%E7%AC%AC%E4%B8%80%E6%9C%9F&nbsp;&nbsp;%20&nbsp;%3Cb%3E%3C/b%3E%3C/p%3E%3C/td%3E%3Ctd%20colspan=%223%22%3E%3Cp%3E4100%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%223%22%3E%3Cp%3E%EF%BC%882%EF%BC%89%E6%8C%87%E5%AE%9A%E4%B8%AD%E5%9B%BD%E7%9A%84%E5%8D%95%E7%8B%AC%E6%8C%87%E5%AE%9A%E8%B4%B9%E7%AC%AC%E4%BA%8C%E6%9C%9F%3C/p%3E%3C/td%3E%3Ctd%20colspan=%223%22%3E%3Cp%3E7600%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%223%22%3E%3Cp%3E%EF%BC%883%EF%BC%89%E6%8C%87%E5%AE%9A%E4%B8%AD%E5%9B%BD%E7%9A%84%E5%8D%95%E7%8B%AC%E6%8C%87%E5%AE%9A%E8%B4%B9%E7%AC%AC%E4%B8%89%E6%9C%9F%3C/p%3E%3C/td%3E%3Ctd%20colspan=%223%22%3E%3Cp%3E15000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E6%B3%A8%EF%BC%9A%3C/p%3E%3Cp%3E&nbsp;&nbsp;&nbsp;%20%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E5%9B%BD%E9%99%85%E6%B3%A8%E5%86%8C%E7%94%B3%E8%AF%B7%E7%9A%84%E5%9B%BD%E9%99%85%E7%A8%8B%E5%BA%8F%E8%B4%B9%E7%94%A8%E5%BA%94%E5%BD%93%E7%9B%B4%E6%8E%A5%E5%90%91%E5%9B%BD%E9%99%85%E5%B1%80%E7%BC%B4%E7%BA%B3%EF%BC%8C%E5%8F%82%E8%A7%81%E4%B8%96%E7%95%8C%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E7%BB%84%E7%BB%87%E7%BD%91%E7%AB%99%E6%B5%B7%E7%89%99%E4%B8%93%E6%A0%8F%E5%85%AC%E5%B8%83%E7%9A%84%E7%91%9E%E5%A3%AB%E6%B3%95%E9%83%8E%E6%A0%87%E5%87%86%E3%80%82%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%3Cb%3E%EF%BC%88%E4%BA%8C%EF%BC%89%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E5%9B%BD%E9%99%85%E6%B3%A8%E5%86%8C%E7%94%B3%E8%AF%B7%E7%9A%84%E5%9B%BD%E5%AE%B6%E7%A8%8B%E5%BA%8F%E8%B4%B9%E7%94%A8%3C/b%3E&nbsp;%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E6%8C%87%E5%AE%9A%E4%B8%AD%E5%9B%BD%E7%9A%84%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E5%9B%BD%E9%99%85%E6%B3%A8%E5%86%8C%E7%94%B3%E8%AF%B7%E5%9B%BD%E5%AE%B6%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%94%B6%E8%B4%B9%E6%A0%87%E5%87%86%E4%BE%9D%E7%85%A7%E5%9B%BD%E5%86%85%E6%A0%87%E5%87%86%E6%89%A7%E8%A1%8C%E3%80%82%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E4%B8%93%E5%88%A9%E6%94%B6%E8%B4%B9-%E4%BE%9D%E6%8D%AE%E7%BA%A6%E5%AE%9A%E6%94%B6%E8%B4%B9%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E5%9B%BD%E5%AE%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E5%B1%80%E5%9C%A8%E4%B8%BA%E5%85%B6%E4%BB%96%E5%9B%BD%E5%AE%B6%E5%92%8C%E5%9C%B0%E5%8C%BA%E7%9A%84%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%E6%8F%90%E4%BE%9B%E6%A3%80%E7%B4%A2%E5%92%8C%E5%AE%A1%E6%9F%A5%E6%9C%8D%E5%8A%A1%E6%97%B6%EF%BC%8C%E6%94%B6%E8%B4%B9%E6%A0%87%E5%87%86%E6%8C%89%E5%B1%80%E9%97%B4%E7%BA%A6%E5%AE%9A%E6%89%A7%E8%A1%8C%E3%80%82%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E4%B8%93%E5%88%A9%E6%94%B6%E8%B4%B9-%E8%B4%B9%E7%94%A8%E5%87%8F%E7%BC%B4%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%E8%B4%B9%E5%87%8F%E6%9D%A1%E4%BB%B6%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%E4%BA%BA%E6%88%96%E8%80%85%E4%B8%93%E5%88%A9%E6%9D%83%E4%BA%BA%E4%B8%BA%E4%B8%AA%E4%BA%BA%E6%88%96%E8%80%85%E5%8D%95%E4%BD%8D%3C/p%3E%3C/td%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%E4%BA%BA%E6%88%96%E8%80%85%E4%B8%93%E5%88%A9%E6%9D%83%E4%BA%BA%E4%B8%BA%E4%B8%A4%E4%B8%AA%E6%88%96%E8%80%85%E4%B8%A4%E4%B8%AA%E4%BB%A5%E4%B8%8A%E7%9A%84%E4%B8%AA%E4%BA%BA%E6%88%96%E8%80%85%E5%8D%95%E4%BD%8D%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%E4%B8%8A%E5%B9%B4%E5%BA%A6%E6%9C%88%E5%9D%87%E6%94%B6%E5%85%A5%E4%BD%8E%E4%BA%8E5000%EF%BC%88%E5%B9%B46%E4%B8%87%E5%85%83%EF%BC%89%E7%9A%84%E4%B8%AA%E4%BA%BA%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E%E5%87%8F%E7%BC%B485%25%3C/p%3E%3C/td%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%E5%87%8F%E7%BC%B470%25%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%E4%B8%8A%E5%B9%B4%E5%BA%A6%E4%BC%81%E4%B8%9A%E5%BA%94%E7%BA%B3%E7%A8%8E%E6%89%80%E5%BE%97%E9%A2%9D%E4%BD%8E%E4%BA%8E%E7%9A%84100%E4%B8%87%E5%85%83%E7%9A%84%E4%BC%81%E4%B8%9A%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E%E5%87%8F%E7%BC%B485%25%3C/p%3E%3C/td%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%E5%87%8F%E7%BC%B470%25%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%E4%BA%8B%E4%B8%9A%E5%8D%95%E4%BD%8D%E3%80%81%E7%A4%BE%E4%BC%9A%E5%9B%A2%E4%BD%93%E3%80%81%E9%9D%9E%E8%90%A5%E5%88%A9%E6%80%A7%E7%A7%91%E7%A0%94%E6%9C%BA%E6%9E%84%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E%E5%87%8F%E7%BC%B485%25%3C/p%3E%3C/td%3E%3Ctd%20colspan=%224%22%3E%3Cp%3E%E5%87%8F%E7%BC%B470%25%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E8%B4%B9%E5%87%8F%E7%A7%8D%E7%B1%BB%EF%BC%9A%E7%94%B3%E8%AF%B7%E8%B4%B9%EF%BC%88%E4%B8%8D%E5%8C%85%E6%8B%AC%E5%85%AC%E5%B8%83%E5%8D%B0%E5%88%B7%E8%B4%B9%E3%80%81%E7%94%B3%E8%AF%B7%E9%99%84%E5%8A%A0%E8%B4%B9%EF%BC%89%E3%80%81%E5%8F%91%E6%98%8E%E4%B8%93%E5%88%A9%E7%94%B3%E8%AF%B7%E5%AE%9E%E8%B4%A8%E5%AE%A1%E6%9F%A5%E8%B4%B9%E3%80%81%E5%A4%8D%E5%AE%A1%E8%B4%B9%E3%80%81%E5%B9%B4%E8%B4%B9%EF%BC%88%E8%87%AA%E6%8E%88%E4%BA%88%E4%B8%93%E5%88%A9%E6%9D%83%E5%BD%93%E5%B9%B4%E8%B5%B7%E5%8D%81%E5%B9%B4%E5%86%85%E7%9A%84%E5%B9%B4%E8%B4%B9%EF%BC%8C%E4%B8%93%E5%88%A9%E5%BC%80%E6%94%BE%E5%AE%9E%E6%96%BD%E8%AE%B8%E5%8F%AF%E6%9C%9F%E9%97%B4%E7%9A%84%E5%B9%B4%E8%B4%B9%EF%BC%89%E3%80%81%E6%8C%87%E5%AE%9A%E4%B8%AD%E5%9B%BD%E7%9A%84%E5%8D%95%E7%8B%AC%E6%8C%87%E5%AE%9A%E8%B4%B9%EF%BC%88%E7%AC%AC%E4%B8%80%E6%9C%9F%E5%92%8C%E7%AC%AC%E4%BA%8C%E6%9C%9F%EF%BC%89%E3%80%82%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%20colspan=%226%22%3E%3Cp%3E%E6%B3%A8%EF%BC%9A%3C/p%3E%3Cp%3E%E5%AF%B9%E4%B8%93%E5%88%A9%E5%BC%80%E6%94%BE%E8%AE%B8%E5%8F%AF%E5%AE%9E%E6%96%BD%E6%9C%9F%E9%97%B4%E7%9A%84%E4%B8%93%E5%88%A9%E5%B9%B4%E8%B4%B9%E5%87%8F%E7%BC%B415%25%EF%BC%8C%E5%90%8C%E6%97%B6%E7%AC%A6%E5%90%88%E4%B8%A4%E9%A1%B9%E4%B8%93%E5%88%A9%E5%B9%B4%E8%B4%B9%E5%87%8F%E7%BC%B4%E6%9D%A1%E4%BB%B6%E7%9A%84%EF%BC%8C%E6%8C%89%E7%85%A7%E5%85%B6%E4%B8%AD%E5%87%8F%E7%BC%B4%E6%AF%94%E4%BE%8B%E8%BE%83%E9%AB%98%E7%9A%84%E4%B8%80%E9%A1%B9%E4%BA%88%E4%BB%A5%E5%87%8F%E7%BC%B4%E3%80%82%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3C/td%3E%3Ctd%3E%3C/td%3E%3Ctd%3E%3C/td%3E%3Ctd%3E%3C/td%3E%3Ctd%3E%3C/td%3E%3Ctd%3E%3C/td%3E%3C/tr%3E%3C/tbody%3E%3C/table%3E%3Cp%3E%E6%94%B6%E8%B4%B9%E4%BE%9D%E6%8D%AE%EF%BC%9A%3C/p%3E%3Cp%3E1.%E3%80%8A%E5%9B%BD%E5%AE%B6%E5%8F%91%E5%B1%95%E6%94%B9%E9%9D%A9%E5%A7%94%20%E8%B4%A2%E6%94%BF%E9%83%A8%E5%85%B3%E4%BA%8E%E9%87%8D%E6%96%B0%E6%A0%B8%E5%8F%91%E5%9B%BD%E5%AE%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E5%B1%80%E8%A1%8C%E6%94%BF%E4%BA%8B%E4%B8%9A%E6%80%A7%E6%94%B6%E8%B4%B9%E6%A0%87%E5%87%86%E7%AD%89%E6%9C%89%E5%85%B3%E9%97%AE%E9%A2%98%E7%9A%84%E9%80%9A%E7%9F%A5%E3%80%8B%EF%BC%88%E5%8F%91%E6%94%B9%E4%BB%B7%E6%A0%BC%E3%80%942017%E3%80%95270%E5%8F%B7%EF%BC%89%EF%BC%9B%3C/p%3E%3Cp%3E2.%E3%80%8A%E8%B4%A2%E6%94%BF%E9%83%A8%E5%9B%BD%E5%AE%B6%E5%8F%91%E5%B1%95%E6%94%B9%E9%9D%A9%E5%A7%94%E5%85%B3%E4%BA%8E%E5%81%9C%E5%BE%81%E3%80%81%E5%85%8D%E5%BE%81%E5%92%8C%E8%B0%83%E6%95%B4%E9%83%A8%E5%88%86%E8%A1%8C%E6%94%BF%E4%BA%8B%E4%B8%9A%E6%80%A7%E6%94%B6%E8%B4%B9%E6%9C%89%E5%85%B3%E6%94%BF%E7%AD%96%E7%9A%84%E9%80%9A%E7%9F%A5%E3%80%8B%EF%BC%88%E8%B4%A2%E7%A8%8E%E3%80%942018%E3%80%9537%E5%8F%B7%EF%BC%89%EF%BC%9B%3C/p%3E%3Cp%3E3.%E3%80%8A%E5%9B%BD%E5%AE%B6%E5%8F%91%E5%B1%95%E6%94%B9%E9%9D%A9%E5%A7%94%20%E8%B4%A2%E6%94%BF%E9%83%A8%E5%85%B3%E4%BA%8E%E5%A4%96%E8%A7%82%E8%AE%BE%E8%AE%A1%E4%B8%93%E5%88%A9%E5%B9%B4%E8%B4%B9%E3%80%81%E5%8D%95%E7%8B%AC%E6%8C%87%E5%AE%9A%E8%B4%B9%E6%A0%87%E5%87%86%E6%9C%89%E5%85%B3%E9%97%AE%E9%A2%98%E7%9A%84%E9%80%9A%E7%9F%A5%E3%80%8B%EF%BC%88%E5%8F%91%E6%94%B9%E4%BB%B7%E6%A0%BC%E3%80%942022%E3%80%95465%E5%8F%B7)%EF%BC%9B4.%E3%80%8A%E8%B4%A2%E6%94%BF%E9%83%A8%E5%9B%BD%E5%AE%B6%E5%8F%91%E5%B1%95%E6%94%B9%E9%9D%A9%E5%A7%94%E5%85%B3%E4%BA%8E%E8%B0%83%E6%95%B4%E4%BC%98%E5%8C%96%E4%B8%93%E5%88%A9%E6%94%B6%E8%B4%B9%E6%94%BF%E7%AD%96%E7%9A%84%E9%80%9A%E7%9F%A5%E3%80%8B%EF%BC%88%E8%B4%A2%E7%A8%8E%E3%80%942024%E3%80%9523%E5%8F%B7%EF%BC%89%EF%BC%9B%3C/p%3E%3Cp%3E5.%E3%80%8A%E5%9B%BD%E5%AE%B6%E5%8F%91%E5%B1%95%E6%94%B9%E9%9D%A9%E5%A7%94%20%E8%B4%A2%E6%94%BF%E9%83%A8%E5%85%B3%E4%BA%8E%E4%B8%93%E5%88%A9%E6%9D%83%E8%A1%A5%E5%81%BF%E6%9C%9F%E9%99%90%E5%B9%B4%E8%B4%B9%E6%A0%87%E5%87%86%E7%AD%89%E6%9C%89%E5%85%B3%E4%BA%8B%E9%A1%B9%E7%9A%84%E9%80%9A%E7%9F%A5%E3%80%8B%EF%BC%88%E5%8F%91%E6%94%B9%E4%BB%B7%E6%A0%BC%E3%80%942024%E3%80%951156%E5%8F%B7%EF%BC%89%EF%BC%9B%3C/p%3E%3Cp%3E6.%E3%80%8A%E8%B4%A2%E6%94%BF%E9%83%A8%20%E5%9B%BD%E5%AE%B6%E5%8F%91%E5%B1%95%E6%94%B9%E9%9D%A9%E5%A7%94%E5%85%B3%E4%BA%8E%E5%8D%B0%E5%8F%91&lt;%E4%B8%93%E5%88%A9%E6%94%B6%E8%B4%B9%E5%87%8F%E7%BC%B4%E5%8A%9E%E6%B3%95&gt;%E7%9A%84%E9%80%9A%E7%9F%A5%E3%80%8B%EF%BC%88%E8%B4%A2%E7%A8%8E%E3%80%942016%E3%80%9578%E5%8F%B7%EF%BC%89%EF%BC%9B%3C/p%3E%3Cp%3E7.%E3%80%8A%E8%B4%A2%E6%94%BF%E9%83%A8%20%E5%9B%BD%E5%AE%B6%E5%8F%91%E5%B1%95%E6%94%B9%E9%9D%A9%E5%A7%94%E5%85%B3%E4%BA%8E%E5%87%8F%E5%85%8D%E9%83%A8%E5%88%86%E8%A1%8C%E6%94%BF%E4%BA%8B%E4%B8%9A%E6%80%A7%E6%94%B6%E8%B4%B9%E6%9C%89%E5%85%B3%E6%94%BF%E7%AD%96%E7%9A%84%E9%80%9A%E7%9F%A5%E3%80%8B%EF%BC%88%E8%B4%A2%E7%A8%8E%E3%80%942019%E3%80%9545%E5%8F%B7%EF%BC%89%E3%80%82%3C/p%3E%3Cp%20style=%22text-align:center;%22%3E%3Cb%3E%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%20%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF%E5%B8%83%E5%9B%BE%E8%AE%BE%E8%AE%A1%E6%94%B6%E8%B4%B9%E6%A0%87%E5%87%86%3C/b%3E%3C/p%3E%3Cp%20style=%22text-align:center;%22%3E%EF%BC%88%E9%87%91%E9%A2%9D%E5%8D%95%E4%BD%8D:%E4%BA%BA%E6%B0%91%E5%B8%81%E5%85%83%EF%BC%89%3C/p%3E%3Ctable%20border=%220%22%20width=%22100%25%22%20cellpadding=%220%22%20cellspacing=%220%22%3E%3Ctbody%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%EF%BC%88%E4%B8%80%EF%BC%89%E5%B8%83%E5%9B%BE%E8%AE%BE%E8%AE%A1%E7%99%BB%E8%AE%B0%E8%B4%B9%EF%BC%88%E6%AF%8F%E4%BB%B6%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E1000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%EF%BC%88%E4%BA%8C%EF%BC%89%E5%B8%83%E5%9B%BE%E8%AE%BE%E8%AE%A1%E7%99%BB%E8%AE%B0%E5%A4%8D%E5%AE%A1%E8%AF%B7%E6%B1%82%E8%B4%B9%EF%BC%88%E6%AF%8F%E4%BB%B6%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E1000%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%EF%BC%88%E4%B8%89%EF%BC%89%E8%91%97%E5%BD%95%E4%BA%8B%E9%A1%B9%E5%8F%98%E6%9B%B4%E6%89%8B%E7%BB%AD%E8%B4%B9%EF%BC%88%E6%AF%8F%E4%BB%B6%E6%AF%8F%E6%AC%A1%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E50%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%EF%BC%88%E5%9B%9B%EF%BC%89%E5%BB%B6%E9%95%BF%E6%9C%9F%E9%99%90%E8%AF%B7%E6%B1%82%E8%B4%B9%EF%BC%88%E6%AF%8F%E4%BB%B6%E6%AF%8F%E6%AC%A1%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E150%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%EF%BC%88%E4%BA%94%EF%BC%89%E6%81%A2%E5%A4%8D%E5%B8%83%E5%9B%BE%E8%AE%BE%E8%AE%A1%E7%99%BB%E8%AE%B0%E6%9D%83%E5%88%A9%E8%AF%B7%E6%B1%82%E8%B4%B9%EF%BC%88%E6%AF%8F%E4%BB%B6%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E500%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%EF%BC%88%E5%85%AD%EF%BC%89%E9%9D%9E%E8%87%AA%E6%84%BF%E8%AE%B8%E5%8F%AF%E4%BD%BF%E7%94%A8%E5%B8%83%E5%9B%BE%E8%AE%BE%E8%AE%A1%E8%AF%B7%E6%B1%82%E8%B4%B9%EF%BC%88%E6%AF%8F%E4%BB%B6%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E150%3C/p%3E%3C/td%3E%3C/tr%3E%3Ctr%3E%3Ctd%3E%3Cp%3E%EF%BC%88%E4%B8%83%EF%BC%89%E9%9D%9E%E8%87%AA%E6%84%BF%E8%AE%B8%E5%8F%AF%E4%BD%BF%E7%94%A8%E5%B8%83%E5%9B%BE%E8%AE%BE%E8%AE%A1%E6%94%AF%E4%BB%98%E6%8A%A5%E9%85%AC%E8%A3%81%E5%86%B3%E8%B4%B9%EF%BC%88%E6%AF%8F%E4%BB%B6%EF%BC%89%3C/p%3E%3C/td%3E%3Ctd%3E%3Cp%3E150%3C/p%3E%3C/td%3E%3C/tr%3E%3C/tbody%3E%3C/table%3E%3Cp%3E%E6%94%B6%E8%B4%B9%E4%BE%9D%E6%8D%AE%EF%BC%9A%E3%80%8A%E5%9B%BD%E5%AE%B6%E5%8F%91%E5%B1%95%E6%94%B9%E9%9D%A9%E5%A7%94%20%E8%B4%A2%E6%94%BF%E9%83%A8%E5%85%B3%E4%BA%8E%E9%99%8D%E4%BD%8E%E7%94%B5%E4%BF%A1%E7%BD%91%E7%A0%81%E5%8F%B7%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8%E8%B4%B9%E7%AD%89%E9%83%A8%E5%88%86%E8%A1%8C%E6%94%BF%E4%BA%8B%E4%B8%9A%E6%80%A7%E6%94%B6%E8%B4%B9%E6%A0%87%E5%87%86%E7%9A%84%E9%80%9A%E7%9F%A5%E3%80%8B%EF%BC%88%E5%8F%91%E6%94%B9%E4%BB%B7%E6%A0%BC%E3%80%942017%E3%80%951186%E5%8F%B7%EF%BC%89%3C/p%3E%3Cp%3E%E4%BB%B7%E6%A0%BC%E5%92%A8%E8%AF%A2%E6%8A%95%E8%AF%89%E7%94%B5%E8%AF%9D%EF%BC%9A%EF%BC%88010-62356655%EF%BC%89%3C/p%3E%3Cp%3E%E4%BB%B7%E6%A0%BC%E7%9B%91%E7%9D%A3%E4%B8%BE%E6%8A%A5%E7%94%B5%E8%AF%9D%EF%BC%9A%2012358%3C/p%3E%3Cp%20style=%22text-align:right;%22%3E%E5%9B%BD%E5%AE%B6%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E5%B1%80%3C/p%3E%3Cp%20style=%22text-align:right;%22%3E&nbsp;2024%E5%B9%B48%E6%9C%886%E6%97%A5%3C/p%3E</span>
+        </div>
+        
+      </div>
+      <form action="/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectZxggMore" method="post" id="PrevForm" style="display: none">
+        <input type="hidden" name="Yewufl" value="2" />
+        <input type="hidden" name="size" value="5" />
+        <input type="hidden" name="current" value="1" />
+      </form>
+    </div>
+
+    <!--公共底部获取-->
+    <div class="footer">
+    <a
+        href="http://bszs.conac.cn/sitename?method=show&id=0831549A79CE5B0FE053012819AC77FB"
+        target="_blank"
+    >
+        <img
+            src="/prefix/img/Party and the government.png"
+            style="width: 50px; height: 50px"
+        />
+    </a>
+
+    <a
+        href="https://zfwzgl.www.gov.cn/exposure/jiucuo.html?site_code=bm38000007"
+        target="_blank"
+        style="margin-left: 24px"
+    >
+        <img
+            src="/prefix/img/error correction.png"
+            style="width: 80px; height: 40px"
+        />
+    </a>
+
+    <a
+        href="https://www.cnipa.gov.cn/"
+        style="margin-left: 24px"
+        target="_blank"
+    >
+        <img
+            src="/prefix/img/logo.jpg"
+            style="width: 50px; height: 41px"
+        />
+    </a>
+
+    <span class="divider" style="margin-left: 24px"></span>
+
+    <span style="margin-left: 20px">
+                <div>主办单位：国家知识产权局</div>
+                <div style="margin-top: 10px">版权所有：国家知识产权局</div>
+            </span>
+
+    <span
+        style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: start;
+                    margin-left: 50px;
+                "
+    >
+                <a
+                    href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11040102700058"
+                    target="_blank"
+                >
+                    <img
+                        src="/prefix/img/police.png"
+                        style="width: 16px; height: 16px"
+                    />
+                    <span class="is-underline" style="margin-left: 4px"
+                    >京公网安备 11040102700058号</span
+                    >
+                </a>
+
+                <div style="margin-top: 10px; text-align: left">
+                    网站标识码：bm38000007
+                </div>
+            </span>
+
+    <span class="divider" style="margin-left: 24px"></span>
+
+    <span
+        style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: start;
+                    margin-left: 20px;
+                "
+    >
+                <a
+                    class="is-underline"
+                    href="https://beian.miit.gov.cn/"
+                    target="_blank"
+                >京ICP备05069085号-14</a
+                >
+
+                <a
+                    class="is-underline"
+                    style="margin-top: 10px"
+                    href="https://www.cnipa.gov.cn/col/col207/index.html"
+                    target="_blank"
+                >联系我们</a
+                >
+            </span>
+</div>
+
+    <script src="/prefix/js/utils.js"></script>
+    <script src="/prefix/js/header.js"></script>
+    <script src="/prefix/js/ie8.js"></script>
+    <script>
+      //返回上一级页面
+      function PrevLevelForm() {
+        $('#PrevForm').submit()
+      }
+      const domEditor = $('#ywnr')
+      const nr = decodeURIComponent(domEditor.html())
+      domEditor.html(nr)
+    </script>
+  </body>
+</html>

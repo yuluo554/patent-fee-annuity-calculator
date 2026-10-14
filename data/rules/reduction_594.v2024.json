@@ -1,0 +1,113 @@
+{
+  "schema": "patfee.ruleset/v1",
+  "id": "reduction_594",
+  "version": "v2024",
+  "title": "调整部分专利收费标准和减缴政策（新增项目与减免）",
+  "doc_no": "国家知识产权局公告第 594 号",
+  "anchor_from": "2024-08-06",
+  "anchor_to": "",
+  "source": {
+    "channel": "中国政府网 政策文件库（gov.cn）",
+    "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
+    "retrieved": "2026-10-14",
+    "verification": "anchor_verified",
+    "raw_snapshot": "data/knowledge/raw/gov_594.html"
+  },
+  "entries": [
+    {
+      "key": "reduction.open_license_discount",
+      "label": "开放许可实施期间年费减免比例",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": "0.15",
+      "basis": {
+        "doc_no": "国家知识产权局公告第 594 号",
+        "clause": "二、对专利开放许可实施期间的专利年费减免 15%。同时适用其他专利收费减免政策的，可以选择适用最优惠的政策，但不得重复享受",
+        "unit": "ratio",
+        "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对；待 M1 条目级复核后置 verified"
+    },
+    {
+      "key": "reduction.no_double_benefit",
+      "label": "多政策择一规则",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "reduction"
+      ],
+      "value": "choose_most_favorable",
+      "basis": {
+        "doc_no": "国家知识产权局公告第 594 号",
+        "clause": "二、……同时适用其他专利收费减免政策的，可以选择适用最优惠的政策，但不得重复享受",
+        "unit": "enum",
+        "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "择最优惠且不叠加；判定过程必须在结果中留痕（候选集 + 选中项）"
+    },
+    {
+      "key": "check.fee.term_compensation_request_594",
+      "label": "专利权期限补偿请求费（594 号口径）",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "check"
+      ],
+      "value": 200,
+      "basis": {
+        "doc_no": "国家知识产权局公告第 594 号",
+        "clause": "一、专利权人提出专利权期限补偿请求，应缴纳专利权期限补偿请求费，收费标准为每件 200 元",
+        "unit": "CNY",
+        "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对；待 M1 条目级复核后置 verified"
+    },
+    {
+      "key": "check.fee.compensation_annuity_594",
+      "label": "专利权补偿期年费（594 号口径）",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "check"
+      ],
+      "value": 8000,
+      "basis": {
+        "doc_no": "国家知识产权局公告第 594 号",
+        "clause": "一、……专利权补偿期年费，收费标准为每件每年 8000 元，不足一年部分不收取",
+        "unit": "CNY/year",
+        "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对；待 M1 条目级复核后置 verified"
+    },
+    {
+      "key": "check.effective_from_594",
+      "label": "本公告日期",
+      "kind": "scalar",
+      "status": "pending",
+      "scopes": [
+        "check"
+      ],
+      "value": "2024-08-06",
+      "basis": {
+        "doc_no": "国家知识产权局公告第 594 号",
+        "clause": "国家知识产权局 2024 年 8 月 6 日",
+        "unit": "date",
+        "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
+        "retrieved": "2026-10-14",
+        "channel": "中国政府网 政策文件库（gov.cn）"
+      },
+      "note": "锚点级已获取并逐字核对；待 M1 条目级复核后置 verified"
+    }
+  ]
+}

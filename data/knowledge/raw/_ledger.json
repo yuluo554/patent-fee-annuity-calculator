@@ -1,0 +1,34 @@
+[
+  {
+    "name": "cnipa_fee_schedule_286",
+    "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
+    "kind": "fee_schedule",
+    "label": "国家知识产权局专利收费标准（公示页）",
+    "bytes": 41504,
+    "sha256": "396277b535d7b6844933cfc0a996930c200141c06643e898b2a82ef52b7275b7"
+  },
+  {
+    "name": "mof_2016_78",
+    "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
+    "kind": "policy",
+    "label": "《专利收费减缴办法》财税〔2016〕78 号",
+    "bytes": 25641,
+    "sha256": "e8c8ed1c6da76e7b12f406017832d2770a628ba7485e2263a68da7c123e8bab5"
+  },
+  {
+    "name": "gov_316",
+    "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
+    "kind": "policy",
+    "label": "国家知识产权局公告第 316 号",
+    "bytes": 29045,
+    "sha256": "761a27877ae427f6f9906a16a9c58d213a0bc05a3b67d57398c80a60921b115f"
+  },
+  {
+    "name": "gov_594",
+    "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
+    "kind": "policy",
+    "label": "国家知识产权局公告第 594 号",
+    "bytes": 29533,
+    "sha256": "f60650542b022677817d0095a201b6c617a6dc482dfb3446f635e8661ce7d913"
+  }
+]
