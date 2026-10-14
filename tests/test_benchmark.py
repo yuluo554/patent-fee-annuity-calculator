@@ -127,3 +127,59 @@ def test_threshold_must_come_from_manifest(lib):
 
 def test_all_suite_names_registered():
     assert set(suites.suite_names()) == {"b1_ladder", "b2_late", "b3_reduction", "b4_portfolio"}
+
+
+# ------------------------------------------------------------ M4：计时门槛与指标固化
+
+def test_threshold_problems_executes_max_seconds(lib):
+    """计时门槛 max_seconds 随 manifest 下发后必须实际执行（M4）：
+    构造"超时结果"直接喂判定函数，必须判未达标并给出原因。"""
+    from patfee.benchmark.suites import CheckResult, _threshold_problems
+
+    threshold = {"min_pass_rate": "1.0", "max_fail": 0, "max_seconds": "2.0"}
+    slow = CheckResult(suite="b4_portfolio", total=10, passed=10, elapsed_seconds=Decimal("2.001"))
+    problems = _threshold_problems(slow, threshold)
+    assert problems, "超时结果未被计时门槛拦截 —— max_seconds 是摆设"
+    assert any("max_seconds" in p for p in problems)
+
+    fast = CheckResult(suite="b4_portfolio", total=10, passed=10, elapsed_seconds=Decimal("0.008"))
+    assert _threshold_problems(fast, threshold) == []
+
+
+def test_run_suites_records_elapsed_and_all_verdicts_pass(lib):
+    """run_suites 必须记录每套件实测耗时；现行规则包四套件全达标（含计时）。"""
+    results, verdicts, implemented = suites.run_suites(lib)
+    for name, res in results.items():
+        assert res.elapsed_seconds is not None, "%s 未记录耗时" % name
+        assert res.elapsed_seconds >= 0
+    assert all(v.endswith("=达标") for v in verdicts)
+    # M4 指标固化复核：B1 99 / B2 18 / B3 20 / B4 48（M4 起 B4 补两条对账语义断言）
+    counts = {name: (res.passed, res.total) for name, res in results.items()}
+    assert counts == {
+        "b1_ladder": (99, 99),
+        "b2_late": (18, 18),
+        "b3_reduction": (20, 20),
+        "b4_portfolio": (48, 48),
+    }
+
+
+def test_max_seconds_gate_is_falsifiable_via_run_suites(lib, monkeypatch):
+    """探活（可证伪）：把计时函数桩成超时值后，run_suites 必须报未达标。"""
+    import time as time_mod
+
+    class _FakePerf:
+        def __init__(self):
+            self.calls = 0
+
+        def __call__(self):
+            self.calls += 1
+            return 0.0 if self.calls == 1 else 10.0  # 首读 0，末读 10s
+
+    fake = _FakePerf()
+    monkeypatch.setattr(time_mod, "perf_counter", fake)
+    results, verdicts, _ = suites.run_suites(lib)
+    assert any("未达标" in v and "max_seconds" in v for v in verdicts), verdicts
+    monkeypatch.undo()
+    # 桩撤掉后必须回到全达标（防桩残留导致假红）
+    _, verdicts2, _ = suites.run_suites(lib)
+    assert all(v.endswith("=达标") for v in verdicts2)

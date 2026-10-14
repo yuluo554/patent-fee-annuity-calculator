@@ -453,7 +453,8 @@ def cmd_bench(args: argparse.Namespace, library: RuleLibrary) -> int:
             if not res.implemented:
                 print("  %-14s 未实装（%s）" % (name, "; ".join(res.notes) or "后续里程碑"))
                 continue
-            print("  %-14s 通过 %d/%d  达标率=%s" % (name, res.passed, res.total, res.pass_rate))
+            print("  %-14s 通过 %d/%d  达标率=%s  耗时=%ss" % (
+                name, res.passed, res.total, res.pass_rate, res.elapsed_seconds))
             for note in res.notes:
                 print("      注: %s" % note)
             for failure in res.failures[:5]:

@@ -278,8 +278,12 @@ def test_b4_truth_layer_actually_reconciles(lib):
     assert result.total >= len(portfolio["payments"]) + n_clean
 
 
-def _probe_library_with_amount_shift():
-    """构造探活库：阶梯金额整体 +0 元基础注入（由 caller 改值），含真值库坐标。"""
+def _probe_library():
+    """构造探活库：现行条目全部复制并置 verified，由 caller 注入缺陷。
+
+    库坐标仍指 data/（真值库可寻），manifest benchmarks 留空——
+    探活直接调 suite 函数不走 run_suites 判定。
+    """
     from patfee.rules.loader import RuleLibrary, Ruleset
 
     entries = []
@@ -301,7 +305,7 @@ def _probe_library_with_amount_shift():
 
 def test_b4_detects_amount_defect():
     """探活（可证伪）：阶梯金额篡改后 B4 的组合重算必须报未达标。"""
-    probe = _probe_library_with_amount_shift()
+    probe = _probe_library()
     for rs in probe.rulesets.values():
         entry = rs.get("annuity.invention")
         if entry is not None:
@@ -309,6 +313,47 @@ def test_b4_detects_amount_defect():
             ladder[0]["amount"] = ladder[0]["amount"] + 1  # 注入缺陷：第 1 档 +1 元
     result = suites.suite_b4_portfolio(probe)
     assert result.failures, "金额注入缺陷后 B4 仍全绿 —— 基准失效"
+
+
+def test_b4_detects_degrade_control_failure():
+    """探活（可证伪）：把补缴上限 6 抬成 7 个月后，degrade 对照件（第 7 个月
+    超上限算例）不再触发 late_exceeds_cap —— controls 层必须报未达标。
+
+    防"controls 对照集永远绿"：若该层停止真实核对（例如只数数不断言），
+    这条注入会与 clean 层一起全绿。
+    """
+    probe = _probe_library()
+    for rs in probe.rulesets.values():
+        entry = rs.get("late.grace_months")
+        if entry is not None:
+            entry.value = 7  # 注入缺陷：上限 6 → 7（degrade 件 = 第 7 整月算例）
+    result = suites.suite_b4_portfolio(probe)
+    assert result.failures, "抬上限后 degrade 对照仍绿 —— controls 层失效"
+    assert any("degrade" in f for f in result.failures), result.failures
+
+
+def test_b4_detects_reconciliation_omission():
+    """探活（可证伪）：对账口径层漏报 vanished —— 上轮件本轮缺失不进
+    vanished 集合的缺陷必须被 B4 检出（否则"消失的未缴件"在对账里隐身）。
+    """
+    from patfee.calc import portfolio as portfolio_mod
+
+    probe = _probe_library()
+    real_impl = portfolio_mod.compare_rounds
+
+    def _swallow_vanished(previous, current):
+        rec = real_impl(previous, current)
+        return rec.__class__(new_due=rec.new_due, settled=rec.settled,
+                             still_unpaid=rec.still_unpaid,
+                             content_changed=rec.content_changed, vanished=())
+
+    portfolio_mod.compare_rounds = _swallow_vanished
+    try:
+        result = suites.suite_b4_portfolio(probe)
+    finally:
+        portfolio_mod.compare_rounds = real_impl
+    assert result.failures, "漏报 vanished 后 B4 仍全绿 —— 对账口径层失效"
+    assert any("vanished" in f for f in result.failures), result.failures
 
 
 # ------------------------------------------------------------ CLI scan

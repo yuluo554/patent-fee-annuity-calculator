@@ -36,6 +36,7 @@ class CheckResult:
     failures: List[str] = field(default_factory=list)
     notes: List[str] = field(default_factory=list)
     implemented: bool = True
+    elapsed_seconds: Optional[Decimal] = None
 
     @property
     def pass_rate(self) -> Decimal:
@@ -52,6 +53,7 @@ class CheckResult:
             "pass_rate": str(self.pass_rate),
             "failures": list(self.failures[:20]),
             "notes": list(self.notes),
+            "elapsed_seconds": None if self.elapsed_seconds is None else str(self.elapsed_seconds),
         }
 
 
@@ -726,6 +728,27 @@ def suite_b4_portfolio(library: RuleLibrary) -> CheckResult:
                 "对账口径: %s 期限变化应报 content_changed（实得 changed=%s new=%s vanished=%s）"
                 % (pid, pid in rec2.content_changed, pid in rec2.new_due, pid in rec2.vanished)
             )
+        # 上轮有、本轮无 → vanished（漏报会让"消失的未缴件"在对账里隐身）
+        rec3 = compare_rounds([baseline[0]], [])
+        result.total += 1
+        pid_base = "%s#y%s" % (baseline[0]["patent_no"], baseline[0]["year"])
+        if rec3.vanished == (pid_base,) and not rec3.new_due and not rec3.settled:
+            result.passed += 1
+        else:
+            result.failures.append(
+                "对账口径: 上轮件本轮缺失应报 vanished=%s（实得 vanished=%s new=%s settled=%s）"
+                % (pid_base, rec3.vanished, rec3.new_due, rec3.settled)
+            )
+        # 本轮新出现、上轮无 → new_due
+        rec4 = compare_rounds([], [current[0]])
+        result.total += 1
+        if rec4.new_due == (pid,) and not rec4.vanished and not rec4.settled:
+            result.passed += 1
+        else:
+            result.failures.append(
+                "对账口径: 本轮新增件应报 new_due=%s（实得 new_due=%s vanished=%s settled=%s）"
+                % (pid, rec4.new_due, rec4.vanished, rec4.settled)
+            )
 
     if result.total == 0:
         result.implemented = False
@@ -762,14 +785,40 @@ def suite_names() -> Tuple[str, ...]:
     return SUITE_ORDER
 
 
+def _threshold_problems(res: CheckResult, threshold: dict) -> List[str]:
+    """按 manifest 门槛逐项核对，返回未达标原因（空列表 = 达标）。
+
+    独立成函数供探活测试直接注入超时结果验证（不与真实计时竞态）。
+    """
+    problems: List[str] = []
+    min_rate = Decimal(str(threshold.get("min_pass_rate", "1.0")))
+    max_fail = int(threshold.get("max_fail", 0))
+    if res.pass_rate < min_rate:
+        problems.append("达标率 %s < %s" % (res.pass_rate, min_rate))
+    if len(res.failures) > max_fail:
+        problems.append("失败数 %d > %d" % (len(res.failures), max_fail))
+    max_seconds_raw = threshold.get("max_seconds")
+    if max_seconds_raw is not None:
+        max_seconds = Decimal(str(max_seconds_raw))
+        if res.elapsed_seconds is not None and res.elapsed_seconds > max_seconds:
+            problems.append("耗时 %ss > max_seconds %ss" % (res.elapsed_seconds, max_seconds))
+    return problems
+
+
 def run_suites(
     library: RuleLibrary,
     only: Sequence[str] = (),
 ) -> Tuple[Dict[str, CheckResult], List[str], List[str]]:
     """运行基准。
 
-    :return: (结果表, 达标判定表, 未实装套件名)
+    达标判定读 manifest 全部门槛：``min_pass_rate`` / ``max_fail`` /
+    ``max_seconds``（计时门槛 M4 起实际执行——manifest 已下发就必须生效，
+    否则"门槛随 manifest 下发"只是摆设）。
+
+    :return: (结果表, 达标判定表, 参与判定套件名)
     """
+    import time
+
     if only:
         unknown = [name for name in only if name not in SUITES]
         if unknown:
@@ -786,16 +835,20 @@ def run_suites(
     implemented: List[str] = []
 
     for name in names:
+        started = time.perf_counter()
         res = SUITES[name](library)
+        res.elapsed_seconds = (
+            Decimal(repr(time.perf_counter() - started)).quantize(Decimal("0.001"))
+        )
         results[name] = res
         if not res.implemented:
             # 未实装套件不参与达标判定（"没测"不是"未达标"，也不是"达标"）
             continue
         implemented.append(name)
         threshold = library.benchmark_threshold(name)
-        min_rate = Decimal(str(threshold.get("min_pass_rate", "1.0")))
-        max_fail = int(threshold.get("max_fail", 0))
-        ok = res.pass_rate >= min_rate and len(res.failures) <= max_fail
-        verdicts.append("%s=%s" % (name, "达标" if ok else "未达标"))
+        problems = _threshold_problems(res, threshold)
+        verdicts.append(
+            "%s=%s" % (name, "达标" if not problems else "未达标（%s）" % "; ".join(problems))
+        )
 
     return results, verdicts, implemented

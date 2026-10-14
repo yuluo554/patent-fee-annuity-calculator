@@ -1,0 +1,39 @@
+== M4 回归证据（2026-10-14，基准收尾：计时门槛实装 + 探活矩阵补全 + 指标固化） ==
+
+[1] py3.12 全量测试
+196 passed in 20.72s
+
+[2] py3.8 全量测试
+196 passed in 21.38s
+
+[3] 干净 venv 全量测试
+196 passed in 21.36s
+
+[4] 收集数一致性
+196 tests collected in 0.06s
+196 tests collected in 0.07s
+196 tests collected in 0.06s
+
+[5] 冻结三项
+FROZEN_RULESETS_OK (5 份文件逐字节一致)
+SYNTHETIC_FROZEN_OK (3 份文件逐字节一致)
+AUTHORITY_SNAPSHOTS_OK (8 份快照 sha256 与台账一致)
+
+[6] bench 实测（含计时门槛与耗时输出）
+== patfee bench ==
+  b1_ladder      通过 99/99  达标率=1.0000  耗时=0.001s
+      注: annuity.design_intl 未在规则包中建条目（该类用例未生成）
+  b2_late        通过 18/18  达标率=1.0000  耗时=0.002s
+  b3_reduction   通过 20/20  达标率=1.0000  耗时=0.003s
+  b4_portfolio   通过 48/48  达标率=1.0000  耗时=0.008s
+  判定: b1_ladder=达标, b2_late=达标, b3_reduction=达标, b4_portfolio=达标
+bench exit=0
+
+[7] bench --only b4（部分运行语义）
+== patfee bench ==
+  b4_portfolio   通过 48/48  达标率=1.0000  耗时=0.011s
+  判定: b4_portfolio=达标
+exit=0
+
+[8] README 计数守门
+..............................                                           [100%]
