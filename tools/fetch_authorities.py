@@ -1,12 +1,12 @@
 """依据原文抓取与快照台账工具。
 
-用途：把官方政策原文与费率表页直连落盘到 ``data/knowledge/raw/``，
+用途：把官方政策原文、费率表页与上位法原文直连落盘到 ``data/knowledge/raw/``，
 并重算 sha256 写进 ``_ledger.json``。
 
 纪律：
 
 * **搜索摘要一律不采信** —— 只用可直连的官方页面原文核对。
-* 快照台账登记 `来源 + 字节数 + sha256`；入库后由守门测试复算比对。
+* 快照台账登记 `来源 + 文件 + 字节数 + sha256`；入库后由守门测试复算比对。
 * 抓取失败**不编造**：把"待核对"记进 ``data/README.md``，继续推进。
 
 用法::
@@ -46,34 +46,81 @@ SOURCES: List[Dict[str, str]] = [
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "kind": "fee_schedule",
         "label": "国家知识产权局专利收费标准（公示页）",
+        "file": "cnipa_fee_schedule_286.html",
     },
     {
         "name": "mof_2016_78",
         "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
         "kind": "policy",
         "label": "《专利收费减缴办法》财税〔2016〕78 号",
+        "file": "mof_2016_78.html",
     },
     {
         "name": "gov_316",
         "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
         "kind": "policy",
         "label": "国家知识产权局公告第 316 号",
+        "file": "gov_316.html",
     },
     {
         "name": "gov_594",
         "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
         "kind": "policy",
         "label": "国家知识产权局公告第 594 号",
+        "file": "gov_594.html",
+    },
+    # ---- M1 定位到的上位法（依据索引 data/knowledge/clauses.json 逐条引用） ----
+    {
+        # 国务院公报版：含《修改决定》全文 + 修订后《实施细则》全文，第 5 条（期限计算）
+        # 与第 115 条（年费缴纳期限、6 个月补缴期、滞纳金 5%/月）均在此页。
+        "name": "gov_769_rules",
+        "url": "https://www.gov.cn/gongbao/2024/issue_11086/202401/content_6924971.html",
+        "kind": "upper_law",
+        "label": "《中华人民共和国专利法实施细则》国务院令第 769 号（2024-01-20 施行）",
+        "file": "gov_769_rules.html",
+    },
+    {
+        # 国家法律法规数据库（全国人大）检索接口返回的条目元数据 + 正文目录树。
+        # 用 Referer 指明来源站，避免被当作外链抓取。
+        "name": "flk_patent_law_2020",
+        "url": "https://flk.npc.gov.cn/law-search/search/flfgDetails?bbbs=ff808081752b7d430175e4651cbd1547",
+        "kind": "upper_law",
+        "label": "《中华人民共和国专利法》（2020 年第四次修正，2021-06-01 施行）",
+        "file": "flk_patent_law_2020.json",
+        "referer": "https://flk.npc.gov.cn/",
+    },
+    {
+        # 《专利审查指南》现行基准版本：国家知识产权局令第 78 号，自 2024-01-20 施行。
+        "name": "cnipa_guidelines_78",
+        "url": "https://www.gov.cn/gongbao/2024/issue_11166/202402/content_6931868.html",
+        "kind": "upper_law",
+        "label": "《专利审查指南》国家知识产权局令第 78 号（2024-01-20 施行）",
+        "file": "cnipa_guidelines_78.html",
+    },
+    {
+        # 现行最新一次修改：国家知识产权局令第 84 号，自 2026-01-01 施行。
+        "name": "cnipa_guidelines_84",
+        "url": "https://www.gov.cn/gongbao/2026/issue_12526/202601/content_7056486.html",
+        "kind": "upper_law",
+        "label": "《专利审查指南》国家知识产权局令第 84 号（2026-01-01 施行）",
+        "file": "cnipa_guidelines_84.html",
     },
 ]
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 
 
-def fetch_one(url: str, timeout: int = 40) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
+def fetch_one(url: str, timeout: int = 40, referer: str = "") -> bytes:
+    headers = {"User-Agent": UA}
+    if referer:
+        headers["Referer"] = referer
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return resp.read()
+
+
+def _file_of(src: Dict[str, str]) -> str:
+    return src.get("file") or (src["name"] + ".html")
 
 
 def refresh() -> int:
@@ -82,16 +129,18 @@ def refresh() -> int:
     failures = []
     for src in SOURCES:
         try:
-            data = fetch_one(src["url"])
+            data = fetch_one(src["url"], referer=src.get("referer", ""))
         except Exception as exc:  # noqa: BLE001 - 渠道失败要如实记录而非中断
             failures.append("%s: %s: %s" % (src["name"], type(exc).__name__, exc))
             continue
-        (RAW_DIR / (src["name"] + ".html")).write_bytes(data)
+        fname = _file_of(src)
+        (RAW_DIR / fname).write_bytes(data)
         ledger.append({
             "name": src["name"],
             "url": src["url"],
             "kind": src["kind"],
             "label": src["label"],
+            "file": fname,
             "bytes": len(data),
             "sha256": hashlib.sha256(data).hexdigest(),
         })
@@ -111,7 +160,7 @@ def verify() -> int:
     ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
     problems = []
     for item in ledger:
-        path = RAW_DIR / (item["name"] + ".html")
+        path = RAW_DIR / _file_of(item)
         if not path.is_file():
             problems.append("快照缺失: %s" % path.name)
             continue

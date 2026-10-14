@@ -1,0 +1,30 @@
+=== M1 本地等价校验（2026-10-14）===
+
+--- [1] py3.12 pytest ---
+132 passed in 6.33s
+
+--- [2] py3.8 pytest ---
+132 passed in 6.41s
+
+--- [3] 干净 venv (py3.12 + pip install -e .[dev]) pytest ---
+132 passed in 6.19s
+
+--- [4] 收集数一致性 ---
+py3.12:  132
+py3.8:   132
+venv:    132
+
+--- [5] gen_rulesets --check ---
+FROZEN_RULESETS_OK (5 份文件逐字节一致)
+exit=0
+
+--- [6] gen_synthetic --check（位级可复现）---
+SYNTHETIC_FROZEN_OK (3 份文件逐字节一致)
+exit=0
+
+--- [7] fetch_authorities --verify（8 份快照）---
+AUTHORITY_SNAPSHOTS_OK (8 份快照 sha256 与台账一致)
+exit=0
+
+--- [8] audit_desensitize --mode all ---
+DESENSITIZE_AUDIT_OK (exit=0)

@@ -68,8 +68,71 @@ def test_rules_show_unknown_ruleset_exit_2(capsys):
     assert "ruleset_error" in capsys.readouterr().err
 
 
-def test_calc_gated_is_exit_1_not_0(patent_json, capsys):
-    """未核对条目默认拦门 → exit 1（降级完成），不是 0。"""
+def test_calc_verified_computes_exit_0(patent_json, capsys):
+    """M1 后：规则条目已逐项复核（verified）→ 正常计算，退出码 0。"""
+    assert run(["calc", str(patent_json)]) == 0
+    out = capsys.readouterr().out
+    assert "1200.00" in out
+    assert "未判定" not in out
+    assert "不构成法律或代理意见" in out, "免责声明为强制输出"
+
+
+def test_calc_preview_exit_still_1_after_verified(patent_json, capsys):
+    """--preview 语义与条目状态无关（K2/D11）：预览绝不返回 0。"""
+    assert run(["calc", str(patent_json), "--preview"]) == 1
+    out = capsys.readouterr().out
+    assert "1200.00" in out
+    assert "不得作为缴费依据" in out
+
+
+def _library_with_pending_entry():
+    """构造规则条目全为 pending 的最小库：门控拦截分支的测试夹具。
+
+    M1 后真实规则包已全 verified，gated_pending 的退出码路径改由打桩库守护，
+    语义本身不得随数据状态失去测试覆盖。
+    """
+    from pathlib import Path
+
+    from patfee.rules.loader import RuleLibrary, Ruleset
+
+    raw_rs = {
+        "schema": "patfee.ruleset/v1",
+        "id": "probe",
+        "version": "v1",
+        "title": "probe",
+        "doc_no": "probe",
+        "entries": [
+            {
+                "key": "annuity.invention",
+                "label": "probe",
+                "kind": "ladder",
+                "status": "pending",
+                "scopes": ["calc"],
+                "ladder": [
+                    {"from_year": 1, "to_year": 3, "amount": 900, "label": "1-3"},
+                    {"from_year": 4, "to_year": 6, "amount": 1200, "label": "4-6"},
+                ],
+                "basis": {"doc_no": "d", "clause": "c", "url": "http://x", "retrieved": "2026-10-14"},
+            }
+        ],
+    }
+    manifest = {
+        "schema": "patfee.rules.manifest/v1",
+        "rulesets": [],
+        "scopes": ["calc"],
+        "benchmarks": {},
+        "exemptions": {
+            "small_int_abs_limit": 100, "exempt_integers": [],
+            "exempt_decimals": ["0.01", "0.1", "0.5", "1.0", "2.0"], "inline_allow_mark": "literal-ok",
+        },
+        "banned_tokens": {"integers": [], "decimals": []},
+    }
+    return RuleLibrary(manifest, [Ruleset(raw_rs)], Path("."))
+
+
+def test_calc_gated_pending_is_exit_1_with_stubbed_library(monkeypatch, patent_json, capsys):
+    """pending 条目默认拦门 → exit 1（降级完成）。"""
+    monkeypatch.setattr(cli, "load_library", lambda *a, **k: _library_with_pending_entry())
     assert run(["calc", str(patent_json)]) == 1
     out = capsys.readouterr().out
     assert "未判定" in out
@@ -77,8 +140,9 @@ def test_calc_gated_is_exit_1_not_0(patent_json, capsys):
     assert "不构成法律或代理意见" in out, "免责声明为强制输出"
 
 
-def test_calc_preview_still_exit_1(patent_json, capsys):
-    """--preview 可预览但退出码仍为 1 —— 预览绝不能返回 0。"""
+def test_calc_preview_pending_still_exit_1_with_stubbed_library(monkeypatch, patent_json, capsys):
+    """--preview 允许 pending 参与预览，但退出码仍为 1（K2）。"""
+    monkeypatch.setattr(cli, "load_library", lambda *a, **k: _library_with_pending_entry())
     assert run(["calc", str(patent_json), "--preview"]) == 1
     out = capsys.readouterr().out
     assert "1200.00" in out

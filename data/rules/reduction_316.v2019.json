@@ -10,7 +10,7 @@
     "channel": "中国政府网 政策文件库（gov.cn）",
     "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
     "retrieved": "2026-10-14",
-    "verification": "anchor_verified",
+    "verification": "item_reviewed",
     "raw_snapshot": "data/knowledge/raw/gov_316.html"
   },
   "entries": [
@@ -18,7 +18,7 @@
       "key": "reduction.threshold.individual_annual_income",
       "label": "个人年收入阈值",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "reduction"
       ],
@@ -29,15 +29,16 @@
         "unit": "CNY/year",
         "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 316 号第一条；原文『调整为上年度月均收入低于5000元（年6万元）的个人』→ 年阈值 60000"
       },
-      "note": "锚点级已获取并逐字核对；306→316 的阈值调整前后值均出自本公告原文。待 M1 条目级复核后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "reduction.threshold.individual_monthly_income",
       "label": "个人月均收入阈值",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "reduction"
       ],
@@ -48,15 +49,16 @@
         "unit": "CNY/month",
         "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 316 号第一条；原文『月均收入低于5000元』→ 月阈值 5000；判定为**严格小于**（恰好等于不满足）"
       },
-      "note": "锚点级已获取并逐字核对；306→316 的阈值调整前后值均出自本公告原文。待 M1 条目级复核后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "reduction.threshold.entity_taxable_income",
       "label": "企业应纳税所得额阈值",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "reduction"
       ],
@@ -67,15 +69,16 @@
         "unit": "CNY/year",
         "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 316 号第一条；原文『上年度企业应纳税所得额低于100万元的企业』→ 阈值 1000000"
       },
-      "note": "锚点级已获取并逐字核对；306→316 的阈值调整前后值均出自本公告原文。待 M1 条目级复核后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "reduction.threshold.effective_from",
       "label": "调整生效日期",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "reduction"
       ],
@@ -86,15 +89,16 @@
         "unit": "date",
         "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 316 号正文（施行时点）；原文『将于2019年7月1日起调整专利收费减缴条件』→ 锚点 2019-07-01；成文日期 2019 年 6 月 28 日，本规则包 anchor_from 取施行日"
       },
-      "note": "锚点级已获取并逐字核对；306→316 的阈值调整前后值均出自本公告原文。待 M1 条目级复核后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "reduction.threshold.individual_annual_income.prev",
       "label": "个人年收入阈值（316 号前）",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "reduction"
       ],
@@ -105,15 +109,16 @@
         "unit": "CNY/year",
         "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 316 号第一条（调整前值）；原文『由上年度月均收入低于3500元（年4.2万元）的个人』→ 调整前年阈值 42000"
       },
-      "note": "【历史值】用于差异报告与 2019-07-01 前年度回算；不参与当前判定"
+      "note": "【历史值】316 号前口径，供差异报告与 2019-07-01 前年度回算；M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "reduction.threshold.individual_monthly_income.prev",
       "label": "个人月均收入阈值（316 号前）",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "reduction"
       ],
@@ -124,15 +129,16 @@
         "unit": "CNY/month",
         "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 316 号第一条（调整前值）；原文『月均收入低于3500元』→ 调整前月阈值 3500"
       },
-      "note": "【历史值】用于差异报告与 2019-07-01 前年度回算"
+      "note": "【历史值】316 号前口径，供差异报告与 2019-07-01 前年度回算；M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "reduction.threshold.entity_taxable_income.prev",
       "label": "企业应纳税所得额阈值（316 号前）",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "reduction"
       ],
@@ -143,9 +149,10 @@
         "unit": "CNY/year",
         "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 316 号第一条（调整前值）；原文『由上年度企业应纳税所得额低于30万元的企业』→ 调整前阈值 300000"
       },
-      "note": "【历史值】用于差异报告与 2019-07-01 前年度回算"
+      "note": "【历史值】316 号前口径，供差异报告与 2019-07-01 前年度回算；M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     }
   ]
 }

@@ -3,6 +3,7 @@
   "generated_by": "tools/gen_rulesets.py",
   "generated_at": "1970-01-01T00:00:00Z",
   "retrieved": "2026-10-14",
+  "reviewed": "2026-10-14",
   "rulesets": [
     {
       "id": "fee_schedule",
@@ -15,14 +16,14 @@
         "channel": "国家知识产权局专利业务办理系统 公示页",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "verification": "anchor_verified",
+        "verification": "item_reviewed",
         "raw_snapshot": "data/knowledge/raw/cnipa_fee_schedule_286.html"
       },
       "file": "fee_schedule.v2024.json",
-      "sha256": "84d540698bfdce645a970ca5524579c323a35d9bd08c97627834fbb02cf52d2b",
+      "sha256": "7d3824b326668c8088d76c2f04846c03c30ee5bb04e7899d3f4c42b9b8c33139",
       "status_counts": {
-        "verified": 0,
-        "pending": 16,
+        "verified": 16,
+        "pending": 0,
         "input_required": 0
       }
     },
@@ -37,14 +38,14 @@
         "channel": "财政部 财政文告（mof.gov.cn）",
         "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
         "retrieved": "2026-10-14",
-        "verification": "anchor_verified",
+        "verification": "item_reviewed",
         "raw_snapshot": "data/knowledge/raw/mof_2016_78.html"
       },
       "file": "reduction_78.v2016.json",
-      "sha256": "b7e8fdabe5b0744140d0a576bebd70bb3f20c9f8e0a41ce65b17659e2e67afba",
+      "sha256": "aed8ac01cfc5094a97eab5c3cb38fdbf3e34aa192dc597365f13e0c3bfb53d79",
       "status_counts": {
-        "verified": 0,
-        "pending": 4,
+        "verified": 4,
+        "pending": 0,
         "input_required": 0
       }
     },
@@ -59,14 +60,14 @@
         "channel": "中国政府网 政策文件库（gov.cn）",
         "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
         "retrieved": "2026-10-14",
-        "verification": "anchor_verified",
+        "verification": "item_reviewed",
         "raw_snapshot": "data/knowledge/raw/gov_316.html"
       },
       "file": "reduction_316.v2019.json",
-      "sha256": "7a1eadc3499e41a1e4e4d0969597b01732e473b49a82e1896dfae36b91ffce97",
+      "sha256": "65b526ba4cafb3f50f1369c63f5237bed7838672cc2c8ddce144136d11b4c428",
       "status_counts": {
-        "verified": 0,
-        "pending": 7,
+        "verified": 7,
+        "pending": 0,
         "input_required": 0
       }
     },
@@ -81,14 +82,14 @@
         "channel": "中国政府网 政策文件库（gov.cn）",
         "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
         "retrieved": "2026-10-14",
-        "verification": "anchor_verified",
+        "verification": "item_reviewed",
         "raw_snapshot": "data/knowledge/raw/gov_594.html"
       },
       "file": "reduction_594.v2024.json",
-      "sha256": "9c67af5851a8351cf8cd06c04c61d17e119f206e8f2ffb345e499360ed9c92fd",
+      "sha256": "75ab07e6334103eb7956c1c3b8b7724de3baa2b6f7e48ddbb858d5b7cffe5ced",
       "status_counts": {
-        "verified": 0,
-        "pending": 5,
+        "verified": 5,
+        "pending": 0,
         "input_required": 0
       }
     }
@@ -170,6 +171,7 @@
   },
   "notes": [
     "本目录为生成器冻结产物，禁手改；改体例走 tools/gen_rulesets.py 整目录重生成。",
-    "M0：全部条目 status=pending（值可溯源但未逐项复核）——未核对不得进计算路径。"
+    "M1：32 条条目已逐项回到官方原文/费率表页复核，全部 status=verified；复核痕迹写在每条 basis.note（条目定位 + 核对结论）。",
+    "late.grace_months / late.month_basis 的原文出自《专利法实施细则》国务院令第 769 号（第 115 条 / 第 5 条），故这两条的 basis 指向细则快照而非费率表页。"
   ]
 }

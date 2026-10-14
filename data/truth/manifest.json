@@ -1,0 +1,23 @@
+{
+  "schema": "patfee.truth.manifest/v1",
+  "generated_by": "tools/gen_synthetic.py",
+  "generated_at": "1970-01-01T00:00:00Z",
+  "as_of_date": "2026-10-14",
+  "files": [
+    {
+      "name": "portfolio.json",
+      "sha256": "acb3839ec9b683c21c019981606e6f78fdd7f026f820f544a62fae18605a5452",
+      "bytes": 8404
+    },
+    {
+      "name": "truth.json",
+      "sha256": "8f91e608c502cce2c7a7640119399eef27de3da28c85bb658fb8090b79cfc54f",
+      "bytes": 36746
+    }
+  ],
+  "notes": [
+    "本目录为生成器冻结产物，禁手改；改体例走 tools/gen_synthetic.py 整目录重生成。",
+    "全部内容为合成数据（测试号段 + 虚构名称），不含任何真实专利或主体信息。",
+    "生成确定性：自研 splitmix64 + 固定 seed、无时间戳、无 set 迭代序、无 stdlib random。"
+  ]
+}

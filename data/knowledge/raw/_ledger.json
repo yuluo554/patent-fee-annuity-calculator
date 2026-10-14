@@ -4,6 +4,7 @@
     "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
     "kind": "fee_schedule",
     "label": "国家知识产权局专利收费标准（公示页）",
+    "file": "cnipa_fee_schedule_286.html",
     "bytes": 41504,
     "sha256": "396277b535d7b6844933cfc0a996930c200141c06643e898b2a82ef52b7275b7"
   },
@@ -12,6 +13,7 @@
     "url": "http://www.mof.gov.cn/gkml/caizhengwengao/wg2016/wg201609/201702/t20170209_2531813.htm",
     "kind": "policy",
     "label": "《专利收费减缴办法》财税〔2016〕78 号",
+    "file": "mof_2016_78.html",
     "bytes": 25641,
     "sha256": "e8c8ed1c6da76e7b12f406017832d2770a628ba7485e2263a68da7c123e8bab5"
   },
@@ -20,6 +22,7 @@
     "url": "https://www.gov.cn/zhengce/zhengceku/2019-12/09/content_5459661.htm",
     "kind": "policy",
     "label": "国家知识产权局公告第 316 号",
+    "file": "gov_316.html",
     "bytes": 29045,
     "sha256": "761a27877ae427f6f9906a16a9c58d213a0bc05a3b67d57398c80a60921b115f"
   },
@@ -28,7 +31,44 @@
     "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
     "kind": "policy",
     "label": "国家知识产权局公告第 594 号",
+    "file": "gov_594.html",
     "bytes": 29533,
     "sha256": "f60650542b022677817d0095a201b6c617a6dc482dfb3446f635e8661ce7d913"
+  },
+  {
+    "name": "gov_769_rules",
+    "url": "https://www.gov.cn/gongbao/2024/issue_11086/202401/content_6924971.html",
+    "kind": "upper_law",
+    "label": "《中华人民共和国专利法实施细则》国务院令第 769 号（2024-01-20 施行）",
+    "file": "gov_769_rules.html",
+    "bytes": 181516,
+    "sha256": "d87d62ce55c51fc19d79893ddbc88c69fdbc6065f05c03feef3d2fb4b9f0367b"
+  },
+  {
+    "name": "flk_patent_law_2020",
+    "url": "https://flk.npc.gov.cn/law-search/search/flfgDetails?bbbs=ff808081752b7d430175e4651cbd1547",
+    "kind": "upper_law",
+    "label": "《中华人民共和国专利法》（2020 年第四次修正，2021-06-01 施行）",
+    "file": "flk_patent_law_2020.json",
+    "bytes": 14544,
+    "sha256": "f0aaff2c473dd1d40bba2214dba580b572d10f2b5d5541919c5eea73f0f897ee"
+  },
+  {
+    "name": "cnipa_guidelines_78",
+    "url": "https://www.gov.cn/gongbao/2024/issue_11166/202402/content_6931868.html",
+    "kind": "upper_law",
+    "label": "《专利审查指南》国家知识产权局令第 78 号（2024-01-20 施行）",
+    "file": "cnipa_guidelines_78.html",
+    "bytes": 23390,
+    "sha256": "473f8e4fef670d6f2b1019d1674d60ac0ec3216a45807c6617e367a26da2a730"
+  },
+  {
+    "name": "cnipa_guidelines_84",
+    "url": "https://www.gov.cn/gongbao/2026/issue_12526/202601/content_7056486.html",
+    "kind": "upper_law",
+    "label": "《专利审查指南》国家知识产权局令第 84 号（2026-01-01 施行）",
+    "file": "cnipa_guidelines_84.html",
+    "bytes": 88007,
+    "sha256": "fed03a9983e37a15890c740d1bca22a8dc43c10b99f5b1103dcb7c17b0bd009a"
   }
 ]

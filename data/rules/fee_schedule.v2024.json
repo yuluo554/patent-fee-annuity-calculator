@@ -10,7 +10,7 @@
     "channel": "国家知识产权局专利业务办理系统 公示页",
     "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
     "retrieved": "2026-10-14",
-    "verification": "anchor_verified",
+    "verification": "item_reviewed",
     "raw_snapshot": "data/knowledge/raw/cnipa_fee_schedule_286.html"
   },
   "entries": [
@@ -18,7 +18,7 @@
       "key": "annuity.invention",
       "label": "发明专利年费阶梯",
       "kind": "ladder",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "calc"
       ],
@@ -65,15 +65,16 @@
         "clause": "（七）年费 · 1.发明专利：1-3 年（每年）900；4-6 年 1200；7-9 年 2000；10-12 年 4000；13-15 年 6000；16-20 年 8000",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（七）年费 · 1.发明专利」；6 个区间的端点（1-3/4-6/7-9/10-12/13-15/16-20）与金额（900/1200/2000/4000/6000/8000）逐档与页面文字一致，无缺档、无重叠"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "annuity.utility_model",
       "label": "实用新型专利年费阶梯",
       "kind": "ladder",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "calc"
       ],
@@ -108,15 +109,16 @@
         "clause": "（七）年费 · 2.实用新型专利：1-3 年 600；4-5 年 900；6-8 年 1200；9-10 年 2000",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（七）年费 · 2.实用新型专利」；4 个区间的端点（1-3/4-5/6-8/9-10）与金额（600/900/1200/2000）逐档一致"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "annuity.design",
       "label": "外观设计专利年费阶梯",
       "kind": "ladder",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "calc"
       ],
@@ -157,15 +159,16 @@
         "clause": "（七）年费 · 3.外观设计专利：1-3 年 600；4-5 年 900；6-8 年 1200；9-10 年 2000；11-15 年 3000",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（七）年费 · 3.外观设计专利」；5 个区间的端点（1-3/4-5/6-8/9-10/11-15）与金额（600/900/1200/2000/3000）逐档一致（第 11-15 年为外观设计独有档）"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "late.monthly_rate",
       "label": "年费滞纳金月费率",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "late"
       ],
@@ -176,53 +179,56 @@
         "unit": "ratio",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（八）年费滞纳金」；原文『每超过规定的缴费时间1个月，加收当年全额年费的5%』与值 0.05（ratio）一致；并已与《专利法实施细则》第 115 条同款表述互证"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "late.grace_months",
       "label": "滞纳金计收月数上限（进入失效流程口径）",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "late"
       ],
-      "value": null,
+      "value": 6,
       "basis": {
-        "doc_no": "国家知识产权局专利收费标准（专利业务办理系统公示）",
-        "clause": "待核对：《专利法实施细则》关于年费缴纳期限与滞纳期起止的规定",
+        "doc_no": "《中华人民共和国专利法实施细则》国务院令第 769 号",
+        "clause": "《专利法实施细则》第一百一十五条：专利权人未缴纳或者未缴足的，国务院专利行政部门应当通知专利权人自应当缴纳年费期满之日起 6 个月内补缴，同时缴纳滞纳金；期满未缴纳的，专利权自应当缴纳年费期满之日起终止",
         "unit": "month",
-        "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
+        "url": "https://www.gov.cn/gongbao/2024/issue_11086/202401/content_6924971.html",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国务院公报（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：《专利法实施细则》（国务院令第 769 号）第一百一十五条；『自应当缴纳年费期满之日起 6 个月内补缴』→ 滞纳金计收月数上限 = 6；『期满未缴纳的，专利权自应当缴纳年费期满之日起终止』即进入失效流程的时点"
       },
-      "note": "【待核对】实施细则原文未定位到条目级 → 值留空，计算路径将按 missing_value 拒绝"
+      "note": "M1 已定位《实施细则》原文落值（原【待核对】）；依据坐标见 basis"
     },
     {
       "key": "late.month_basis",
       "label": "滞纳金月数计算口径",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "late"
       ],
-      "value": null,
+      "value": "calendar_month",
       "basis": {
-        "doc_no": "国家知识产权局专利收费标准（专利业务办理系统公示）",
-        "clause": "待核对：细则原文对'超过规定缴费时间 1 个月'的月数计算口径",
+        "doc_no": "《中华人民共和国专利法实施细则》国务院令第 769 号",
+        "clause": "《专利法实施细则》第五条：期限以年或者月计算的，以其最后一月的相应日为期限届满日；该月无相应日的，以该月最后一日为期限届满日",
         "unit": "enum",
-        "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
+        "url": "https://www.gov.cn/gongbao/2024/issue_11086/202401/content_6924971.html",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国务院公报（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：《专利法实施细则》（国务院令第 769 号）第五条 + 第一百一十五条；第 5 条规定『期限以年或者月计算的，以其最后一月的相应日为期限届满日』→ `月` 为自然月（calendar_month），非三十日近似；故『每超过 1 个月』按自然月相应日推算。备选 thirty_day 口径因与第 5 条不符而弃用"
       },
-      "note": "【待核对】M1 核对细则后定；口径值由规则包承载，不在代码里写死"
+      "note": "M1 已依《实施细则》第 5 条定口径 = calendar_month（原【待核对】）；代码不得写死该口径，运行时读本条目"
     },
     {
       "key": "check.fee.ruc",
       "label": "恢复权利请求费",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "late",
         "check"
@@ -234,15 +240,16 @@
         "unit": "CNY",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（九）恢复权利请求费」；原文『1000』与条目值一致"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.evaluation_report",
       "label": "专利权评价报告请求费",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "late",
         "check"
@@ -254,15 +261,16 @@
         "unit": "CNY",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（十二）专利权评价报告请求费」；实用新型 2400 与外观设计 2400 两行均与条目值一致"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.term_compensation_request",
       "label": "专利权期限补偿请求费",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -273,15 +281,16 @@
         "unit": "CNY",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（十五）专利权期限补偿请求费（每件）」；原文『200』与条目值一致；并与公告第 594 号『每件 200 元』互证"
       },
-      "note": "与公告第 594 号一致（每件 200 元）；锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "与公告第 594 号第一条一致（每件 200 元）；M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.compensation_annuity",
       "label": "专利权补偿期年费",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -292,15 +301,16 @@
         "unit": "CNY/year",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（十六）专利权补偿期年费（每年，不足一年部分不收取）」；原文『8000』与条目值一致；『不足一年部分不收取』口径同公告第 594 号"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.application.invention",
       "label": "发明专利申请费",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -311,15 +321,16 @@
         "unit": "CNY",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（一）申请费 · 1.发明专利」；原文『900』与条目值一致"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.application.utility_model",
       "label": "实用新型专利申请费",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -330,15 +341,16 @@
         "unit": "CNY",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（一）申请费 · 2.实用新型专利」；原文『500』与条目值一致"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.application.design",
       "label": "外观设计专利申请费",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -349,15 +361,16 @@
         "unit": "CNY",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（一）申请费 · 3.外观设计专利」；原文『500』与条目值一致"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.substantive_examination",
       "label": "发明专利申请实质审查费",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -368,15 +381,16 @@
         "unit": "CNY",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（五）发明专利申请实质审查费」；原文『2500』与条目值一致"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.priority_claim",
       "label": "优先权要求费（每项）",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -387,15 +401,16 @@
         "unit": "CNY",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（四）优先权要求费（每项）」；原文『80』与条目值一致"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.publication_printing",
       "label": "公布印刷费",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -406,9 +421,10 @@
         "unit": "CNY",
         "url": "https://cponline.cnipa.gov.cn/GzfwYwblGlwhTMVC/GzfwYwblGlwhT/selectByNoticeId?weihuRid=286",
         "retrieved": "2026-10-14",
-        "channel": "国家知识产权局专利业务办理系统 公示页"
+        "channel": "国家知识产权局专利业务办理系统 公示页",
+        "note": "M1 逐项复核（2026-10-14）：费率表页「（三）公布印刷费」；原文『50』与条目值一致"
       },
-      "note": "锚点级已获取（HTTP 200 全文）；待 M1 逐项复核费率表页后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     }
   ]
 }

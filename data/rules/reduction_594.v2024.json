@@ -10,7 +10,7 @@
     "channel": "中国政府网 政策文件库（gov.cn）",
     "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
     "retrieved": "2026-10-14",
-    "verification": "anchor_verified",
+    "verification": "item_reviewed",
     "raw_snapshot": "data/knowledge/raw/gov_594.html"
   },
   "entries": [
@@ -18,7 +18,7 @@
       "key": "reduction.open_license_discount",
       "label": "开放许可实施期间年费减免比例",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "reduction"
       ],
@@ -29,15 +29,16 @@
         "unit": "ratio",
         "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 594 号第二条；原文『对专利开放许可实施期间的专利年费减免15%』→ 值 0.15"
       },
-      "note": "锚点级已获取并逐字核对；待 M1 条目级复核后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "reduction.no_double_benefit",
       "label": "多政策择一规则",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "reduction"
       ],
@@ -48,15 +49,16 @@
         "unit": "enum",
         "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 594 号第二条；原文『可以选择适用最优惠的政策，但不得重复享受』→ 枚举值 choose_most_favorable；另与费率表页注『同时符合两项专利年费减缴条件的，按照其中减缴比例较高的一项予以减缴』互证"
       },
-      "note": "择最优惠且不叠加；判定过程必须在结果中留痕（候选集 + 选中项）"
+      "note": "择最优惠且不叠加；判定过程必须在结果中留痕（候选集 + 选中项）；M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.term_compensation_request_594",
       "label": "专利权期限补偿请求费（594 号口径）",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -67,15 +69,16 @@
         "unit": "CNY",
         "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 594 号第一条；原文『收费标准为每件200元』→ 值 200；与费率表页（十五）互证"
       },
-      "note": "锚点级已获取并逐字核对；待 M1 条目级复核后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.fee.compensation_annuity_594",
       "label": "专利权补偿期年费（594 号口径）",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -86,15 +89,16 @@
         "unit": "CNY/year",
         "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 594 号第一条；原文『收费标准为每件每年8000元，不足一年部分不收取』→ 值 8000；与费率表页（十六）互证"
       },
-      "note": "锚点级已获取并逐字核对；待 M1 条目级复核后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     },
     {
       "key": "check.effective_from_594",
       "label": "本公告日期",
       "kind": "scalar",
-      "status": "pending",
+      "status": "verified",
       "scopes": [
         "check"
       ],
@@ -105,9 +109,10 @@
         "unit": "date",
         "url": "https://www.gov.cn/zhengce/zhengceku/202408/content_6967596.htm",
         "retrieved": "2026-10-14",
-        "channel": "中国政府网 政策文件库（gov.cn）"
+        "channel": "中国政府网 政策文件库（gov.cn）",
+        "note": "M1 逐项复核（2026-10-14）：公告第 594 号落款；gov.cn 页面成文日期『2024年08月06日』、落款『国家知识产权局 2024年8月6日』→ 锚点 2024-08-06；本规则包 anchor_from 同值"
       },
-      "note": "锚点级已获取并逐字核对；待 M1 条目级复核后置 verified"
+      "note": "M1 逐项复核已通过（基准日 2026-10-14）；复核痕迹见 basis.note"
     }
   ]
 }

@@ -1,0 +1,9 @@
+=== M1 CLI 冒烟与退出码表（单独跑，不接管道）===
+selfcheck                    exit=0
+calc (verified)              exit=0
+calc --preview               exit=1
+rules diff reduction_316     exit=0
+rules diff reduction_594     exit=0
+rules diff nope (unknown)    exit=2
+bench                        exit=0
+calc (missing file)          exit=2

@@ -190,6 +190,18 @@ def cmd_rules_show(args: argparse.Namespace, library: RuleLibrary) -> int:
     return ExitCode.OK.value
 
 
+def cmd_rules_diff(args: argparse.Namespace, library: RuleLibrary) -> int:
+    from .rules.diff import diff_ruleset, render_text
+
+    payload = diff_ruleset(library, args.ruleset)
+    if getattr(args, "json", False):
+        print(_dump(payload))
+        return ExitCode.OK.value
+    for line in render_text(payload):
+        print(line)
+    return ExitCode.OK.value
+
+
 def cmd_calc(args: argparse.Namespace, library: RuleLibrary) -> int:
     from .calc import pipeline
 
@@ -285,6 +297,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_rs.add_argument("ruleset", help="规则集 id，如 fee_schedule")
     p_rs.add_argument("--json", action="store_true")
     p_rs.set_defaults(func=cmd_rules_show)
+    p_rd = rules_sub.add_parser("diff", help="规则版本差异报告（阈值前后对照 + 新增条目）")
+    p_rd.add_argument("ruleset", help="规则集 id，如 reduction_316 / reduction_594")
+    p_rd.add_argument("--json", action="store_true")
+    p_rd.set_defaults(func=cmd_rules_diff)
     p_rules.set_defaults(func=None)
 
     p_calc = sub.add_parser("calc", help="单件年费测算")

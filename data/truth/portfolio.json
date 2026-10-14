@@ -1,0 +1,304 @@
+{
+  "schema": "patfee.portfolio/v1",
+  "generated_by": "tools/gen_synthetic.py",
+  "generated_at": "1970-01-01T00:00:00Z",
+  "as_of_date": "2026-10-14",
+  "disclaimer": "全部专利号、主体名与缴费记录均为虚构合成数据，不含任何真实信息。",
+  "subjects": [
+    {
+      "id": "S001",
+      "kind": "individual",
+      "name": "示例个人 A（合成）"
+    },
+    {
+      "id": "S002",
+      "kind": "individual",
+      "name": "示例个人 B（合成）"
+    },
+    {
+      "id": "S003",
+      "kind": "entity",
+      "name": "示例科技（合成）有限公司"
+    },
+    {
+      "id": "S004",
+      "kind": "entity",
+      "name": "示例制造（合成）有限公司"
+    },
+    {
+      "id": "S005",
+      "kind": "entity",
+      "name": "示例研究院（合成）"
+    },
+    {
+      "id": "S006",
+      "kind": "individual",
+      "name": "示例个人 C（合成）"
+    }
+  ],
+  "subject_uscc": {
+    "S003": "90000000000000001SYN",
+    "S004": "90000000000000002SYN",
+    "S005": "90000000000000003SYN"
+  },
+  "patents": [
+    {
+      "patent_no": "990000000001SYN",
+      "title": "一种示例发明装置（合成）",
+      "patent_type": "invention",
+      "owner_id": "S001",
+      "applied_on": "2020-12-01",
+      "granted_on": "2022-12-01"
+    },
+    {
+      "patent_no": "990000000002SYN",
+      "title": "一种示例实用新型装置（合成）",
+      "patent_type": "utility_model",
+      "owner_id": "S002",
+      "applied_on": "2022-02-14",
+      "granted_on": "2023-02-14"
+    },
+    {
+      "patent_no": "990000000003SYN",
+      "title": "一种示例外观设计装置（合成）",
+      "patent_type": "design",
+      "owner_id": "S003",
+      "applied_on": "2015-10-09",
+      "granted_on": "2016-10-09"
+    },
+    {
+      "patent_no": "990000000004SYN",
+      "title": "一种示例发明装置（合成）",
+      "patent_type": "invention",
+      "owner_id": "S004",
+      "applied_on": "2015-10-15",
+      "granted_on": "2017-10-15"
+    },
+    {
+      "patent_no": "990000000005SYN",
+      "title": "一种示例实用新型装置（合成）",
+      "patent_type": "utility_model",
+      "owner_id": "S005",
+      "applied_on": "2015-12-10",
+      "granted_on": "2016-12-10"
+    },
+    {
+      "patent_no": "990000000006SYN",
+      "title": "一种示例外观设计装置（合成）",
+      "patent_type": "design",
+      "owner_id": "S006",
+      "applied_on": "2017-07-08",
+      "granted_on": "2018-07-08"
+    },
+    {
+      "patent_no": "990000000007SYN",
+      "title": "一种示例发明装置（合成）",
+      "patent_type": "invention",
+      "owner_id": "S001",
+      "applied_on": "2014-10-06",
+      "granted_on": "2016-10-06"
+    },
+    {
+      "patent_no": "990000000008SYN",
+      "title": "一种示例实用新型装置（合成）",
+      "patent_type": "utility_model",
+      "owner_id": "S002",
+      "applied_on": "2022-06-16",
+      "granted_on": "2023-06-16"
+    },
+    {
+      "patent_no": "990000000009SYN",
+      "title": "一种示例外观设计装置（合成）",
+      "patent_type": "design",
+      "owner_id": "S003",
+      "applied_on": "2020-05-09",
+      "granted_on": "2021-05-09"
+    },
+    {
+      "patent_no": "990000000010SYN",
+      "title": "一种示例发明装置（合成）",
+      "patent_type": "invention",
+      "owner_id": "S004",
+      "applied_on": "2018-01-20",
+      "granted_on": "2020-01-20"
+    },
+    {
+      "patent_no": "990000000011SYN",
+      "title": "一种示例实用新型装置（合成）",
+      "patent_type": "utility_model",
+      "owner_id": "S005",
+      "applied_on": "2021-08-28",
+      "granted_on": "2022-08-28"
+    },
+    {
+      "patent_no": "990000000012SYN",
+      "title": "一种示例外观设计装置（合成）",
+      "patent_type": "design",
+      "owner_id": "S006",
+      "applied_on": "2022-07-15",
+      "granted_on": "2023-07-15"
+    },
+    {
+      "patent_no": "990000000013SYN",
+      "title": "一种示例发明装置（合成）",
+      "patent_type": "invention",
+      "owner_id": "S001",
+      "applied_on": "2016-08-15",
+      "granted_on": "2018-08-15"
+    },
+    {
+      "patent_no": "990000000014SYN",
+      "title": "一种示例实用新型装置（合成）",
+      "patent_type": "utility_model",
+      "owner_id": "S002",
+      "applied_on": "2014-06-04",
+      "granted_on": "2015-06-04"
+    },
+    {
+      "patent_no": "990000000015SYN",
+      "title": "一种示例外观设计装置（合成）",
+      "patent_type": "design",
+      "owner_id": "S003",
+      "applied_on": "2020-01-07",
+      "granted_on": "2021-01-07"
+    },
+    {
+      "patent_no": "990000000016SYN",
+      "title": "一种示例发明装置（合成）",
+      "patent_type": "invention",
+      "owner_id": "S004",
+      "applied_on": "2015-05-04",
+      "granted_on": "2017-05-04"
+    },
+    {
+      "patent_no": "990000000017SYN",
+      "title": "一种示例实用新型装置（合成）",
+      "patent_type": "utility_model",
+      "owner_id": "S005",
+      "applied_on": "2018-06-08",
+      "granted_on": "2019-06-08"
+    },
+    {
+      "patent_no": "990000000018SYN",
+      "title": "一种示例外观设计装置（合成）",
+      "patent_type": "design",
+      "owner_id": "S006",
+      "applied_on": "2019-08-01",
+      "granted_on": "2020-08-01"
+    }
+  ],
+  "payments": [
+    {
+      "patent_no": "990000000001SYN",
+      "year": 1,
+      "due_on": "2020-12-01",
+      "paid_on": "2020-11-01",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000001SYN",
+      "year": 2,
+      "due_on": "2021-12-01",
+      "paid_on": "2021-11-01",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000001SYN",
+      "year": 3,
+      "due_on": "2022-12-01",
+      "paid_on": "2022-11-01",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000002SYN",
+      "year": 1,
+      "due_on": "2022-02-14",
+      "paid_on": "2022-01-14",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000002SYN",
+      "year": 2,
+      "due_on": "2023-02-14",
+      "paid_on": "2023-01-14",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000003SYN",
+      "year": 1,
+      "due_on": "2015-10-09",
+      "paid_on": "2015-09-09",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000003SYN",
+      "year": 2,
+      "due_on": "2016-10-09",
+      "paid_on": "2016-09-09",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000004SYN",
+      "year": 1,
+      "due_on": "2015-10-15",
+      "paid_on": "2015-09-15",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000004SYN",
+      "year": 2,
+      "due_on": "2016-10-15",
+      "paid_on": "2016-09-15",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000004SYN",
+      "year": 3,
+      "due_on": "2017-10-15",
+      "paid_on": "2017-09-15",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000005SYN",
+      "year": 1,
+      "due_on": "2015-12-10",
+      "paid_on": "2015-11-10",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000005SYN",
+      "year": 2,
+      "due_on": "2016-12-10",
+      "paid_on": "2016-11-10",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000006SYN",
+      "year": 1,
+      "due_on": "2017-07-08",
+      "paid_on": "2017-06-08",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    },
+    {
+      "patent_no": "990000000006SYN",
+      "year": 2,
+      "due_on": "2018-07-08",
+      "paid_on": "2018-06-08",
+      "on_time": true,
+      "note": "合成记录：按期缴纳（误报对照用）"
+    }
+  ]
+}

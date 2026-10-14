@@ -95,7 +95,9 @@ def test_authority_snapshots_exist_and_recorded():
     ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
     assert len(ledger) >= 3, "至少应有三份政策原文快照"
     for item in ledger:
-        path = data_dir() / "knowledge" / "raw" / (item["name"] + ".html")
+        # M1 起台账登记 file 字段（快照可能是 .html 或 .json）；缺省回落 name.html
+        fname = item.get("file") or (item["name"] + ".html")
+        path = data_dir() / "knowledge" / "raw" / fname
         assert path.is_file(), "快照文件缺失: %s" % path
         actual = hashlib.sha256(path.read_bytes()).hexdigest()
         assert actual == item["sha256"], "%s 的 sha256 与台账不一致" % item["name"]

@@ -1,0 +1,1285 @@
+{
+  "schema": "patfee.truth/v1",
+  "generated_by": "tools/gen_synthetic.py",
+  "generated_at": "1970-01-01T00:00:00Z",
+  "as_of_date": "2026-10-14",
+  "seed_source": "patfee-synthetic-v1",
+  "seed": "12805831459810633477",
+  "rules_coordinate": {
+    "manifest_schema": "patfee.rules.manifest/v1",
+    "rulesets": [
+      {
+        "id": "fee_schedule",
+        "version": "v2024",
+        "title": "专利收费标准表",
+        "doc_no": "国家知识产权局专利收费标准（专利业务办理系统公示）",
+        "anchor_from": "2024-08-06",
+        "anchor_to": "",
+        "sha256": "7d3824b326668c8088d76c2f04846c03c30ee5bb04e7899d3f4c42b9b8c33139",
+        "status_counts": {
+          "verified": 16,
+          "pending": 0,
+          "input_required": 0
+        }
+      },
+      {
+        "id": "reduction_316",
+        "version": "v2019",
+        "title": "调整专利收费减缴条件（阈值）",
+        "doc_no": "国家知识产权局公告第 316 号",
+        "anchor_from": "2019-07-01",
+        "anchor_to": "",
+        "sha256": "65b526ba4cafb3f50f1369c63f5237bed7838672cc2c8ddce144136d11b4c428",
+        "status_counts": {
+          "verified": 7,
+          "pending": 0,
+          "input_required": 0
+        }
+      },
+      {
+        "id": "reduction_594",
+        "version": "v2024",
+        "title": "调整部分专利收费标准和减缴政策（新增项目与减免）",
+        "doc_no": "国家知识产权局公告第 594 号",
+        "anchor_from": "2024-08-06",
+        "anchor_to": "",
+        "sha256": "75ab07e6334103eb7956c1c3b8b7724de3baa2b6f7e48ddbb858d5b7cffe5ced",
+        "status_counts": {
+          "verified": 5,
+          "pending": 0,
+          "input_required": 0
+        }
+      },
+      {
+        "id": "reduction_78",
+        "version": "v2016",
+        "title": "专利收费减缴办法（减缴比例与减缴项目）",
+        "doc_no": "《专利收费减缴办法》财税〔2016〕78 号",
+        "anchor_from": "2016-09-01",
+        "anchor_to": "",
+        "sha256": "aed8ac01cfc5094a97eab5c3cb38fdbf3e34aa192dc597365f13e0c3bfb53d79",
+        "status_counts": {
+          "verified": 4,
+          "pending": 0,
+          "input_required": 0
+        }
+      }
+    ],
+    "scope_gate": [
+      "calc",
+      "late",
+      "reduction",
+      "check"
+    ]
+  },
+  "controls": {
+    "note": "误报对照集：基准层只读本声明，不自行挑选对照档案。clean = 应零命中；degrade = 应报 warning（不是 fail）。",
+    "clean": [
+      "late.invention.y05.m1",
+      "late.invention.y05.m2",
+      "late.invention.y05.m6",
+      "payment.990000000001SYN.y01",
+      "payment.990000000001SYN.y02",
+      "payment.990000000001SYN.y03",
+      "payment.990000000002SYN.y01",
+      "payment.990000000002SYN.y02",
+      "payment.990000000003SYN.y01",
+      "payment.990000000003SYN.y02",
+      "payment.990000000004SYN.y01",
+      "payment.990000000004SYN.y02",
+      "payment.990000000004SYN.y03",
+      "payment.990000000005SYN.y01",
+      "payment.990000000005SYN.y02",
+      "payment.990000000006SYN.y01",
+      "payment.990000000006SYN.y02"
+    ],
+    "degrade": [
+      "late.invention.y05.m7"
+    ],
+    "clean_basis": "按期缴纳且金额正确的合成记录 / 未超滞纳金上限的逾期件",
+    "degrade_basis": "逾期月数超过规则包 late.grace_months → 只报 late_exceeds_cap（风险提示≠法律判定）"
+  },
+  "coverage": {
+    "by_archive": {
+      "ladder_boundary": 30,
+      "late_exceeds_cap": 1,
+      "late_months": 3,
+      "multi_policy": 3,
+      "reduction_boundary": 9
+    },
+    "by_kind": {
+      "annuity": 30,
+      "late": 4,
+      "reduction": 12
+    },
+    "patent_types": [
+      "invention",
+      "utility_model",
+      "design"
+    ],
+    "boundary_notes": [
+      "阶梯：每类专利每个档的首年与末年各一条（含恰好跳档年）",
+      "滞纳金：逾期 1/2/6 月（6 = 规则包上限）+ 7 月（超上限，应降级）",
+      "费减：阈值恰好相等 / 略低；共同主体数 1 与 2；跨 2019-07-01 锚点两套阈值",
+      "多政策：开放许可 15% 与费减 85%/70% 并存时择最优惠且不叠加"
+    ]
+  },
+  "cases": [
+    {
+      "id": "annuity.invention.y01",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 1,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "900.00",
+        "tier_from": 1,
+        "tier_to": 3,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.invention.y03",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 3,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "900.00",
+        "tier_from": 1,
+        "tier_to": 3,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.invention.y04",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 4,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "1200.00",
+        "tier_from": 4,
+        "tier_to": 6,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.invention.y06",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 6,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "1200.00",
+        "tier_from": 4,
+        "tier_to": 6,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.invention.y07",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 7,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "2000.00",
+        "tier_from": 7,
+        "tier_to": 9,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.invention.y09",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 9,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "2000.00",
+        "tier_from": 7,
+        "tier_to": 9,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.invention.y10",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 10,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "4000.00",
+        "tier_from": 10,
+        "tier_to": 12,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.invention.y12",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 12,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "4000.00",
+        "tier_from": 10,
+        "tier_to": 12,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.invention.y13",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 13,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "6000.00",
+        "tier_from": 13,
+        "tier_to": 15,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.invention.y15",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 15,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "6000.00",
+        "tier_from": 13,
+        "tier_to": 15,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.invention.y16",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 16,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "8000.00",
+        "tier_from": 16,
+        "tier_to": 20,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.invention.y20",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 20,
+      "expect": {
+        "entry_key": "annuity.invention",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "8000.00",
+        "tier_from": 16,
+        "tier_to": 20,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.utility_model.y01",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000017SYN",
+      "patent_type": "utility_model",
+      "year": 1,
+      "expect": {
+        "entry_key": "annuity.utility_model",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "600.00",
+        "tier_from": 1,
+        "tier_to": 3,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.utility_model.y03",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000017SYN",
+      "patent_type": "utility_model",
+      "year": 3,
+      "expect": {
+        "entry_key": "annuity.utility_model",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "600.00",
+        "tier_from": 1,
+        "tier_to": 3,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.utility_model.y04",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000017SYN",
+      "patent_type": "utility_model",
+      "year": 4,
+      "expect": {
+        "entry_key": "annuity.utility_model",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "900.00",
+        "tier_from": 4,
+        "tier_to": 5,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.utility_model.y05",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000017SYN",
+      "patent_type": "utility_model",
+      "year": 5,
+      "expect": {
+        "entry_key": "annuity.utility_model",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "900.00",
+        "tier_from": 4,
+        "tier_to": 5,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.utility_model.y06",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000017SYN",
+      "patent_type": "utility_model",
+      "year": 6,
+      "expect": {
+        "entry_key": "annuity.utility_model",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "1200.00",
+        "tier_from": 6,
+        "tier_to": 8,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.utility_model.y08",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000017SYN",
+      "patent_type": "utility_model",
+      "year": 8,
+      "expect": {
+        "entry_key": "annuity.utility_model",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "1200.00",
+        "tier_from": 6,
+        "tier_to": 8,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.utility_model.y09",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000017SYN",
+      "patent_type": "utility_model",
+      "year": 9,
+      "expect": {
+        "entry_key": "annuity.utility_model",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "2000.00",
+        "tier_from": 9,
+        "tier_to": 10,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.utility_model.y10",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000017SYN",
+      "patent_type": "utility_model",
+      "year": 10,
+      "expect": {
+        "entry_key": "annuity.utility_model",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "2000.00",
+        "tier_from": 9,
+        "tier_to": 10,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.design.y01",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 1,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "600.00",
+        "tier_from": 1,
+        "tier_to": 3,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.design.y03",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 3,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "600.00",
+        "tier_from": 1,
+        "tier_to": 3,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.design.y04",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 4,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "900.00",
+        "tier_from": 4,
+        "tier_to": 5,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.design.y05",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 5,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "900.00",
+        "tier_from": 4,
+        "tier_to": 5,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.design.y06",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 6,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "1200.00",
+        "tier_from": 6,
+        "tier_to": 8,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.design.y08",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 8,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "1200.00",
+        "tier_from": 6,
+        "tier_to": 8,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.design.y09",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 9,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "2000.00",
+        "tier_from": 9,
+        "tier_to": 10,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.design.y10",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 10,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "2000.00",
+        "tier_from": 9,
+        "tier_to": 10,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "annuity.design.y11",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 11,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "3000.00",
+        "tier_from": 11,
+        "tier_to": 15,
+        "tier_is_first_year": true,
+        "tier_is_last_year": false
+      }
+    },
+    {
+      "id": "annuity.design.y15",
+      "kind": "annuity",
+      "archive": "ladder_boundary",
+      "patent_no": "990000000018SYN",
+      "patent_type": "design",
+      "year": 15,
+      "expect": {
+        "entry_key": "annuity.design",
+        "ruleset": "fee_schedule@v2024",
+        "amount": "3000.00",
+        "tier_from": 11,
+        "tier_to": 15,
+        "tier_is_first_year": false,
+        "tier_is_last_year": true
+      }
+    },
+    {
+      "id": "late.invention.y05.m1",
+      "kind": "late",
+      "archive": "late_months",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 5,
+      "inputs": {
+        "due_on": "2019-05-04",
+        "paid_on": "2019-06-04",
+        "overdue_months": 1
+      },
+      "expect": {
+        "entry_key": "annuity.invention",
+        "full_annuity": "1200.00",
+        "monthly_rate": "0.05",
+        "month_basis": "calendar_month",
+        "grace_months": 6,
+        "surcharge": "60.00",
+        "exceeds_cap": false,
+        "reason_code": null
+      }
+    },
+    {
+      "id": "late.invention.y05.m2",
+      "kind": "late",
+      "archive": "late_months",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 5,
+      "inputs": {
+        "due_on": "2019-05-04",
+        "paid_on": "2019-07-04",
+        "overdue_months": 2
+      },
+      "expect": {
+        "entry_key": "annuity.invention",
+        "full_annuity": "1200.00",
+        "monthly_rate": "0.05",
+        "month_basis": "calendar_month",
+        "grace_months": 6,
+        "surcharge": "120.00",
+        "exceeds_cap": false,
+        "reason_code": null
+      }
+    },
+    {
+      "id": "late.invention.y05.m6",
+      "kind": "late",
+      "archive": "late_months",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 5,
+      "inputs": {
+        "due_on": "2019-05-04",
+        "paid_on": "2019-11-04",
+        "overdue_months": 6
+      },
+      "expect": {
+        "entry_key": "annuity.invention",
+        "full_annuity": "1200.00",
+        "monthly_rate": "0.05",
+        "month_basis": "calendar_month",
+        "grace_months": 6,
+        "surcharge": "360.00",
+        "exceeds_cap": false,
+        "reason_code": null
+      }
+    },
+    {
+      "id": "late.invention.y05.m7",
+      "kind": "late",
+      "archive": "late_exceeds_cap",
+      "patent_no": "990000000016SYN",
+      "patent_type": "invention",
+      "year": 5,
+      "inputs": {
+        "due_on": "2019-05-04",
+        "paid_on": "2019-12-04",
+        "overdue_months": 7
+      },
+      "expect": {
+        "entry_key": "annuity.invention",
+        "full_annuity": "1200.00",
+        "monthly_rate": "0.05",
+        "month_basis": "calendar_month",
+        "grace_months": 6,
+        "surcharge": "420.00",
+        "exceeds_cap": true,
+        "reason_code": "late_exceeds_cap"
+      }
+    },
+    {
+      "id": "reduction.sole.individual.below",
+      "kind": "reduction",
+      "archive": "reduction_boundary",
+      "desc": "单主体个人，月均与年收入均略低于阈值 → 合格，减缴 85%",
+      "as_of_year": 2026,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": false,
+      "applicants": [
+        {
+          "kind": "individual",
+          "name": "示例个人 A（合成）",
+          "monthly_avg_income": "4999.99",
+          "annual_income": "59999.99"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 1,
+        "combined": false,
+        "eligible": true,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": "0.85",
+        "candidates": [
+          {
+            "policy": "费减",
+            "rate": "0.85",
+            "amount": "180.00"
+          }
+        ],
+        "chosen": {
+          "policy": "费减",
+          "rate": "0.85",
+          "amount": "180.00"
+        },
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": "180.00"
+      }
+    },
+    {
+      "id": "reduction.sole.individual.at_threshold",
+      "kind": "reduction",
+      "archive": "reduction_boundary",
+      "desc": "单主体个人，月均与年收入**恰好等于**阈值 → 不合格（『低于』为严格小于）",
+      "as_of_year": 2026,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": false,
+      "applicants": [
+        {
+          "kind": "individual",
+          "name": "示例个人 A（合成）",
+          "monthly_avg_income": "5000",
+          "annual_income": "60000"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 1,
+        "combined": false,
+        "eligible": false,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": null,
+        "candidates": [],
+        "chosen": null,
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": null
+      }
+    },
+    {
+      "id": "reduction.sole.entity.below",
+      "kind": "reduction",
+      "archive": "reduction_boundary",
+      "desc": "单主体单位，应纳税所得额略低于阈值 → 合格，减缴 85%",
+      "as_of_year": 2026,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": false,
+      "applicants": [
+        {
+          "kind": "entity",
+          "name": "示例科技（合成）有限公司",
+          "taxable_income": "999999.99"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 1,
+        "combined": false,
+        "eligible": true,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": "0.85",
+        "candidates": [
+          {
+            "policy": "费减",
+            "rate": "0.85",
+            "amount": "180.00"
+          }
+        ],
+        "chosen": {
+          "policy": "费减",
+          "rate": "0.85",
+          "amount": "180.00"
+        },
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": "180.00"
+      }
+    },
+    {
+      "id": "reduction.sole.entity.at_threshold",
+      "kind": "reduction",
+      "archive": "reduction_boundary",
+      "desc": "单主体单位，应纳税所得额**恰好等于**阈值 → 不合格",
+      "as_of_year": 2026,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": false,
+      "applicants": [
+        {
+          "kind": "entity",
+          "name": "示例科技（合成）有限公司",
+          "taxable_income": "1000000"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 1,
+        "combined": false,
+        "eligible": false,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": null,
+        "candidates": [],
+        "chosen": null,
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": null
+      }
+    },
+    {
+      "id": "reduction.combined.both_below",
+      "kind": "reduction",
+      "archive": "reduction_boundary",
+      "desc": "两个主体均合格 → 共同主体，减缴 70%",
+      "as_of_year": 2026,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": false,
+      "applicants": [
+        {
+          "kind": "individual",
+          "name": "示例个人 A（合成）",
+          "monthly_avg_income": "4999.99",
+          "annual_income": "59999.99"
+        },
+        {
+          "kind": "individual",
+          "name": "示例个人 B（合成）",
+          "monthly_avg_income": "4999.99",
+          "annual_income": "59999.99"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 2,
+        "combined": true,
+        "eligible": true,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": "0.70",
+        "candidates": [
+          {
+            "policy": "费减",
+            "rate": "0.70",
+            "amount": "360.00"
+          }
+        ],
+        "chosen": {
+          "policy": "费减",
+          "rate": "0.70",
+          "amount": "360.00"
+        },
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": "360.00"
+      }
+    },
+    {
+      "id": "reduction.combined.one_at_threshold",
+      "kind": "reduction",
+      "archive": "reduction_boundary",
+      "desc": "两个主体中一人恰好等于阈值 → 共同主体须**分别**符合，故整体不合格",
+      "as_of_year": 2026,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": false,
+      "applicants": [
+        {
+          "kind": "individual",
+          "name": "示例个人 A（合成）",
+          "monthly_avg_income": "4999.99",
+          "annual_income": "59999.99"
+        },
+        {
+          "kind": "individual",
+          "name": "示例个人 B（合成）",
+          "monthly_avg_income": "5000",
+          "annual_income": "60000"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 2,
+        "combined": true,
+        "eligible": false,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": null,
+        "candidates": [],
+        "chosen": null,
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": null
+      }
+    },
+    {
+      "id": "reduction.combined.entity_and_individual",
+      "kind": "reduction",
+      "archive": "reduction_boundary",
+      "desc": "单位 + 个人共同申请，均合格 → 减缴 70%",
+      "as_of_year": 2026,
+      "patent_type": "utility_model",
+      "year": 5,
+      "open_license": false,
+      "applicants": [
+        {
+          "kind": "entity",
+          "name": "示例制造（合成）有限公司",
+          "taxable_income": "999999.99"
+        },
+        {
+          "kind": "individual",
+          "name": "示例个人 C（合成）",
+          "monthly_avg_income": "4999.99",
+          "annual_income": "59999.99"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.utility_model",
+        "applicant_count": 2,
+        "combined": true,
+        "eligible": true,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "900.00",
+        "reduction_rate": "0.70",
+        "candidates": [
+          {
+            "policy": "费减",
+            "rate": "0.70",
+            "amount": "270.00"
+          }
+        ],
+        "chosen": {
+          "policy": "费减",
+          "rate": "0.70",
+          "amount": "270.00"
+        },
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": "270.00"
+      }
+    },
+    {
+      "id": "reduction.anchor.2018.below_old_threshold",
+      "kind": "reduction",
+      "archive": "reduction_boundary",
+      "desc": "锚定 2018 年：月均 3400 低于 316 号前阈值 3500 → 合格（历史口径）",
+      "as_of_year": 2018,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": false,
+      "applicants": [
+        {
+          "kind": "individual",
+          "name": "示例个人 A（合成）",
+          "monthly_avg_income": "3400",
+          "annual_income": "40800"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 1,
+        "combined": false,
+        "eligible": true,
+        "thresholds": {
+          "individual_monthly_income": "3500",
+          "individual_annual_income": "42000",
+          "entity_taxable_income": "300000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": "0.85",
+        "candidates": [
+          {
+            "policy": "费减",
+            "rate": "0.85",
+            "amount": "180.00"
+          }
+        ],
+        "chosen": {
+          "policy": "费减",
+          "rate": "0.85",
+          "amount": "180.00"
+        },
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": "180.00"
+      }
+    },
+    {
+      "id": "reduction.anchor.2018.above_old_threshold",
+      "kind": "reduction",
+      "archive": "reduction_boundary",
+      "desc": "锚定 2018 年：月均 4000 高于 316 号前阈值 3500 → 不合格（历史口径）",
+      "as_of_year": 2018,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": false,
+      "applicants": [
+        {
+          "kind": "individual",
+          "name": "示例个人 A（合成）",
+          "monthly_avg_income": "4000",
+          "annual_income": "48000"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 1,
+        "combined": false,
+        "eligible": false,
+        "thresholds": {
+          "individual_monthly_income": "3500",
+          "individual_annual_income": "42000",
+          "entity_taxable_income": "300000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": null,
+        "candidates": [],
+        "chosen": null,
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": null
+      }
+    },
+    {
+      "id": "multi_policy.sole_eligible_and_open_license",
+      "kind": "reduction",
+      "archive": "multi_policy",
+      "desc": "单主体合格 + 开放许可并存 → 择最优惠（减缴 85% 优于 15%），不叠加",
+      "as_of_year": 2026,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": true,
+      "applicants": [
+        {
+          "kind": "individual",
+          "name": "示例个人 A（合成）",
+          "monthly_avg_income": "4999.99",
+          "annual_income": "59999.99"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 1,
+        "combined": false,
+        "eligible": true,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": "0.85",
+        "candidates": [
+          {
+            "policy": "费减",
+            "rate": "0.85",
+            "amount": "180.00"
+          },
+          {
+            "policy": "开放许可年费减免",
+            "rate": "0.15",
+            "amount": "1020.00"
+          }
+        ],
+        "chosen": {
+          "policy": "费减",
+          "rate": "0.85",
+          "amount": "180.00"
+        },
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": true,
+        "payable": "180.00"
+      }
+    },
+    {
+      "id": "multi_policy.ineligible_but_open_license",
+      "kind": "reduction",
+      "archive": "multi_policy",
+      "desc": "单主体不合格 + 开放许可 → 只有 15% 可用（证明择一是按候选集，不是固定费减）",
+      "as_of_year": 2026,
+      "patent_type": "invention",
+      "year": 5,
+      "open_license": true,
+      "applicants": [
+        {
+          "kind": "entity",
+          "name": "示例科技（合成）有限公司",
+          "taxable_income": "1000000"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.invention",
+        "applicant_count": 1,
+        "combined": false,
+        "eligible": false,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "1200.00",
+        "reduction_rate": null,
+        "candidates": [
+          {
+            "policy": "开放许可年费减免",
+            "rate": "0.15",
+            "amount": "1020.00"
+          }
+        ],
+        "chosen": {
+          "policy": "开放许可年费减免",
+          "rate": "0.15",
+          "amount": "1020.00"
+        },
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": false,
+        "payable": "1020.00"
+      }
+    },
+    {
+      "id": "multi_policy.combined_and_open_license",
+      "kind": "reduction",
+      "archive": "multi_policy",
+      "desc": "共同主体合格（70%）+ 开放许可（15%）→ 择 70%，不叠加",
+      "as_of_year": 2026,
+      "patent_type": "design",
+      "year": 3,
+      "open_license": true,
+      "applicants": [
+        {
+          "kind": "individual",
+          "name": "示例个人 A（合成）",
+          "monthly_avg_income": "4999.99",
+          "annual_income": "59999.99"
+        },
+        {
+          "kind": "individual",
+          "name": "示例个人 B（合成）",
+          "monthly_avg_income": "4999.99",
+          "annual_income": "59999.99"
+        }
+      ],
+      "expect": {
+        "entry_key": "annuity.design",
+        "applicant_count": 2,
+        "combined": true,
+        "eligible": true,
+        "thresholds": {
+          "individual_monthly_income": "5000",
+          "individual_annual_income": "60000",
+          "entity_taxable_income": "1000000"
+        },
+        "anchor_316": "2019-07-01",
+        "full_annuity": "600.00",
+        "reduction_rate": "0.70",
+        "candidates": [
+          {
+            "policy": "费减",
+            "rate": "0.70",
+            "amount": "180.00"
+          },
+          {
+            "policy": "开放许可年费减免",
+            "rate": "0.15",
+            "amount": "510.00"
+          }
+        ],
+        "chosen": {
+          "policy": "费减",
+          "rate": "0.70",
+          "amount": "180.00"
+        },
+        "no_double_benefit": "choose_most_favorable",
+        "no_double_benefit_applied": true,
+        "payable": "180.00"
+      }
+    }
+  ]
+}

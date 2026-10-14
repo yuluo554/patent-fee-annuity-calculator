@@ -1,0 +1,149 @@
+{
+  "schema": "patfee.clauses/v1",
+  "generated_by": "手工登记（依据索引；原文快照由 tools/fetch_authorities.py 抓取）",
+  "basis_date": "2026-10-14",
+  "note": "本索引是**上位法的条目级定位台账**，不承载费率数值（费率数值一律在 data/rules/）。条目挂原文快照坐标与核对结论；未核到的一律显式记 pending，不填猜测值。",
+  "documents": [
+    {
+      "id": "patent_law",
+      "title": "中华人民共和国专利法",
+      "kind": "law",
+      "issuer": "全国人民代表大会常务委员会",
+      "doc_no": null,
+      "doc_no_note": "主席令号未从官方页面核到：flk.npc.gov.cn 条款接口仅返回目录树（无正文/无落款），gov.cn 政策文件库检索未命中该年份版本。按纪律不填猜测值。",
+      "version": "2020 年第四次修正",
+      "published": "2020-10-17",
+      "effective_from": "2021-06-01",
+      "supersedes": "2008-12-27 公布、2009-10-01 施行版本",
+      "current": true,
+      "verification": "metadata_verified",
+      "source": {
+        "channel": "国家法律法规数据库（flk.npc.gov.cn，全国人大常委会）",
+        "url": "https://flk.npc.gov.cn/law-search/search/flfgDetails?bbbs=ff808081752b7d430175e4651cbd1547",
+        "retrieved": "2026-10-14"
+      },
+      "snapshot": "data/knowledge/raw/flk_patent_law_2020.json",
+      "chapter_count": 8,
+      "chapters": [
+        "第一章 总则",
+        "第二章 授予专利权的条件",
+        "第三章 专利的申请",
+        "第四章 专利申请的审查和批准",
+        "第五章 专利权的期限、终止和无效",
+        "第六章 专利实施的特别许可",
+        "第七章 专利权的保护",
+        "第八章 附则"
+      ],
+      "clauses": [],
+      "clauses_note": "本轮只核到**文书级**元数据（公布/施行日期、颁布机关、现行有效性、章目录）。条款级正文未取得（flk 条款接口只回目录树）→ 本文件**不登记条款级结论**，避免录入未经原文核对的条号。年费缴纳义务在实施细则第 114/115 条落地（见下），本表无需重复。"
+    },
+    {
+      "id": "patent_law_rules",
+      "title": "中华人民共和国专利法实施细则",
+      "kind": "administrative_regulation",
+      "issuer": "国务院",
+      "doc_no": "国务院令第 769 号",
+      "version": "2023-12-11 修订公布（第四次修订）",
+      "published": "2023-12-11",
+      "effective_from": "2024-01-20",
+      "supersedes": "国务院令第 569 号（2010-02-01 施行）",
+      "current": true,
+      "verification": "clause_verified",
+      "source": {
+        "channel": "国务院公报（gov.cn）",
+        "url": "https://www.gov.cn/gongbao/2024/issue_11086/202401/content_6924971.html",
+        "retrieved": "2026-10-14"
+      },
+      "snapshot": "data/knowledge/raw/gov_769_rules.html",
+      "snapshot_note": "国务院公报一页含《国务院关于修改〈中华人民共和国专利法实施细则〉的决定》全文与修订后《实施细则》全文，本表所引第 5/110/114/115/116 条均逐字取自本快照。",
+      "chapters": [],
+      "clauses": [
+        {
+          "no": "第五条",
+          "title": "期限的计算",
+          "gist": "专利法和本细则规定的各种期限开始的当日不计算在期限内，自下一日开始计算。期限以年或者月计算的，以其最后一月的相应日为期限届满日；该月无相应日的，以该月最后一日为期限届满日；期限届满日是法定休假日的，以休假日后的第一个工作日为期限届满日。",
+          "used_by": [
+            "late.month_basis"
+          ],
+          "conclusion": "『期限以年或者月计算的，以其最后一月的相应日为期限届满日』→ 滞纳金月数口径为**自然月**（calendar_month），非三十日近似。",
+          "verified": true
+        },
+        {
+          "no": "第一百一十条",
+          "title": "应缴纳的费用种类",
+          "gist": "向国务院专利行政部门申请专利和办理其他手续时，应当缴纳下列费用：（一）申请费、申请附加费、公布印刷费、优先权要求费；（二）发明专利申请实质审查费、复审费；（三）年费；（四）恢复权利请求费、延长期限请求费；（五）著录事项变更费、专利权评价报告请求费、无效宣告请求费、专利文件副本证明费。前款所列各种费用的缴纳标准，由国务院发展改革部门、财政部门会同国务院专利行政部门按照职责分工规定。",
+          "used_by": [
+            "check.fee.*"
+          ],
+          "conclusion": "确认 594 号新增的『专利权期限补偿请求费』『专利权补偿期年费』不在本条第（一）～（五）项列举内 —— 属 2024 年新设项目，其**收费标准**另由发改价格〔2024〕1156 号与公告第 594 号规定（本表只作条目定位，不承载金额）。",
+          "verified": true
+        },
+        {
+          "no": "第一百一十四条",
+          "title": "授予专利权当年年费的缴纳",
+          "gist": "申请人办理登记手续时，应当缴纳授予专利权当年的年费；期满未缴纳或者未缴足的，视为未办理登记手续。",
+          "used_by": [
+            "annuity.*"
+          ],
+          "conclusion": "当年年费在办理登记手续时缴纳；第 115 条的『上一年度期满前』规则只适用于**授予专利权当年以后**的年费。",
+          "verified": true
+        },
+        {
+          "no": "第一百一十五条",
+          "title": "年费缴纳期限、补缴期与滞纳金",
+          "gist": "授予专利权当年以后的年费应当在上一年度期满前缴纳。专利权人未缴纳或者未缴足的，国务院专利行政部门应当通知专利权人自应当缴纳年费期满之日起 6 个月内补缴，同时缴纳滞纳金；滞纳金的金额按照每超过规定的缴费时间 1 个月，加收当年全额年费的 5% 计算；期满未缴纳的，专利权自应当缴纳年费期满之日起终止。",
+          "used_by": [
+            "late.grace_months",
+            "late.monthly_rate"
+          ],
+          "conclusion": "滞纳金计收月数上限 = **6**（自应当缴纳年费期满之日起 6 个月内补缴）；月费率为**当年全额年费的 5%**；期满未缴 → 专利权自应当缴纳年费期满之日起**终止**（进入失效流程的时点）。与费率表页「（八）年费滞纳金」表述互证。",
+          "verified": true
+        },
+        {
+          "no": "第一百一十六条",
+          "title": "其他费用的缴纳期限",
+          "gist": "恢复权利请求费应当在本细则规定的相关期限内缴纳；期满未缴纳或者未缴足的，视为未提出请求。延长期限请求费应当在相应期限届满之日前缴纳；期满未缴纳或者未缴足的，视为未提出请求。著录事项变更费、专利权评价报告请求费、无效宣告请求费应当自提出请求之日起 1 个月内缴纳；期满未缴纳或者未缴足的，视为未提出请求。",
+          "used_by": [
+            "check.fee.ruc",
+            "check.fee.evaluation_report"
+          ],
+          "conclusion": "恢复权利请求费与专利权评价报告请求费的**缴纳期限**依本条；金额取自现行费率表（见 data/rules）。",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "exam_guidelines",
+      "title": "专利审查指南",
+      "kind": "departmental_rule",
+      "issuer": "国家知识产权局",
+      "doc_no": "国家知识产权局令第 78 号（基准版本）/ 第 84 号（现行最新修改）",
+      "version": "2023-12-21 公布修订版；2025-11-10 令第 84 号修改，2026-01-01 施行",
+      "published": "2023-12-21",
+      "effective_from": "2024-01-20",
+      "latest_amendment": {
+        "doc_no": "国家知识产权局令第 84 号",
+        "approved": "2025-09-18",
+        "published": "2025-11-10",
+        "effective_from": "2026-01-01"
+      },
+      "supersedes": "2010-01-21 公布的《专利审查指南》及其后相关局令、公告（令第 78 号明示同时废止）",
+      "current": true,
+      "verification": "metadata_verified",
+      "source": {
+        "channel": "国务院公报（gov.cn）",
+        "url": "https://www.gov.cn/gongbao/2024/issue_11166/202402/content_6931868.html",
+        "retrieved": "2026-10-14"
+      },
+      "snapshot": "data/knowledge/raw/cnipa_guidelines_78.html",
+      "amendment_source": {
+        "channel": "国务院公报（gov.cn）",
+        "url": "https://www.gov.cn/gongbao/2026/issue_12526/202601/content_7056486.html",
+        "retrieved": "2026-10-14"
+      },
+      "amendment_snapshot": "data/knowledge/raw/cnipa_guidelines_84.html",
+      "clauses": [],
+      "clauses_note": "本轮核到**文书级**元数据：基准版本为局令第 78 号（自 2024-01-20 施行，同时废止 2010 年版），现行最新修改为局令第 84 号（自 2026-01-01 施行）。指南正文（具体章节）入库须另取 CNIPA 官网版本，本轮未逐节核对 → 不登记条款级结论。第 84 号修改内容（发明人身份信息、代理机构核实义务、分案优先权声明、动植物品种等）经比对与**年费/费减计算口径无关**。"
+    }
+  ]
+}

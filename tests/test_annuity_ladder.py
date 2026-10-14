@@ -36,19 +36,71 @@ def test_out_of_range_reason_code(lib):
     assert "out_of_range" in result.reasons
 
 
-def test_gate_blocks_without_preview(lib):
-    result = annuity.compute_annuity(lib, PatentType.INVENTION, 5)
+def _library_with_pending_ladder():
+    """构造 pending 阶梯的最小规则库：M1 后真实规则包已全 verified，
+    门控拦截语义改用合成库验证（与 test_benchmark._library_with_ladder 同法）。"""
+    from pathlib import Path
+
+    from patfee.rules.loader import RuleLibrary, Ruleset
+
+    raw_rs = {
+        "schema": "patfee.ruleset/v1",
+        "id": "probe",
+        "version": "v1",
+        "title": "probe",
+        "doc_no": "probe",
+        "entries": [
+            {
+                "key": "annuity.invention",
+                "label": "probe",
+                "kind": "ladder",
+                "status": "pending",
+                "scopes": ["calc"],
+                "ladder": [
+                    {"from_year": 1, "to_year": 3, "amount": 900, "label": "1-3"},
+                    {"from_year": 4, "to_year": 6, "amount": 1200, "label": "4-6"},
+                ],
+                "basis": {"doc_no": "d", "clause": "c", "url": "http://x", "retrieved": "2026-10-14"},
+            }
+        ],
+    }
+    manifest = {
+        "schema": "patfee.rules.manifest/v1",
+        "rulesets": [],
+        "scopes": ["calc"],
+        "benchmarks": {},
+        "exemptions": {
+            "small_int_abs_limit": 100, "exempt_integers": [],
+            "exempt_decimals": ["0.01", "0.1", "0.5", "1.0", "2.0"], "inline_allow_mark": "literal-ok",
+        },
+        "banned_tokens": {"integers": [], "decimals": []},
+    }
+    return RuleLibrary(manifest, [Ruleset(raw_rs)], Path("."))
+
+
+def test_gate_blocks_pending_ladder_even_when_value_present():
+    """门控语义（M1 后用合成库守护）：值在但 status=pending → 拒绝进计算路径。"""
+    result = annuity.compute_annuity(_library_with_pending_ladder(), PatentType.INVENTION, 5)
     assert result.amount is None
     assert "gated_pending" in result.reasons
     assert result.basis is not None, "被拦时仍应给出依据坐标，便于定位是哪条没核对"
 
 
-def test_preview_computes_but_carries_warning(lib):
-    result = annuity.compute_annuity(lib, PatentType.INVENTION, 5, preview=True)
+def test_verified_rules_compute_without_warning(lib):
+    """M1 后：真实规则包全 verified → 正常计算、无预览警示、无原因码。"""
+    result = annuity.compute_annuity(lib, PatentType.INVENTION, 5)
     assert result.amount == Decimal("1200.00")
     assert result.tier is not None
     assert (result.tier.from_year, result.tier.to_year) == (4, 6)
-    assert result.warnings, "预览口径必须带提示"
+    assert result.reasons == ()
+    assert result.warnings == (), "verified 条目不得携带预览警示"
+
+
+def test_preview_of_verified_rules_carries_no_pending_warning(lib):
+    """--preview 对 verified 条目不该出现『尚未核对』警示（该警示只属 pending）。"""
+    result = annuity.compute_annuity(lib, PatentType.INVENTION, 5, preview=True)
+    assert result.amount == Decimal("1200.00")
+    assert result.warnings == ()
 
 
 @pytest.mark.parametrize(

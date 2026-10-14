@@ -45,12 +45,37 @@ def test_status_values_are_valid():
             assert entry.status in valid, "%s 的 status 非法: %s" % (entry.key, entry.status)
 
 
-def test_m0_all_entries_pending_with_traceable_values():
-    """M0 口径（plan/06 D20）：规则值可溯源但一律 pending。"""
+def test_m1_all_entries_verified_with_review_trace():
+    """M1 口径（HANDOFF-M1 出口判据）：verified 计数 > 0 且**每条**挂复核痕迹。
+
+    复核痕迹写在 ``basis.note``（条目定位 + 核对结论）——"值可溯源"（M0）与
+    "已逐项复核"（M1）在字段上是可区分的。
+    """
     lib = load_library(data_dir())
     counts = lib.status_counts()
-    assert counts[STATUS_VERIFIED] == 0, "M0 阶段不应有 verified 条目（M1 逐项复核后才置 verified）"
-    assert counts[STATUS_PENDING] > 0
+    assert counts[STATUS_VERIFIED] > 0, "M1 出口判据：verified 计数必须 > 0"
+    for rs in lib.rulesets.values():
+        for entry in rs.entries.values():
+            assert entry.status == STATUS_VERIFIED, (
+                "%s 仍为 %s —— M1 逐项复核应全部完成（或显式降级并在台账记录原因）"
+                % (entry.key, entry.status)
+            )
+            note = (entry.basis or {}).get("note", "")
+            assert "M1 逐项复核" in note, "%s 的 basis.note 缺复核痕迹" % entry.key
+
+
+def test_late_grace_and_month_basis_resolved_from_rules():
+    """滞纳金上限与月数口径由规则包承载（M1 依实施细则落值），值非空。
+
+    依据：《专利法实施细则》（国务院令第 769 号）第 115 条（6 个月补缴期）与
+    第 5 条（自然月口径）。这两个值原为 null → missing_value；M1 后必须可用。
+    """
+    lib = load_library(data_dir())
+    grace = lib.ruleset("fee_schedule").get("late.grace_months")
+    basis = lib.ruleset("fee_schedule").get("late.month_basis")
+    assert grace.decimal() is not None, "late.grace_months 未落值"
+    assert basis.value, "late.month_basis 未落值"
+    assert basis.value == "calendar_month"
 
 
 def test_amounts_parsed_as_decimal_not_float():
