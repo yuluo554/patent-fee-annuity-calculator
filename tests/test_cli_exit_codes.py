@@ -185,7 +185,139 @@ def test_bench_exit_0_when_implemented_suites_pass(capsys):
     assert run(["bench"]) == 0
     out = capsys.readouterr().out
     assert "b1_ladder" in out
-    assert "未实装" in out, "未实装套件必须显式标出，不许静默通过"
+    assert "b4_portfolio" in out, "未实装套件必须显式标出，不许静默通过"
+
+
+# ------------------------------------------------------------ M2：reduction / --with-late
+
+@pytest.fixture()
+def applicants_json(tmp_path):
+    p = tmp_path / "applicants.json"
+    p.write_text(json.dumps({
+        "as_of_year": 2026, "patent_type": "invention", "year": 5,
+        "applicants": [{"kind": "individual", "monthly_avg_income": "4999.99",
+                        "annual_income": "59999.99"}],
+    }, ensure_ascii=False), encoding="utf-8")
+    return p
+
+
+@pytest.fixture()
+def late_json(tmp_path):
+    p = tmp_path / "late.json"
+    p.write_text(json.dumps({
+        "patent_type": "invention", "year": 5,
+        "due_on": "2020-05-04", "paid_on": "2020-07-04",
+    }, ensure_ascii=False), encoding="utf-8")
+    return p
+
+
+def test_reduction_eligible_exit_0(applicants_json, capsys):
+    assert run(["reduction", str(applicants_json)]) == 0
+    out = capsys.readouterr().out
+    assert "资格结论: 合格" in out
+    assert "180.00" in out
+    assert "不构成法律或代理意见" in out, "免责声明为强制输出"
+
+
+def test_reduction_ineligible_is_valid_conclusion_exit_0(tmp_path, capsys):
+    """不合格是有效结论（不是降级）：恰好等于阈值 → exit 0。"""
+    p = tmp_path / "at.json"
+    p.write_text(json.dumps({
+        "as_of_year": 2026, "patent_type": "invention", "year": 5,
+        "applicants": [{"kind": "individual", "monthly_avg_income": "5000",
+                        "annual_income": "60000"}],
+    }, ensure_ascii=False), encoding="utf-8")
+    assert run(["reduction", str(p)]) == 0
+    out = capsys.readouterr().out
+    assert "资格结论: 不合格" in out
+    assert "应缴年费" not in out
+
+
+def test_reduction_preview_still_exit_1(applicants_json, capsys):
+    assert run(["reduction", str(applicants_json), "--preview"]) == 1
+    out = capsys.readouterr().out
+    assert "不得作为缴费依据" in out
+
+
+def test_reduction_json_output(applicants_json, capsys):
+    assert run(["reduction", str(applicants_json), "--json"]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["result"]["eligible"] is True
+    assert payload["result"]["payable"] == "180.00"
+    assert payload["result"]["no_double_benefit"] == "choose_most_favorable"
+    assert payload["disclaimer"]
+
+
+def test_reduction_missing_file_exit_2(tmp_path, capsys):
+    assert run(["reduction", str(tmp_path / "nope.json")]) == 2
+    assert "bad_format" in capsys.readouterr().err
+
+
+def test_reduction_missing_applicants_exit_2(tmp_path, capsys):
+    p = tmp_path / "a.json"
+    p.write_text(json.dumps({"as_of_year": 2026, "patent_type": "invention", "year": 5}),
+                 encoding="utf-8")
+    assert run(["reduction", str(p)]) == 2
+
+
+def test_reduction_bad_kind_exit_2(tmp_path, capsys):
+    p = tmp_path / "a.json"
+    p.write_text(json.dumps({
+        "as_of_year": 2026, "patent_type": "invention", "year": 5,
+        "applicants": [{"kind": "unicorn"}],
+    }, ensure_ascii=False), encoding="utf-8")
+    assert run(["reduction", str(p)]) == 2
+    assert "usage_error" in capsys.readouterr().err
+
+
+def test_calc_with_late_appends_late_block(late_json, capsys):
+    assert run(["calc", str(late_json), "--with-late"]) == 0
+    out = capsys.readouterr().out
+    assert "== 滞纳金测算 ==" in out
+    assert "120.00" in out
+    assert "1320.00" in out
+    assert "不构成法律或代理意见" in out
+
+
+def test_calc_with_late_over_cap_is_warning_exit_1(tmp_path, capsys):
+    """超上限：照算金额 + late_exceeds_cap warning → 退出码 1（风险提示 ≠ fail）。"""
+    p = tmp_path / "over.json"
+    p.write_text(json.dumps({
+        "patent_type": "invention", "year": 5,
+        "due_on": "2020-05-04", "paid_on": "2020-12-04",
+    }, ensure_ascii=False), encoding="utf-8")
+    assert run(["calc", str(p), "--with-late"]) == 1
+    out = capsys.readouterr().out
+    assert "late_exceeds_cap" in out
+    assert "420.00" in out, "超上限仍给出金额（风险测算，不置 None）"
+
+
+def test_calc_with_late_missing_dates_degrades_not_crashes(patent_json, capsys):
+    """--with-late 但输入无 due_on/paid_on：滞纳金未判定，年费结论不受影响。"""
+    assert run(["calc", str(patent_json), "--with-late"]) == 0
+    out = capsys.readouterr().out
+    assert "== 年费测算 ==" in out
+    assert "1200.00" in out
+    assert "== 滞纳金测算 ==" in out
+    assert "未判定" in out
+
+
+def test_calc_with_late_json_machine_readable(late_json, capsys):
+    assert run(["calc", str(late_json), "--with-late", "--json"]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["result"]["amount"] == "1200.00"
+    assert payload["late"]["surcharge"] == "120.00"
+    assert payload["late"]["month_basis"] == "calendar_month"
+    assert payload["late"]["exceeds_cap"] is False
+
+
+def test_bench_b2_b3_only_runs_pass(capsys):
+    assert run(["bench", "--only", "b2_late"]) == 0
+    out = capsys.readouterr().out
+    assert "b2_late" in out
+    assert "b1_ladder" not in out
+
+    assert run(["bench", "--only", "b3_reduction"]) == 0
 
 
 def test_bench_unknown_suite_exit_2(capsys):

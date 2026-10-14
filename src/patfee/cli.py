@@ -208,15 +208,68 @@ def cmd_calc(args: argparse.Namespace, library: RuleLibrary) -> int:
     payload = _load_json_file(Path(args.input))
     request = pipeline.build_request(payload, preview=args.preview)
     result = pipeline.compute_full_calc(request, library)
+    exit_code = pipeline.exit_code_for(result, preview=args.preview)
+
+    if getattr(args, "with_late", False):
+        # 滞纳金扩展：due_on/paid_on 取自输入 JSON；缺字段不阻断年费结论本身，
+        # 由滞纳金路径按"未判定"降级呈现（风险提示 ≠ 法律判定）。
+        late_result = None
+        try:
+            late_request = pipeline.build_late_request(payload, preview=args.preview)
+            late_result = pipeline.compute_full_late(late_request, library)
+            late_code = pipeline.late_exit_code_for(late_result, preview=args.preview)
+            exit_code = max(exit_code, late_code)
+        except UsageError as exc:
+            late_result = None
+            late_usage_note = str(exc)
+    else:
+        late_usage_note = ""
+
+    if getattr(args, "json", False):
+        payload_out: Dict[str, Any] = {
+            "result": result.as_dict(),
+            "disclaimer": pipeline.DISCLAIMER,
+        }
+        if getattr(args, "with_late", False):
+            payload_out["late"] = (
+                late_result.as_dict() if late_result is not None
+                else {"computed": False, "reasons": ["bad_format"], "note": late_usage_note}
+            )
+        print(_dump(payload_out))
+    else:
+        for line in pipeline.result_lines(result, library):
+            print(line)
+        if getattr(args, "with_late", False):
+            if late_result is not None:
+                print("")
+                for line in pipeline.late_lines(late_result):
+                    print(line)
+            else:
+                print("")
+                print("== 滞纳金测算 ==")
+                print("滞纳金: 未判定")
+                print("原因码: bad_format")
+                print("说明: %s" % late_usage_note)
+        if args.preview:
+            print("注意: --preview 仅用于预览口径，不得作为缴费依据。")
+    return exit_code
+
+
+def cmd_reduction(args: argparse.Namespace, library: RuleLibrary) -> int:
+    from .calc import pipeline
+
+    payload = _load_json_file(Path(args.input))
+    request = pipeline.build_reduction_request(payload, preview=args.preview)
+    result = pipeline.compute_full_reduction(request, library)
 
     if getattr(args, "json", False):
         print(_dump({"result": result.as_dict(), "disclaimer": pipeline.DISCLAIMER}))
     else:
-        for line in pipeline.result_lines(result, library):
+        for line in pipeline.reduction_lines(result):
             print(line)
         if args.preview:
             print("注意: --preview 仅用于预览口径，不得作为缴费依据。")
-    return pipeline.exit_code_for(result, preview=args.preview)
+    return pipeline.reduction_exit_code_for(result, preview=args.preview)
 
 
 def cmd_bench(args: argparse.Namespace, library: RuleLibrary) -> int:
@@ -307,8 +360,17 @@ def build_parser() -> argparse.ArgumentParser:
     p_calc.add_argument("input", help="专利输入 JSON 文件")
     p_calc.add_argument("--preview", action="store_true",
                         help="预览口径：允许未核对条目参与，但退出码仍为 1")
+    p_calc.add_argument("--with-late", action="store_true",
+                        help="同件追加滞纳金测算（输入须含 due_on/paid_on；超上限为 warning）")
     p_calc.add_argument("--json", action="store_true")
     p_calc.set_defaults(func=cmd_calc)
+
+    p_red = sub.add_parser("reduction", help="费减资格与减免额判定")
+    p_red.add_argument("input", help="主体输入 JSON 文件（applicants + as_of_year + year）")
+    p_red.add_argument("--preview", action="store_true",
+                       help="预览口径：允许未核对条目参与，但退出码仍为 1")
+    p_red.add_argument("--json", action="store_true")
+    p_red.set_defaults(func=cmd_reduction)
 
     p_bench = sub.add_parser("bench", help="内置评测基准")
     p_bench.add_argument("--only", action="append", default=[],
@@ -348,7 +410,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         parser.parse_args([args.command, "--help"])
         return ExitCode.USAGE.value
 
-    needs_library = args.command in ("selfcheck", "rules", "calc", "bench")
+    needs_library = args.command in ("selfcheck", "rules", "calc", "reduction", "bench")
     try:
         library = _library_or_none(needs_library)
         if needs_library and library is None:

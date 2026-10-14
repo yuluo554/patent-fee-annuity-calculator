@@ -1,0 +1,9 @@
+{
+  "as_of_year": 2026,
+  "patent_type": "invention",
+  "year": 5,
+  "open_license": false,
+  "applicants": [
+    {"kind": "individual", "name": "示例个人 A（合成）", "monthly_avg_income": "4999.99", "annual_income": "59999.99"}
+  ]
+}

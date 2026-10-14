@@ -8,10 +8,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional, Tuple
 
-from ..domain.models import AnnuityResult, PatentType, parse_patent_type
+from ..domain.models import (
+    AnnuityResult,
+    LateResult,
+    PatentType,
+    ReductionResult,
+    parse_patent_type,
+)
 from ..errors import UsageError
 from ..rules.loader import RuleLibrary, load_library
 
@@ -97,6 +104,253 @@ def compute_full_calc(
         preview=request.preview,
         provided_inputs=request.provided_inputs,
     )
+
+
+@dataclass(frozen=True)
+class LateRequest:
+    """滞纳金计算的输入契约（与 calc.late.LateRequest 同构，此处面向 CLI）。"""
+
+    patent_type: PatentType
+    year: int
+    due_on: date
+    paid_on: date
+    preview: bool = False
+
+
+def build_late_request(payload: Dict[str, Any], preview: bool = False) -> LateRequest:
+    """把滞纳金输入 JSON 转成 LateRequest；缺字段/日期非法一律 exit 2 语义。"""
+    if not isinstance(payload, dict):
+        raise UsageError("输入必须是 JSON 对象")
+    patent_type_raw = payload.get("patent_type")
+    if patent_type_raw in (None, ""):
+        raise UsageError("输入缺少必填字段 patent_type")
+    try:
+        patent_type = parse_patent_type(str(patent_type_raw))
+    except ValueError as exc:
+        raise UsageError(str(exc), reason_code="unknown_patent_type")
+
+    year_raw = payload.get("year")
+    if year_raw in (None, ""):
+        raise UsageError("输入缺少必填字段 year")
+    try:
+        year = int(year_raw)
+    except (TypeError, ValueError):
+        raise UsageError("year 不是整数: %r" % (year_raw,))
+    if year < 1:
+        raise UsageError("year 必须为正整数: %d" % year)
+
+    due_raw = payload.get("due_on")
+    paid_raw = payload.get("paid_on")
+    if not due_raw or not paid_raw:
+        raise UsageError("滞纳金计算须提供 due_on（规定缴费期限）与 paid_on（实际缴费日）")
+    try:
+        due_on = date.fromisoformat(str(due_raw))
+        paid_on = date.fromisoformat(str(paid_raw))
+    except ValueError as exc:
+        raise UsageError("日期格式非法（应为 YYYY-MM-DD）: %s" % exc)
+
+    return LateRequest(
+        patent_type=patent_type, year=year, due_on=due_on, paid_on=paid_on, preview=preview
+    )
+
+
+def compute_full_late(
+    request: LateRequest, library: Optional[RuleLibrary] = None
+) -> LateResult:
+    """编排：年费阶梯 → 滞纳金引擎 → 结果对象（不做任何 I/O 渲染）。"""
+    lib = library or load_library()
+    from ..calc import late as late_mod
+
+    return late_mod.compute_late(
+        lib,
+        late_mod.LateRequest(
+            patent_type=request.patent_type,
+            year=request.year,
+            due_on=request.due_on,
+            paid_on=request.paid_on,
+            preview=request.preview,
+        ),
+    )
+
+
+@dataclass(frozen=True)
+class ReductionRequest:
+    """费减判定的输入契约（与 calc.reduction.ReductionRequest 同构，面向 CLI）。"""
+
+    patent_type: PatentType
+    year: int
+    as_of_year: int
+    applicants: Tuple[Dict[str, Any], ...]
+    open_license: bool = False
+    preview: bool = False
+
+
+def build_reduction_request(payload: Dict[str, Any], preview: bool = False) -> ReductionRequest:
+    """把费减输入 JSON 转成 ReductionRequest；缺字段/金额非法一律 exit 2 语义。"""
+    if not isinstance(payload, dict):
+        raise UsageError("输入必须是 JSON 对象")
+    patent_type_raw = payload.get("patent_type")
+    if patent_type_raw in (None, ""):
+        raise UsageError("输入缺少必填字段 patent_type")
+    try:
+        patent_type = parse_patent_type(str(patent_type_raw))
+    except ValueError as exc:
+        raise UsageError(str(exc), reason_code="unknown_patent_type")
+
+    year_raw = payload.get("year")
+    if year_raw in (None, ""):
+        raise UsageError("输入缺少必填字段 year（年费缴费年度）")
+    try:
+        year = int(year_raw)
+    except (TypeError, ValueError):
+        raise UsageError("year 不是整数: %r" % (year_raw,))
+    if year < 1:
+        raise UsageError("year 必须为正整数: %d" % year)
+
+    as_of_raw = payload.get("as_of_year")
+    if as_of_raw in (None, ""):
+        raise UsageError("输入缺少必填字段 as_of_year（费减资格适用年度）")
+    try:
+        as_of_year = int(as_of_raw)
+    except (TypeError, ValueError):
+        raise UsageError("as_of_year 不是整数: %r" % (as_of_raw,))
+    if as_of_year < 1:
+        raise UsageError("as_of_year 必须为正整数: %d" % as_of_year)
+
+    from . import reduction as reduction_mod
+
+    applicants = reduction_mod.parse_applicants(payload.get("applicants"))
+    return ReductionRequest(
+        patent_type=patent_type,
+        year=year,
+        as_of_year=as_of_year,
+        applicants=applicants,
+        open_license=bool(payload.get("open_license")),
+        preview=preview,
+    )
+
+
+def compute_full_reduction(
+    request: ReductionRequest, library: Optional[RuleLibrary] = None
+) -> ReductionResult:
+    """编排：费减判定引擎 → 结果对象（不做任何 I/O 渲染）。"""
+    lib = library or load_library()
+    from ..calc import reduction as reduction_mod
+
+    return reduction_mod.compute_reduction(
+        lib,
+        reduction_mod.ReductionRequest(
+            patent_type=request.patent_type,
+            year=request.year,
+            as_of_year=request.as_of_year,
+            applicants=request.applicants,
+            open_license=request.open_license,
+            preview=request.preview,
+        ),
+    )
+
+
+def late_lines(result: LateResult) -> List[str]:
+    """滞纳金结果的人类可读渲染（表现层只做排版）。"""
+    lines: List[str] = []
+    lines.append("== 滞纳金测算 ==")
+    lines.append("专利类型: %s" % result.patent_type.value)
+    lines.append("缴费年度: 第 %d 年" % result.year)
+    lines.append("规定缴费期限: %s" % result.due_on)
+    lines.append("实际缴费日: %s" % result.paid_on)
+    if result.computed:
+        lines.append("逾期月数: %d 个月（口径 %s）" % (result.overdue_months, result.month_basis))
+        lines.append("年费全额: %s 元" % result.full_annuity)
+        lines.append("滞纳金费率: %s / 月" % result.monthly_rate)
+        lines.append("滞纳金: %s 元" % result.surcharge)
+        lines.append("应缴合计（年费+滞纳金）: %s 元" % result.payable)
+        lines.append("补缴上限: %s 个月" % result.grace_months)
+        for fee in result.related_fees:
+            if fee.amount is not None:
+                lines.append("关联费用: %s %s 元（按费率表条目，另行缴纳）" % (fee.label, fee.amount))
+    else:
+        lines.append("滞纳金: 未判定")
+    for reason in result.reasons:
+        lines.append("原因码: %s" % reason)
+    for warning in result.warnings:
+        lines.append("提示: %s" % warning)
+    for step in result.steps:
+        lines.append("  - %s" % step)
+    lines.append("")
+    lines.append(DISCLAIMER)
+    return lines
+
+
+def reduction_lines(result: ReductionResult) -> List[str]:
+    """费减结果的人类可读渲染（表现层只做排版）。"""
+    lines: List[str] = []
+    lines.append("== 费减资格判定 ==")
+    lines.append("专利类型: %s" % result.patent_type.value)
+    lines.append("缴费年度: 第 %d 年" % result.year)
+    lines.append("适用年度: %d" % result.as_of_year)
+    lines.append("主体构成: %d 人（%s）" % (
+        result.applicant_count, "共同主体" if result.combined else "单主体"))
+    if result.computed:
+        lines.append(
+            "资格结论: %s" % ("合格" if result.eligible else "不合格（须严格低于阈值，恰好等于不合格）")
+        )
+        for key in sorted(result.thresholds):
+            lines.append("阈值 %s: %s" % (key, result.thresholds[key]))
+        if result.threshold_policy_doc_no or result.anchor_from:
+            lines.append("阈值锚点: %s（自 %s 起）" % (result.threshold_policy_doc_no, result.anchor_from))
+        lines.append("年费全额: %s 元" % result.full_annuity)
+        for cand in result.candidates:
+            lines.append("候选政策: %s（减免比例 %s → 实缴 %s 元）" % (cand.policy, cand.rate, cand.amount))
+        if result.chosen is not None:
+            lines.append("选中政策: %s（不叠加，no_double_benefit=%s）" % (
+                result.chosen.policy, result.no_double_benefit))
+        if result.payable is not None:
+            lines.append("减免后应缴: %s 元" % result.payable)
+        if result.reduction_rate is not None:
+            lines.append("费减比例: %s" % result.reduction_rate)
+    else:
+        lines.append("资格结论: 未判定")
+    for reason in result.reasons:
+        lines.append("原因码: %s" % reason)
+    for warning in result.warnings:
+        lines.append("提示: %s" % warning)
+    for step in result.steps:
+        lines.append("  - %s" % step)
+    lines.append("")
+    lines.append(DISCLAIMER)
+    return lines
+    """把结果映射成退出码（四态语义见 errors.ExitCode）。
+
+    ``--preview`` 下即便算出了金额也返回 1：预览不是达标，
+    否则 CI/自动化会把预览结论当可用结论。
+    """
+    if result.warnings and result.computed:
+        return 1
+    if not result.computed:
+        return 1  # 未判定 = 降级完成（不崩、也不假成功）
+    if preview:
+        return 1
+    return 0
+
+
+def late_exit_code_for(result: LateResult, preview: bool = False) -> int:
+    """滞纳金路径退出码：超上限（warning）与未判定均为降级 1。"""
+    if result.warnings and result.computed:
+        return 1
+    if not result.computed:
+        return 1
+    if preview:
+        return 1
+    return 0
+
+
+def reduction_exit_code_for(result: ReductionResult, preview: bool = False) -> int:
+    """费减路径退出码：不合格结论是有效结论（不算降级），未判定才是 1。"""
+    if not result.computed:
+        return 1
+    if preview:
+        return 1
+    return 0
 
 
 def exit_code_for(result: AnnuityResult, preview: bool = False) -> int:
