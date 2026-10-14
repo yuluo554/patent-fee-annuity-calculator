@@ -39,8 +39,10 @@ jobs:
       - name: Upgrade pip
         run: python -m pip install -U pip
 
-      - name: Install package with dev extras
-        run: python -m pip install -e ".[dev]"
+      - name: Install package with dev+report extras
+        # M6 实测（干净环境逐条跑通 README）：XLSX 报告测试依赖 openpyxl，
+        # 只装 .[dev] 会硬失败（不是 skip）—— 测试面必须与安装面对齐。
+        run: python -m pip install -e ".[dev,report]"
 
       - name: Run tests
         run: python -m pytest -q
@@ -102,8 +104,9 @@ jobs:
       - name: Upgrade pip
         run: python -m pip install -U pip
 
-      - name: Install dev extras
-        run: python -m pip install -e ".[dev]"
+      - name: Install dev+report extras
+        # 只装 .[dev] 会让 test_m5_report.py 的 XLSX 断言在缺 openpyxl 下硬失败
+        run: python -m pip install -e ".[dev,report]"
 
       - name: Frozen ruleset byte-identity check
         run: python tools/gen_rulesets.py --check

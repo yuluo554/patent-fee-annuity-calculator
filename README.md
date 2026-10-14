@@ -31,7 +31,7 @@
 python -m venv .venv
 # Windows(Git Bash): source .venv/Scripts/activate    Linux/macOS: source .venv/bin/activate
 python -m pip install -U pip
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,report]"
 ```
 
 > 注意：Windows 上请用 `python -m pip ...` 而不是 `py -m pip ...` —— `py` 启动器走独立 launcher，**即使已 activate venv 也会装到系统 Python**。
@@ -253,7 +253,7 @@ tests/           pytest（M5 后 226 项）
 ## 开发
 
 ```bash
-python -m pytest -q                          # 全量测试（M5 后 226 项）
+python -m pytest -q                          # 全量测试（M5 后 226 项；需 .[dev,report]，缺 report 时 XLSX 测试失败而非跳过）
 python tools/gen_rulesets.py --check         # 规则包冻结位级一致 → FROZEN_RULESETS_OK
 python tools/gen_synthetic.py --check        # 合成真值库位级一致 → SYNTHETIC_FROZEN_OK
 python tools/fetch_authorities.py --verify   # 原文快照 sha256 复核

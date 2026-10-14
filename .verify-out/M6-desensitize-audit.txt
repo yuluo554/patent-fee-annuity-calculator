@@ -1,0 +1,107 @@
+# M6 脱敏审计证据（2026-10-14，py3.12 本机实跑）
+
+## $ python tools/audit_desensitize.py --selftest
+  正例 4 项均报红；反例 4 项均未误报
+AUDIT_SELFTEST_OK
+exit=0
+
+## $ PYTHONPATH=src python tools/audit_desensitize.py --mode all
+审计模式: tracked（扫描 94 个对象）
+  [advisory] 36 处:
+    .verify-out/dist-assert.json:8  long_hex
+    .verify-out/dist-assert.json:9  long_hex
+    .verify-out/dist-assert.json:10  long_hex
+    .verify-out/dist-assert.json:11  long_hex
+    .verify-out/dist-assert.json:12  long_hex
+    .verify-out/dist-assert.json:13  long_hex
+    .verify-out/dist-assert.json:14  long_hex
+    .verify-out/dist-assert.json:15  long_hex
+    .verify-out/dist-assert.json:16  long_hex
+    .verify-out/dist-assert.json:25  long_hex
+    .verify-out/dist-assert.json:26  long_hex
+    .verify-out/dist-assert.json:27  long_hex
+    .verify-out/dist-assert.json:28  long_hex
+    .verify-out/dist-assert.json:29  long_hex
+    .verify-out/dist-assert.json:30  long_hex
+    .verify-out/dist-assert.json:31  long_hex
+    .verify-out/dist-assert.json:32  long_hex
+    .verify-out/dist-assert.json:33  long_hex
+    .verify-out/scan-m5-final/evidence.json:10  long_hex
+    .verify-out/scan-m5-final/evidence.json:24  long_hex
+    .verify-out/scan-m5-final/evidence.json:38  long_hex
+    .verify-out/scan-m5-final/evidence.json:52  long_hex
+    .verify-out/scan-m5-final/evidence.json:111  long_hex
+    .verify-out/scan-m5-final/evidence.json:116  long_hex
+    data/knowledge/clauses.json:22  long_hex
+    data/rules/manifest.json:23  long_hex:path-allowed
+    data/rules/manifest.json:45  long_hex:path-allowed
+    data/rules/manifest.json:67  long_hex:path-allowed
+    data/rules/manifest.json:89  long_hex:path-allowed
+    data/truth/manifest.json:9  long_hex
+    data/truth/manifest.json:14  long_hex
+    data/truth/truth.json:18  long_hex
+    data/truth/truth.json:32  long_hex
+    data/truth/truth.json:46  long_hex
+    data/truth/truth.json:60  long_hex
+    tools/fetch_authorities.py:86  long_hex
+
+审计模式: history（扫描 143 个对象）
+  通道探活: 通道探活通过（首提交内检得 patfee）
+  [advisory] 40 处:
+    76bbb820:.verify-out/dist-assert.json:8  long_hex
+    76bbb820:.verify-out/dist-assert.json:9  long_hex
+    76bbb820:.verify-out/dist-assert.json:10  long_hex
+    76bbb820:.verify-out/dist-assert.json:11  long_hex
+    76bbb820:.verify-out/dist-assert.json:12  long_hex
+    76bbb820:.verify-out/dist-assert.json:13  long_hex
+    76bbb820:.verify-out/dist-assert.json:14  long_hex
+    76bbb820:.verify-out/dist-assert.json:15  long_hex
+    76bbb820:.verify-out/dist-assert.json:16  long_hex
+    76bbb820:.verify-out/dist-assert.json:25  long_hex
+    76bbb820:.verify-out/dist-assert.json:26  long_hex
+    76bbb820:.verify-out/dist-assert.json:27  long_hex
+    76bbb820:.verify-out/dist-assert.json:28  long_hex
+    76bbb820:.verify-out/dist-assert.json:29  long_hex
+    76bbb820:.verify-out/dist-assert.json:30  long_hex
+    76bbb820:.verify-out/dist-assert.json:31  long_hex
+    76bbb820:.verify-out/dist-assert.json:32  long_hex
+    76bbb820:.verify-out/dist-assert.json:33  long_hex
+    76bbb820:.verify-out/scan-m5-final/evidence.json:10  long_hex
+    76bbb820:.verify-out/scan-m5-final/evidence.json:24  long_hex
+    76bbb820:.verify-out/scan-m5-final/evidence.json:38  long_hex
+    76bbb820:.verify-out/scan-m5-final/evidence.json:52  long_hex
+    76bbb820:.verify-out/scan-m5-final/evidence.json:111  long_hex
+    76bbb820:.verify-out/scan-m5-final/evidence.json:116  long_hex
+    76bbb820:data/knowledge/clauses.json:22  long_hex
+    76bbb820:data/rules/manifest.json:23  long_hex:path-allowed
+    76bbb820:data/rules/manifest.json:45  long_hex:path-allowed
+    76bbb820:data/rules/manifest.json:67  long_hex:path-allowed
+    76bbb820:data/rules/manifest.json:89  long_hex:path-allowed
+    76bbb820:data/truth/manifest.json:9  long_hex
+    76bbb820:data/truth/manifest.json:14  long_hex
+    76bbb820:data/truth/truth.json:18  long_hex
+    76bbb820:data/truth/truth.json:32  long_hex
+    76bbb820:data/truth/truth.json:46  long_hex
+    76bbb820:data/truth/truth.json:60  long_hex
+    76bbb820:tools/fetch_authorities.py:86  long_hex
+    d150f5f0:data/rules/manifest.json:22  long_hex:path-allowed
+    d150f5f0:data/rules/manifest.json:44  long_hex:path-allowed
+    d150f5f0:data/rules/manifest.json:66  long_hex:path-allowed
+    d150f5f0:data/rules/manifest.json:88  long_hex:path-allowed
+
+审计模式: messages（扫描 8 个对象）
+  通道探活: 提交信息已读取
+  [advisory] 8 处:
+    <commit-message>:1  long_hex
+    <commit-message>:11  long_hex
+    <commit-message>:14  long_hex
+    <commit-message>:17  long_hex
+    <commit-message>:40  long_hex
+    <commit-message>:55  long_hex
+    <commit-message>:65  long_hex
+    <commit-message>:106  long_hex
+
+DESENSITIZE_AUDIT_OK
+exit=0
+
+## 结论：三模式 HARD 命中 0，历史与提交信息无个人目录/邮箱/手机号/身份证；advisory 均为 sha256 指纹（文档化功能，D-口径见 tools/audit_desensitize.py 模块注释）；审计通过 DESENSITIZE_AUDIT_OK
