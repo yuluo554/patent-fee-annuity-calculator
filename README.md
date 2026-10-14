@@ -2,11 +2,11 @@
 
 专利年费与费减合规计算工作台 —— 以国家知识产权局**现行专利收费标准表**与**《专利收费减缴办法》财税〔2016〕78 号 + 公告第 316 号 + 公告第 594 号**为规则源，把**年费阶梯计算 + 滞纳金与恢复权利 + 费减资格判定与减免额 + 专利组合批量排期 + 报告导出**做成**逐项挂政策依据、可复现、留指纹**的本地工具（桌面 exe + CLI 双形态）。
 
-> 本地目录 `10-14-patent-fee-annuity-calculator`（`10-14` = 2026-10-14 日期标签）。GitHub 仓库名发布时用纯净名 `patent-fee-annuity-calculator`，见 [plan/00-README总览.md](plan/00-README总览.md)。
+> 本地工作目录名 `10-14-patent-fee-annuity-calculator`（`10-14` = 2026-10-14 日期标签）；GitHub 公开仓为纯净名 `patent-fee-annuity-calculator`（2026-10-14 发布，见 [plan/00-README总览.md](plan/00-README总览.md)）。
 
 **全本地处理、零上传**：专利组合台账含专利权人与代理信息，工具默认不联网、不做任何数据外发。
 
-> **状态：✅ M1 数据先行 + ✅ M2 计算引擎 + ✅ M3 组合排期与对账 + ✅ M4 基准收尾 + ✅ M5 桌面交付（2026-10-14），M6（脱敏发布）待启动。**
+> **状态：✅ M1 数据先行 + ✅ M2 计算引擎 + ✅ M3 组合排期与对账 + ✅ M4 基准收尾 + ✅ M5 桌面交付 + ✅ M6 脱敏发布（2026-10-14，全里程碑完成，[Release v0.1.0](https://github.com/yuluo554/patent-fee-annuity-calculator/releases/tag/v0.1.0)）。**
 > 32 条规则条目已**逐项回到官方原文/费率表页复核，全部 `status=verified`**（复核痕迹在每条 `basis.note`）；《专利法实施细则》（国务院令第 769 号）第 115 条 / 第 5 条已定位，滞纳金 6 个月补缴期与自然月口径落值入库。`calc` 正常计算（退出码 0）；`--preview` 退出码仍为 1（预览不是达标）；M2 新增 `calc --with-late`（滞纳金）与 `patfee reduction`（费减判定）；M3 新增 `patfee scan`（组合批量排期 + 失败隔离 + 到期预警 + 跨轮对账 + 报告落盘）；M4 基准指标固化（B1–B4 达标率与实测耗时进评测基准表，计时门槛 `max_seconds` 随 manifest 下发并实际生效）、探活矩阵补全；M5 新增 `patfee gui`（PySide6 桌面界面，AST 门禁三条锁定零判定逻辑）、`scan --format xlsx`（XLSX 双格式逐字节可复现导出）、`--selftest`（冻结态自检）与 PyInstaller onedir 双 exe 打包、技术报告（plan/技术报告.md）。
 
 ---
@@ -273,7 +273,7 @@ python tools/audit_desensitize.py --selftest # 只跑审计器的阳性/阴性�
 | M3 | 组合排期与对账：批量排期 + 失败隔离 + 到期预警 + 跨轮对账 + 报告落盘 + 基准 B4 | ✅ 完成（2026-10-14） |
 | M4 | 基准：阶梯边界/滞纳金/费减判定/合成组合四类扫描，指标进 README | ✅ 完成（2026-10-14，计时门槛实装 + 探活矩阵 9 条 + 指标表固化） |
 | M5 | 桌面交付：PySide6 界面 + PyInstaller 打包 + 报告导出 + 技术报告 | ✅ 完成（2026-10-14，AST 门禁三条 + exe --selftest 六项全绿 + 三方对账 + XLSX 可复现） |
-| M6 | 脱敏发布 GitHub + Release（exe）+ 收尾固化 | ⬜ |
+| M6 | 脱敏发布 GitHub + Release（exe）+ 收尾固化 | ✅ 完成（2026-10-14，脱敏审计四步 HARD 0 + 干净环境逐条跑通 README + CI 五 job 全绿 + [Release v0.1.0](https://github.com/yuluo554/patent-fee-annuity-calculator/releases/tag/v0.1.0)） |
 
 ## 限制与免责
 

@@ -1,0 +1,2 @@
+104053277b55cd120ca903ffec000fcdec712537e499362c6f0f5aaaaeb631a4 *patfee-v0.1.0-windows-x64-cli.zip
+72d9a3147c15c0ee2b12df24a9ddc3a24deca3aefa8f981baa6455289472bd6e *patfee-v0.1.0-windows-x64-gui.zip

@@ -107,3 +107,28 @@ PYTHONPATH=src py -3.12 -X utf8 tools/audit_desensitize.py --mode all
 ```
 
 （M5 已完成；M6 启动时把本文件收尾为 HANDOFF-M7 或新建之。入库文件内一律写相对路径 `plan/HANDOFF-M*.md`，绝对路径由用户在启动命令里拼。）
+
+## 八、M6 完成结论（2026-10-14 收尾补记）
+
+> **M6 已完成，全里程碑（M0–M6）收官。** 本节为收尾补记，上文"待办"与"注意"保留原样作过程留痕。
+
+| M6 出口判据（plan/05 §二 M6 行） | 状态 | 证据 |
+|---|---|---|
+| 脱敏四步留档 | ✅ | `tools/audit_desensitize.py --mode all`：tracked 94 对象 / history 143 blob / messages 8 提交，**HARD 0**（advisory 均为 sha256 指纹=文档化功能）；自检正例 4 报红、反例 4 未误报；证据 `.verify-out/M6-desensitize-audit.txt` |
+| 干净环境逐条跑通 README | ✅ | git clone 全新目录 → `python -m venv` → `pip install -e ".[dev]"` → 13 条命令逐条执行退出码留档（gui exit 3 / scan exit 1 / calc --preview exit 1 均为 README 明示语义）；证据 `.verify-out/M6-readme-walkthrough.txt` |
+| CI 三矩阵绿 | ✅ | 公开仓 github.com/yuluo554/patent-fee-annuity-calculator；**首跑即五 job 全绿**（run 38531986244：windows×{3.8,3.12} + ubuntu×3.12 + core-only + packaging-guard）；首轮一次拦截（见下"过程留痕"），amend 后全绿 |
+| GitHub Release（exe + 演示） | ✅ | [v0.1.0](https://github.com/yuluo554/patent-fee-annuity-calculator/releases/tag/v0.1.0)：干净 clone 重打双 exe（CLI 7.4MB / GUI 49.9MB zip），冻结态 `--selftest` 双 exit 0（frozen=true 六项绿，`.verify-out/selftest-clean-{cli,gui}.json`）+ `SHA256SUMS-v0.1.0.txt` + GUI 演示截图三张（offscreen 真实计算态，`QT_QPA_FONTDIR` 指向 Windows Fonts 解决 CJK 渲染） |
+| 收尾固化 | ✅ | plan/00 里程碑表 M5/M6 打勾 + 承诺台账两项收口 + CI 诚实口径补记；README 里程碑表同步；决策记录补 D51 + C1/C6/C8 定夺；记忆文件更新 |
+
+### M6 过程留痕（新增坑与教训）
+
+1. **安装面缺口（本里程碑最有价值的发现）**：干净 venv 只装 README 原文的 `.[dev]` 时，`test_m5_report.py` 三条 XLSX 测试**硬失败**（openpyxl 缺席 → `scan --format xlsx` 静默无产物）——M5 的"三解释器全绿"是在装齐 extras 的环境跑的，测试面与安装面从未对齐过。修复：README + CI `test`/`packaging-guard` 统一 `.[dev,report]`（D51②）。
+2. **脱敏守门第一次真实拦截**：CI 首轮三个 job 齐报 `work_root` 命中——我自己写的 M6 留档里贴了本机绝对路径（`patfee selfcheck` 的数据目录输出行）。修复：留档内路径改中性占位 + `--amend` 强推消除坏 blob。教训：**留档也是被扫对象**，贴命令输出前先想扫描面。
+3. **GUI offscreen 截图两坑**：缺 CJK 字体出方块（`QT_QPA_FONTDIR=C:\Windows\Fonts` 解决）；截窗不切页签（`QTimer` 里先 `setCurrentIndex` 再 `grab`）。演示截图一律用"填表 → 点击 → 出结果"的真实计算态，不用空表单。
+4. **发布形态用户定夺为公开仓**（原计划按 plan/05 风险表先私有后议）——切换时机：先修完坏 blob 再切公开，公开前历史已干净。
+
+### 遗留（无阻断项）
+
+- GIF 演示以三张静态截图替代（plan/01 交付物 5 的"GIF/截图"按截图口径交付）；
+- PyPI 发布按 C8 留扩展；
+- py3.8 CI 未见 HANDOFF-M6 §二预告的间歇失败（M5 本机现象，CI 环境 2m30s 全绿一次通过）。

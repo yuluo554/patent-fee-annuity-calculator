@@ -15,13 +15,13 @@
 | [03-架构与技术选型.md](03-架构与技术选型.md) | 分层架构、零依赖核心层、Decimal 计价、目录布局、退出码 | ✅ M0 完成 |
 | [04-模块详设.md](04-模块详设.md) | 费率与政策规则包 schema、阶梯算法、费减判定模型、报告模板 | ✅ M0 完成（M2/M3 部分为设计稿） |
 | [05-数据计划与里程碑.md](05-数据计划与里程碑.md) | 数据入库策略、合成组合生成器、M0–M6 DoD（含 M0–M5 DoD 逐项结论文） | ✅ M5 完成 |
-| [06-决策记录.md](06-决策记录.md) | 重大决策表（D1–D50）+ 缓议项 C1–C8 + 待核对项 | ✅ M3 完成（C2/C6 已于 M5 定夺） |
+| [06-决策记录.md](06-决策记录.md) | 重大决策表（D1–D51）+ 缓议项 C1–C8 + 待核对项 | ✅ M6 完成（C1/C8 已于 M6 定夺） |
 | [HANDOFF-M1.md](HANDOFF-M1.md) | M0→M1 交接快照（进度/待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-14 |
 | [HANDOFF-M2.md](HANDOFF-M2.md) | M1→M2 交接快照（进度/待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-14 |
 | [HANDOFF-M3.md](HANDOFF-M3.md) | M2→M3 交接快照（进度/待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-14 |
 | [HANDOFF-M4.md](HANDOFF-M4.md) | M3→M4 交接快照（进度/待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-14 |
 | [HANDOFF-M5.md](HANDOFF-M5.md) | M4→M5 交接快照（进度/待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-14 |
-| [HANDOFF-M6.md](HANDOFF-M6.md) | M5→M6 交接快照（进度/待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-14 |
+| [HANDOFF-M6.md](HANDOFF-M6.md) | M5→M6 交接快照（进度/待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-14（M6 已收尾：见 §八 完成结论） |
 | [技术报告.md](技术报告.md) | 技术报告：费率表规则化方法、阶梯/滞纳金/费减引擎设计、基准可证伪、桌面交付与打包、教训留痕 | ✅ M5 交付（C6 定夺：纯 MD 入仓） |
 
 ## 决策记录
@@ -55,10 +55,10 @@
 | 多政策择一（不得重复享受） | 公告第 594 号原文 | 规则包随包 | 择最优惠规则算例 | ✅ M2（择实缴最小、candidates 全留痕、不叠加） |
 | 版本化费率与政策规则集 + 差异报告 | 316 号阈值调整 + 594 号新增项目（各有独立原文快照） | 多套规则包随包（4 份 ruleset） | 按年度锚定版本的对照基准 | ✅ M1 建库并逐项 verified；`rules diff` 实装 |
 | 组合批量排期与跨年对账 | 合成多主体×多专利×多年度组合 | CLI 与 GUI 同源调用 | 对账集合一致率 100% | ✅ M3（`patfee scan`：失败隔离 + 到期预警 + 三集合对账；`compare_rounds` 单一实现源） |
-| XLSX 报告导出 | openpyxl | 显式入 PyInstaller 白名单依赖；缺依赖时降级导 CSV 并提示，退出码不崩 | 构建后断言冻结态可 import；中立目录双 exe 验收 | ⬜ M5 |
+| XLSX 报告导出 | openpyxl | 显式入 PyInstaller 白名单依赖；缺依赖时降级导 CSV 并提示，退出码不崩 | 构建后断言冻结态可 import；中立目录双 exe 验收 | ✅ M5（`scan --format xlsx` 逐字节可复现 + 双格式内容对等测试） |
 | 报告指纹防篡改 | sha256 | 纯核心层实现 | 报告被改动即可检出（含报告自身 sha256） | ✅ M3 起步（`scan --out` evidence.json 携带报告 sha256 实测对账；XLSX/逐字节可复现在 M5） |
 | 内置评测基准（阶梯边界/滞纳金/费减判定/合成组合） | 随包真值库 | benchmark 零第三方依赖、零外部依赖 | `bench` 一条命令，指标口径写进 README | ✅ M2 B2/B3 + M3 B4 + M4 收尾（B1–B4 全达标；计时门槛实际生效、探活矩阵 9 条、指标固化进 README） |
-| 免安装双 exe | PyInstaller onedir | Release 附 ASCII 命名 zip | 中立目录（清环境变量 + exe 目录为 CWD）自检 | ⬜ M6 |
+| 免安装双 exe | PyInstaller onedir | Release 附 ASCII 命名 zip | 中立目录（清环境变量 + exe 目录为 CWD）自检 | ✅ M6（[Release v0.1.0](https://github.com/yuluo554/patent-fee-annuity-calculator/releases/tag/v0.1.0)：干净环境重打 + 冻结态 `--selftest` exit 0 + SHA256SUMS） |
 | status 门控（未核对不得进计算路径） | 规则包 `status` 三态 | 核心层单点门控 | `calc` 默认拒绝、`--preview` 退出码仍为 1 | ✅ M0（实测退出码 1） |
 | 零政策字面量门禁 | 规则值推导 token | 扫描 `src/patfee/**` + `tools/*.py` | 阳性对照（注入 token 必报红） | ✅ M0（selftest 通过） |
 
@@ -71,10 +71,10 @@
 | M2 | 计算引擎：滞纳金 + 费减判定 + 多政策择一，算例回归 100% | ✅ **完成 2026-10-14**（B2/B3 实装达标且探活可证伪；`patfee reduction` + `calc --with-late`；结论见 HANDOFF-M3 §一） |
 | M3 | 组合排期与对账：批量排期 + 失败隔离 + 到期预警 + 跨轮对账 + 报告落盘 + 基准 B4 | ✅ **完成 2026-10-14**（B4 46/46 达标；`patfee scan` + evidence.json 指纹；DoD 见 plan/05 §三之四） |
 | M4 | 基准：阶梯边界/滞纳金/费减判定/合成组合四类扫描，指标进 README | ✅ **完成 2026-10-14**（计时门槛 `max_seconds` 实装为真实判定；探活矩阵 9 条；B4 48/48；指标固化进 README；DoD 见 plan/05 §三之五；结论见 HANDOFF-M5 §一） |
-| M5 | 桌面交付：PySide6 界面 + PyInstaller 打包 + 报告导出（MD/XLSX）+ 技术报告 | ⬜ |
-| M6 | 脱敏发布 GitHub + Release（exe）+ 收尾固化 | ⬜ |
+| M5 | 桌面交付：PySide6 界面 + PyInstaller 打包 + 报告导出（MD/XLSX）+ 技术报告 | ✅ **完成 2026-10-14**（AST 门禁三条 + exe `--selftest` 六项全绿 + 三方对账 + XLSX 逐字节可复现；DoD 见 plan/05 §三之六；结论见 HANDOFF-M6 §一） |
+| M6 | 脱敏发布 GitHub + Release（exe）+ 收尾固化 | ✅ **完成 2026-10-14**（脱敏审计四步 HARD 0；干净环境逐条跑通 README 13 命令留档；公开仓 **CI 五 job 首跑全绿**（windows×{3.8,3.12} + ubuntu×3.12 + core-only + packaging-guard，run 38531986244）；Release [v0.1.0](https://github.com/yuluo554/patent-fee-annuity-calculator/releases/tag/v0.1.0)：干净环境重打双 exe zip + SHA256SUMS + GUI 演示截图三张） |
 
 **M0 完成证据**：
 - DoD 逐项结论见 [05-数据计划与里程碑.md](05-数据计划与里程碑.md) §三（M0-1 ~ M0-20）。
 - 本地等价校验原始输出：`.verify-out/M0-local-equivalence.txt`（py3.8 / py3.12 / 干净 venv 三处 112 项全绿，退出码全表）。
-- **诚实口径**：M0 结束时**无远端、未跑过 CI**，故只写"本地等价校验"，**不写"CI 绿"**；真 CI 结论待 M6 首推据实补记。
+- **诚实口径**：M0 结束时**无远端、未跑过 CI**，故只写"本地等价校验"，**不写"CI 绿"**；**M6 已据实补记**：公开仓 GitHub Actions 五 job 首跑全绿（run 38531986244，2026-10-14）。
