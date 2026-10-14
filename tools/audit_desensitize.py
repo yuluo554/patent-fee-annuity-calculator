@@ -66,7 +66,9 @@ TEXT_SUFFIXES = {
 # "Program" + "Data" = 系统级目录名（本身不是个人标记）
 _PROG_DATA = "Progra" + "mData"
 _WIN_USERS = "Use" + "rs"
-_SEP = r"[\\/]"
+# 分隔符**可重复**：JSON/日志里路径常被转义成双分隔符，单分隔符类会漏判
+# 这种真实泄漏形态（M6 实测假阴性）。
+_SEP = r"[\\/]+"
 # 用户名段必须以字母开头（真实家目录名），避免把 /home/2023-03/ 这类**日期路径段**误判为家目录
 _USER_SEG = r"[A-Za-z][A-Za-z0-9_.\-]{1,}"
 # 个人目录签名：盘符 + Users + 用户名（组合签名，不匹配裸用户名）
@@ -252,6 +254,8 @@ def audit_messages() -> AuditResult:
 _SELFTEST_POSITIVE = [
     # 合成样本：程序化拼接，仓内不留真实字面值
     "workdir = " + '"' + "D:" + "\\" + _PROG_DATA + "\\" + "some" + "Project" + '"',
+    # 回归：JSON 转义后的双反斜杠形态（曾经漏判的真实泄漏形态）
+    "detail = " + '"' + "D:" + "\\\\" + _PROG_DATA + "\\\\" + "some" + "Project" + '"',
     "path = " + '"' + "C:" + "\\" + _WIN_USERS + "\\" + "some" + "user" + "\\" + "x.txt" + '"',
     "mail = " + '"' + "someone" + "@" + "example" + ".com" + '"',
     "tail = " + '"' + "//" + "/home/" + "some" + "user/" + "data" + '"',
