@@ -4,6 +4,8 @@
   "generated_at": "1970-01-01T00:00:00Z",
   "retrieved": "2026-10-14",
   "reviewed": "2026-10-14",
+  "review_interval": "annual",
+  "next_review": "2027-10-14",
   "rulesets": [
     {
       "id": "fee_schedule",
@@ -19,6 +21,9 @@
         "verification": "item_reviewed",
         "raw_snapshot": "data/knowledge/raw/cnipa_fee_schedule_286.html"
       },
+      "review_interval": "annual",
+      "reviewed": "2026-10-14",
+      "next_review": "2027-10-14",
       "file": "fee_schedule.v2024.json",
       "sha256": "7d3824b326668c8088d76c2f04846c03c30ee5bb04e7899d3f4c42b9b8c33139",
       "status_counts": {
@@ -41,6 +46,9 @@
         "verification": "item_reviewed",
         "raw_snapshot": "data/knowledge/raw/mof_2016_78.html"
       },
+      "review_interval": "annual",
+      "reviewed": "2026-10-14",
+      "next_review": "2027-10-14",
       "file": "reduction_78.v2016.json",
       "sha256": "aed8ac01cfc5094a97eab5c3cb38fdbf3e34aa192dc597365f13e0c3bfb53d79",
       "status_counts": {
@@ -63,6 +71,9 @@
         "verification": "item_reviewed",
         "raw_snapshot": "data/knowledge/raw/gov_316.html"
       },
+      "review_interval": "annual",
+      "reviewed": "2026-10-14",
+      "next_review": "2027-10-14",
       "file": "reduction_316.v2019.json",
       "sha256": "65b526ba4cafb3f50f1369c63f5237bed7838672cc2c8ddce144136d11b4c428",
       "status_counts": {
@@ -85,6 +96,9 @@
         "verification": "item_reviewed",
         "raw_snapshot": "data/knowledge/raw/gov_594.html"
       },
+      "review_interval": "annual",
+      "reviewed": "2026-10-14",
+      "next_review": "2027-10-14",
       "file": "reduction_594.v2024.json",
       "sha256": "75ab07e6334103eb7956c1c3b8b7724de3baa2b6f7e48ddbb858d5b7cffe5ced",
       "status_counts": {
@@ -172,6 +186,7 @@
   "notes": [
     "本目录为生成器冻结产物，禁手改；改体例走 tools/gen_rulesets.py 整目录重生成。",
     "M1：32 条条目已逐项回到官方原文/费率表页复核，全部 status=verified；复核痕迹写在每条 basis.note（条目定位 + 核对结论）。",
-    "late.grace_months / late.month_basis 的原文出自《专利法实施细则》国务院令第 769 号（第 115 条 / 第 5 条），故这两条的 basis 指向细则快照而非费率表页。"
+    "late.grace_months / late.month_basis 的原文出自《专利法实施细则》国务院令第 769 号（第 115 条 / 第 5 条），故这两条的 basis 指向细则快照而非费率表页。",
+    "复核锚点：review_interval=annual（费率表可能逐年调整），next_review=2027-10-14 由复核基准日 2026-10-14 推出，规则包各条目与其依据原文快照（data/knowledge/raw/_ledger.json）同批复核、同锚点；逾期由 patfee selfcheck 提示（只提示，不改退出码）。"
   ]
 }

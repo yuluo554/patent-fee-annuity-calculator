@@ -24,6 +24,7 @@ M1 状态口径（plan/06 D20 + M1 DoD）：32 条条目**逐项回到官方原�
 from __future__ import annotations
 
 import argparse
+import calendar
 import hashlib
 import json
 import sys
@@ -45,6 +46,26 @@ RULES_DIR = ROOT / "data" / "rules"
 RETRIEVED = "2026-10-14"
 # M1 逐项复核日期（与抓取日同批）。复核结论写进 basis.note。
 REVIEWED = "2026-10-14"
+
+
+def _add_months(iso: str, months: int) -> str:
+    """``YYYY-MM-DD`` 加整月（月末不足取月末）—— 与 ``calc.late`` 的"相应日"口径同款。
+
+    只用显式日期，**不读系统时钟**：产物必须跨机跨日逐字节一致（同 ``generated_at`` 哨兵）。
+    """
+    year, month, day = (int(part) for part in iso.split("-"))
+    total = month - 1 + months
+    year += total // 12
+    month = total % 12 + 1
+    return "%04d-%02d-%02d" % (year, month, min(day, calendar.monthrange(year, month)[1]))
+
+
+# 复核节奏锚点（失效模式 #15：只记"核对过"、不记"何时再看"）。
+# 费率表可能逐年调整（README 自述），故按年复核；`next_review` 由复核基准日 + 周期推出，
+# 不手写（手写值会与 REVIEWED 漂移）。逾期行为见 plan/06 D55：selfcheck **只提示、不改退出码**。
+REVIEW_INTERVAL = "annual"
+REVIEW_INTERVAL_MONTHS = 12
+NEXT_REVIEW = _add_months(REVIEWED, REVIEW_INTERVAL_MONTHS)
 
 # 已直连获取的官方来源坐标
 SRC_FEE_SCHEDULE = {
@@ -625,6 +646,9 @@ def build_manifest(rulesets: List[dict], files: Dict[str, bytes]) -> dict:
             "anchor_from": rs["anchor_from"],
             "anchor_to": rs["anchor_to"],
             "source": rs["source"],
+            "review_interval": REVIEW_INTERVAL,
+            "reviewed": REVIEWED,
+            "next_review": NEXT_REVIEW,
             "file": fname,
             "sha256": hashlib.sha256(files[fname]).hexdigest(),
             "status_counts": counts,
@@ -635,6 +659,8 @@ def build_manifest(rulesets: List[dict], files: Dict[str, bytes]) -> dict:
         "generated_at": "1970-01-01T00:00:00Z",
         "retrieved": RETRIEVED,
         "reviewed": REVIEWED,
+        "review_interval": REVIEW_INTERVAL,
+        "next_review": NEXT_REVIEW,
         "rulesets": metas,
         "scopes": ["calc", "late", "reduction", "check"],
         "exemptions": literals.mirror_payload(),
@@ -655,6 +681,10 @@ def build_manifest(rulesets: List[dict], files: Dict[str, bytes]) -> dict:
             "复核痕迹写在每条 basis.note（条目定位 + 核对结论）。",
             "late.grace_months / late.month_basis 的原文出自《专利法实施细则》国务院令第 769 号"
             "（第 115 条 / 第 5 条），故这两条的 basis 指向细则快照而非费率表页。",
+            "复核锚点：review_interval=%s（费率表可能逐年调整），next_review=%s 由复核基准日 %s "
+            "推出，规则包各条目与其依据原文快照（data/knowledge/raw/_ledger.json）同批复核、"
+            "同锚点；逾期由 patfee selfcheck 提示（只提示，不改退出码）。"
+            % (REVIEW_INTERVAL, NEXT_REVIEW, REVIEWED),
         ],
     }
 

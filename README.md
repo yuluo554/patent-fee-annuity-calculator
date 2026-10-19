@@ -25,20 +25,22 @@
 
 ## 快速开始（M0 已可跑通）
 
-要求 Python 3.8+（核心功能无第三方依赖）。
+要求 Python 3.12+（核心功能无第三方依赖）——3.10 及更早版本均已 EOL，解释器底线随之上抬（见 [plan/06-决策记录.md](plan/06-决策记录.md) D54）。
 
 ```bash
 python -m venv .venv
 # Windows(Git Bash): source .venv/Scripts/activate    Linux/macOS: source .venv/bin/activate
 python -m pip install -U pip
 python -m pip install -e ".[dev,report]"
+# 可选：桌面界面（patfee gui）需要 PySide6，按需追加 gui extra
+python -m pip install -e ".[gui]"
 ```
 
 > 注意：Windows 上请用 `python -m pip ...` 而不是 `py -m pip ...` —— `py` 启动器走独立 launcher，**即使已 activate venv 也会装到系统 Python**。
 
 ```bash
 patfee version                  # 版本 + 规则包坐标
-patfee selfcheck                # 数据目录 + 规则加载 + status 门控计数 + 零字面量门禁自检
+patfee selfcheck                # 数据目录 + 规则加载 + status 门控计数 + 复核锚点 + 零字面量门禁自检
 patfee rules list               # 规则集清单（按 依据文件 × 版本）
 patfee rules show fee_schedule  # 逐条查看费率表条目与依据坐标
 patfee calc data/samples/patent-demo.json --preview   # 单件年费（预览口径）
@@ -47,7 +49,7 @@ patfee reduction data/samples/applicants-demo.json    # 费减资格与减免额
 patfee scan data/samples/portfolio-demo.json          # 组合批量排期 + 到期预警 + 跨轮对账
 patfee scan data/samples/portfolio-demo.json --out 报告目录   # 同上 + 报告落盘（MD + evidence.json）
 patfee bench                    # 内置评测基准
-patfee gui                      # 桌面界面（PySide6；缺依赖 exit 3 提示安装 extras）
+patfee gui                      # 桌面界面（需 .[gui] 装的 PySide6；缺依赖 exit 3 提示安装 extras）
 patfee --selftest 自检结果.json  # 冻结态/源码态自检（数据+规则+calc+基准+GUI 冒烟）
 ```
 
@@ -154,6 +156,10 @@ $ echo $?
 ```console
 $ patfee selfcheck | grep 零字面量
 零字面量门禁: 扫描 31 文件, 硬门命中 0, 行内放行 0, selftest=通过
+$ echo $?
+0        # ⚠ 这是 grep 的退出码：管道会把 patfee 的退出码吞掉
+$ patfee selfcheck > /dev/null; echo $?
+0        # 要验 patfee 自身的退出码，请单独跑（不要串管道）
 ```
 
 门禁自带**阳性对照**：`selfcheck` 会把一个禁用 token 写进临时探针文件并断言扫描必须报红 —— 防"门禁全绿其实什么都没查"（token 集为空同样报配置错误）。
@@ -178,14 +184,14 @@ $ patfee selfcheck | grep 零字面量
 | 命令 | 说明 | 状态 |
 |---|---|---|
 | `patfee version` | 版本 + 规则包坐标 | ✅ |
-| `patfee selfcheck` | 数据目录 + 规则加载 + 门控计数 + 依赖可用性 + 门禁自检 | ✅ |
+| `patfee selfcheck` | 数据目录 + 规则加载 + 门控计数 + **复核锚点（`next_review` 逾期提示）** + 依赖可用性 + 门禁自检 | ✅ |
 | `patfee rules list` / `rules show <id>` | 规则集浏览 | ✅ |
 | `patfee calc <专利.json> [--preview] [--json] [--with-late]` | 单件年费测算（`--with-late` 追加滞纳金） | ✅ M1 数据放行 / M2 滞纳金 |
 | `patfee bench [--only <套件>]` | 内置评测基准（达标率 + 失败数 + 计时门槛，随 manifest 下发） | ✅ B1–B4 全实装（M4 收尾固化指标） |
 | `patfee rules diff <id>` | 政策差异报告（316 号前后阈值、594 号新增项目与同口径互证） | ✅ M1 实装 |
 | `patfee reduction <主体.json>` | 费减资格与减免额判定 | ✅ M2 |
 | `patfee scan <组合.json> [--out <目录>] [--format md\|xlsx] [--window-months N]` | 组合批量排期 + 失败隔离 + 到期预警 + 跨轮对账；`--out` 落盘报告（Markdown + XLSX 双格式 + evidence.json 指纹；XLSX 逐字节可复现） | ✅ M3 / M5 XLSX |
-| `patfee gui` | 桌面界面（PySide6 多页签：年费/滞纳金、费减、组合排期；只渲染引擎结果，AST 门禁三条锁定零判定逻辑） | ✅ M5 |
+| `patfee gui` | 桌面界面（需 `.[gui]` 装的 PySide6；多页签：年费/滞纳金、费减、组合排期；只渲染引擎结果，AST 门禁三条锁定零判定逻辑） | ✅ M5 |
 
 ### 退出码
 
@@ -247,13 +253,14 @@ src/patfee/      包源码
   benchmark/     基准套件（B1 阶梯 / B2 滞纳金 / B3 费减 / B4 组合）
 packaging/       PyInstaller spec + 入口启动器（onedir 双 exe）
 tools/           生成器与审计脚本（gen_rulesets / gen_synthetic / fetch_authorities）
-tests/           pytest（M5 后 226 项）
+tests/           pytest（229 项；M5 后为 226，2026-10-19 加 3 条守门）
 ```
 
 ## 开发
 
 ```bash
-python -m pytest -q                          # 全量测试（M5 后 226 项；需 .[dev,report]，缺 report 时 XLSX 测试失败而非跳过）
+python -m pytest -q                          # 全量测试（M5 后 226 项，2026-10-19 加守门后 229 项；需 .[dev,report]，缺 report 时 XLSX 测试失败而非跳过）
+                                             # 注：CI 不装 gui extra，故 GUI 11 项按设计 skip —— CI 上是 218 passed + 11 skipped（干净 venv 实测同值）
 python tools/gen_rulesets.py --check         # 规则包冻结位级一致 → FROZEN_RULESETS_OK
 python tools/gen_synthetic.py --check        # 合成真值库位级一致 → SYNTHETIC_FROZEN_OK
 python tools/fetch_authorities.py --verify   # 原文快照 sha256 复核

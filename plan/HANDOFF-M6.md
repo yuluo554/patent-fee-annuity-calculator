@@ -18,6 +18,7 @@
 - 报告导出：`report/` 单一渲染源（`scan_report_sections`）+ MD/XLSX 双格式；`scan --format xlsx`；XLSX **逐字节可复现**（重打包 ZIP_STORED + 固定时间戳 + `dcterms:modified` 替换，跨进程 sha256 一致实测）；无外链（K42）双格式同守；evidence.json 增 `report_xlsx`/`formats`；
 - 技术报告：`plan/技术报告.md`（C6 定夺：纯 MD 入仓）；
 - 测试 **226 项**（196 + 30）三解释器全绿（py3.8 / py3.12 / 干净 venv，收集数一致）；冻结三项 OK；零字面量门禁 31 文件 0 命中；DoD 表落盘 plan/05 §三之六（M5-1~M5-7 无偏差）；证据 `.verify-out/M5-local-equivalence.txt`。
+  > ⚠ **口径更新（2026-10-19 二次迭代）**：解释器底线已由 3.8 抬到 **3.12**（3.8/3.9/3.10 均已 EOL），CI 矩阵收缩为 `{windows,ubuntu}×3.12`，`gui` extra 合并为单条 `PySide6>=6.6`；上句的"三解释器（py3.8/…）"是 **M5 当时的历史记录**，照原样存史，新工作请勿沿用。见 plan/06 D54。
 
 ## 二、下一里程碑待办（M6 脱敏发布）
 
@@ -68,8 +69,9 @@
 py -0p                                        # 看有哪些解释器通道
 NO_PROXY="*" no_proxy="*" ./.venv/Scripts/python.exe -m pip install -e ".[dev,report,gui,build]" -i https://pypi.tuna.tsinghua.edu.cn/simple
 
-# 测试（三处都要绿，收集数必须一致 = 226）
+# 测试（各处都要绿，收集数必须一致；M6 当时 = 226，2026-10-19 二次迭代加 3 条守门后 = 229）
 PYTHONPATH=src py -3.12 -X utf8 -m pytest tests -q
+# ⚠ py3.8 通道已于 2026-10-19 退役（底线抬到 3.12，见 plan/06 D54）——本行仅存史
 PYTHONPATH=src py -3.8 -X utf8 -m pytest tests -q
 ./.venv/Scripts/python.exe -m pytest tests -q
 

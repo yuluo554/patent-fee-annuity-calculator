@@ -116,6 +116,14 @@ def cmd_selfcheck(args: argparse.Namespace, library: RuleLibrary) -> int:
               % (info["literals_gate"]["scanned_files"], len(info["literals_gate"]["hits"]),
                  info["literals_gate"]["inline_allowed"],
                  "通过" if gate_probe_ok else "失败"))
+        review = info.get("review") or {}
+        print("复核锚点: 周期=%s 复核基准日=%s 下次复核=%s（今天 %s）"
+              % (review.get("interval") or "未登记", review.get("reviewed") or "未登记",
+                 review.get("next_review") or "未登记", review.get("today") or ""))
+        if review.get("overdue"):
+            print("⚠ %s —— 逾期只提示，不改退出码" % review.get("note", ""))
+        elif review.get("note"):
+            print("  复核状态: %s" % review["note"])
         if counts.get("verified", 0) == 0:
             print("提示: 当前无 verified 条目（费率与政策待 M1 逐项复核）——"
                   "常规计算按门控拒绝，用 --preview 可预览口径（退出码仍为 1）。")
