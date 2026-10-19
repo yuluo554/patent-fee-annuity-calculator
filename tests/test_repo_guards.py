@@ -143,12 +143,13 @@ def test_workflow_triggers_defined(workflow):
 
 
 def test_workflow_matrix_covers_required_environments(workflow):
-    """矩阵 = windows×{3.8,3.12} + ubuntu×{3.12}（旧解释器只在 windows 守）。"""
+    """矩阵 = {windows,ubuntu}×3.12（解释器底线 3.12，自 2026-10-19 起，见 plan/06 D54）。"""
     _, raw = workflow
     assert "windows-latest" in raw
     assert "ubuntu-latest" in raw
-    assert "3.8" in raw, "必须保留 3.8 通道（解释器底线）"
     assert "3.12" in raw
+    # 已 EOL 的解释器不得回到矩阵（否则"声明支持的版本"与"实际验证的版本"再次分叉）
+    assert "3.8" not in raw, "不得再保留 3.8 通道（已 EOL，底线 3.12）"
 
 
 def test_workflow_sets_utf8_env(workflow):
@@ -235,10 +236,95 @@ def test_pyproject_pins_setuptools_below_81_in_build_extra():
     assert "setuptools<81" in text
 
 
-def test_pyproject_caps_pyside6_for_old_python():
-    """PySide6 6.7+ 要求 requires-python>=3.9；3.8 通道需钉上限。"""
+def test_pyproject_declares_single_pyside6_floor():
+    """解释器底线抬到 3.12 后，gui extra 不再需要按解释器分叉的上限钉。
+
+    旧口径：3.8 通道钉 `PySide6>=6.6,<6.7`（6.7+ 要求 python>=3.9）——3.8 下线后这条钉
+    只会让 3.12 用户也被挡在 6.6.x，属"historical pin"漂移（plan/06 D54）。
+    """
     text = (repo_root() / "pyproject.toml").read_text(encoding="utf-8")
-    assert "PySide6>=6.6,<6.7" in text
+    assert "PySide6>=6.6" in text
+    assert "PySide6>=6.6,<6.7" not in text, "3.8 通道已下线，不应再按解释器分叉钉 PySide6 上限"
+    assert "python_version < '3.9'" not in text, "不应再有 3.8 专用的 marker 分支"
+
+
+def test_ruleset_manifest_carries_review_anchor():
+    """规则/快照元数据必须带"下次复核"锚点（只记"核对过"、"何时再看"无人拦的失效模式）。
+
+    锚点解析自 `manifest.json`：规约"费率表可能逐年调整"若只有 `reviewed` 而没有 `next_review`，
+    换版就没人被提醒（plan/06 D55）。
+    """
+    import json
+
+    manifest = json.loads(
+        (repo_root() / "data" / "rules" / "manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest.get("review_interval"), "manifest 缺 review_interval"
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", manifest.get("reviewed") or ""), \
+        "manifest 的 reviewed 必须为 YYYY-MM-DD"
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", manifest.get("next_review") or ""), \
+        "manifest 的 next_review 必须为 YYYY-MM-DD"
+    assert manifest["next_review"] > manifest["reviewed"], \
+        "next_review 必须晚于 reviewed（锚点不能是过去式）"
+
+    assert manifest.get("rulesets"), "manifest 未登记规则集"
+    for meta in manifest["rulesets"]:
+        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", meta.get("next_review") or ""), \
+            "规则集 %s 缺 next_review（YYYY-MM-DD）" % meta.get("id")
+        assert meta.get("review_interval") == manifest["review_interval"], \
+            "规则集 %s 的复核周期与 manifest 顶层不一致" % meta.get("id")
+        assert meta.get("next_review") == manifest["next_review"], \
+            "规则集 %s 的 next_review 与 manifest 顶层不一致" % meta.get("id")
+
+
+def test_review_status_flags_overdue_but_never_crashes():
+    """逾期判据的阳性/阴性对照（新增判据不得只是"永远绿"的装饰）。"""
+    from datetime import date
+
+    from patfee.calc.pipeline import review_status
+
+    manifest = {
+        "review_interval": "annual",
+        "reviewed": "2026-10-14",
+        "next_review": "2027-10-14",
+    }
+    before = review_status(manifest, today=date(2027, 10, 13))
+    assert before["overdue"] is False, "复核日之前不得报逾期"
+    on_due = review_status(manifest, today=date(2027, 10, 14))
+    assert on_due["overdue"] is False, "复核日当天不算逾期"
+    after = review_status(manifest, today=date(2027, 10, 15))
+    assert after["overdue"] is True and after["days_overdue"] == 1, "逾期 1 天必须报出来"
+
+    # 缺锚点 / 坏格式：不得崩，也不得静默装成"未逾期"（note 必须说明原因）
+    missing = review_status({}, today=date(2027, 1, 1))
+    assert missing["overdue"] is False and missing["note"], "缺 next_review 必须给出说明而非静默放行"
+    broken = review_status({"next_review": "2027/10/14"}, today=date(2027, 1, 1))
+    assert broken["overdue"] is False and "YYYY-MM-DD" in broken["note"], \
+        "坏格式必须显式说明，不得当作未逾期"
+
+
+def test_pyproject_uses_spdx_license_expression():
+    """license 必须用 PEP 639 的 SPDX 字符串，且不得再挂 license classifier。
+
+    两种旧写法（`license = { text = ... }` 表 + `License ::` classifier）都被 setuptools
+    弃用，带硬期限（2027-02-18 起不再支持）—— 已弃用的写法一旦回归，构建会在未来某天硬失败，
+    所以这里锁死"正确写法"而不是"当前恰好没警告"。
+    """
+    text = (repo_root() / "pyproject.toml").read_text(encoding="utf-8")
+
+    assert not re.search(r"^license\s*=\s*\{", text, re.M), \
+        "license 不得用 TOML 表写法（{ text = ... }），已弃用"
+    assert re.search(r'^license\s*=\s*"[^"]+"\s*$', text, re.M), \
+        "license 必须是 SPDX 表达式字符串（例如 license = \"MIT\"）"
+    assert "License ::" not in text, "不得再使用 License :: classifier（PEP 639 已弃用）"
+
+    # SPDX 字符串自 setuptools 77 起支持：构建下限必须跟上，否则旧构建环境装不上
+    block = re.search(r"^\[build-system\]\s*$(.*?)(?=^\[|\Z)", text, re.M | re.S)
+    assert block, "pyproject 缺 [build-system] 段"
+    floors = [tuple(int(x) for x in m.group(1).split("."))
+              for m in re.finditer(r"setuptools>=(\d+(?:\.\d+)*)", block.group(1))]
+    assert floors and max(floors) >= (77,), \
+        "build-system 的 setuptools 下限必须 >=77（SPDX license 表达式的最低支持版本）"
 
 
 # ------------------------------------------------------------ 脱敏审计器

@@ -555,7 +555,7 @@ def portfolio_lines(result: PortfolioResult, reconciliation: Optional[Any] = Non
 
 
 def selfcheck(library: RuleLibrary) -> Dict[str, Any]:
-    """数据与规则自检：目录定位、规则加载、status 门控计数、依赖可用性。"""
+    """数据与规则自检：目录定位、规则加载、status 门控计数、复核锚点、依赖可用性。"""
     from ..console import is_frozen
 
     counts = library.status_counts()
@@ -579,9 +579,49 @@ def selfcheck(library: RuleLibrary) -> Dict[str, Any]:
             "integers": sorted(library.banned_integers),
             "decimals": sorted(library.banned_decimals),
         },
+        "review": review_status(library.raw_manifest),
         "optional_dependencies": deps,
         "frozen": is_frozen(),
     }
+
+
+def review_status(manifest: Dict[str, Any], today: Optional[Any] = None) -> Dict[str, Any]:
+    """复核锚点状态：manifest 的 ``review_interval`` / ``reviewed`` / ``next_review`` 对今天是否逾期。
+
+    只记"核对过"、不记"何时再看"会让费率表换版无人察觉（失效模式 #15）。本函数把锚点读出来
+    并与今天比一次；**逾期只提示，不参与退出码**——新增判据不得把既有仓库判红（plan/06 D55）。
+    ``today`` 可注入（测试用固定日期，冻结态自检不用系统时钟做判定）。
+    """
+    interval = manifest.get("review_interval") or ""
+    reviewed = manifest.get("reviewed") or ""
+    next_review = manifest.get("next_review") or ""
+    if today is None:
+        today = date.today()
+    info: Dict[str, Any] = {
+        "interval": interval,
+        "reviewed": reviewed,
+        "next_review": next_review,
+        "today": today.isoformat(),
+        "overdue": False,
+        "days_overdue": 0,
+        "note": "",
+    }
+    if not next_review:
+        info["note"] = "规则包未下发复核锚点（next_review 缺失）"
+        return info
+    try:
+        due = date.fromisoformat(next_review)
+    except ValueError:
+        info["note"] = "next_review 不是 YYYY-MM-DD：%r（无法判定是否逾期）" % next_review
+        return info
+    if today > due:
+        info["overdue"] = True
+        info["days_overdue"] = (today - due).days
+        info["note"] = ("规则包复核已逾期 %d 天（费率表可能已换版）——请回官方原文/费率表页"
+                        "复核并在 plan/06 记录新的复核基准日" % info["days_overdue"])
+    else:
+        info["note"] = "复核未逾期"
+    return info
 
 
 def _optional_dependency_status(frozen: bool) -> Dict[str, Dict[str, Any]]:

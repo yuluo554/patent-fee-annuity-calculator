@@ -4,6 +4,15 @@ on:
   push:
   pull_request:
 
+# 最小权限：CI 只读仓库内容（默认 token 权限过宽，且 job 内不需要写回）
+permissions:
+  contents: read
+
+# 同一 ref 新推即取消上一跑：省 runner，也避免"旧跑的结论"盖住新跑的结论
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # CI 的 extras 必须覆盖"全部里程碑门的依赖"（含测试期依赖 pytest/pyyaml），
 # 否则门会在 CI 上静默跳过 —— "本地一直绿" ≠ "CI 验过"。
 env:
@@ -18,21 +27,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 旧解释器只在 windows 守：ubuntu 新镜像对 3.8 支持存疑，不硬凑四矩阵
+        # 解释器底线自 2026-10-19 抬到 3.12（3.10 及更早版本均已 EOL，见 plan/06 D54）：
+        # 双平台同版本，四矩阵只剩两格
         os: [windows-latest, ubuntu-latest]
-        python-version: ["3.8", "3.12"]
-        exclude:
-          - os: ubuntu-latest
-            python-version: "3.8"
+        python-version: ["3.12"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # 历史扫描类守门依赖 git 历史；浅克隆会让它在 CI 里静默空验
           fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -61,12 +68,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -92,12 +99,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
