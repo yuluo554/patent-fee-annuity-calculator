@@ -1,0 +1,27 @@
+# plan/DIST-sha256-v0.2.0.txt — v0.2.0 发布物 sha256 台账
+# 打包面 = dist/patfee-{cli,gui} 目录树（PyInstaller onedir 产物）
+#
+# 配方（本轮首次留档；形态对齐 v0.1.0 的实测结构）：
+#   · 目录条目 ZIP_STORED（external_attr=0o40755<<16 | 0x10），文件条目 ZIP_DEFLATED(level=9)
+#   · 全条目 date_time=(1980,1,1,0,0,0) + create_system=0 + external_attr=0o644<<16（文件）
+#   · 条目名按 UTF-8 字节序排序；zip 内顶层目录 patfee-cli/ 、 patfee-gui/
+#   · **目录条目必须在**：v0.1.0 的 cli.zip 是 27 条目（6 个目录 + 21 文件），
+#     只打文件会得到 21 条目 —— 解压结果相同但 zip 形态不同，属口径漂移
+#
+# 口径（与 v0.1.0 一致，不放松）：
+#   · 同 dist -> 同 zip 逐字节一致（本轮同一条目集连续两次打包同 sha）
+#   · exe 构建本身不承诺跨机字节一致（PyInstaller 产物受 bootloader / 依赖版本 / 路径影响）
+file: patfee-v0.2.0-windows-x64-cli.zip
+  sha256: 60191d419ffa2aed27a393cd2bea4be06ea7150369973031415d6310c5183063
+  bytes: 7390097
+  entries: 27
+file: patfee-v0.2.0-windows-x64-gui.zip
+  sha256: 66221d67b268dc86a5287fa2ebf327332ed4208b95741625ca56115495ac89d8
+  bytes: 49899218
+  entries: 197
+version: 0.2.0
+built_date: 2026-10-24
+# 核验记录（2026-10-24）：构建 / 二次打包（逐字节）/ gh release download / GitHub asset digest / Release 正文 一致。
+# 冻结态验收：CLI --selftest 六项全 ok（含 benchmark_suites B1-B4 达标）；GUI --selftest 六项全 ok（含 GUI offscreen 冒烟）。
+# 解压到中立目录复验（cli.zip -> patfee-cli/patfee-cli.exe --version 0.2.0 / --selftest ok=true frozen=true）。
+# 历史对照（v0.1.0）：cli 7,386,867 B / 27 条目；gui 49,895,995 B —— 本版同一量级与同一条目结构。

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "patfee"
-version = "0.1.0"
+version = "0.2.0"
 description = "专利年费与费减合规计算工作台（官费费率表规则化 · 年费阶梯 · 滞纳金 · 费减判定 · 组合批量排期对账 · 证据链留痕）"
 readme = "README.md"
 requires-python = ">=3.12"

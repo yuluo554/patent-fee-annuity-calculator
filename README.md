@@ -6,7 +6,12 @@
 
 **全本地处理、零上传**：专利组合台账含专利权人与代理信息，工具默认不联网、不做任何数据外发。
 
-> **状态：✅ M1 数据先行 + ✅ M2 计算引擎 + ✅ M3 组合排期与对账 + ✅ M4 基准收尾 + ✅ M5 桌面交付 + ✅ M6 脱敏发布（2026-10-14，全里程碑完成，[Release v0.1.0](https://github.com/yuluo554/patent-fee-annuity-calculator/releases/tag/v0.1.0)）。**
+> **状态：✅ M1 数据先行 + ✅ M2 计算引擎 + ✅ M3 组合排期与对账 + ✅ M4 基准收尾 + ✅ M5 桌面交付 + ✅ M6 脱敏发布（2026-10-14，全里程碑完成）｜**v0.2.0 已发布**（2026-10-24，[Release](https://github.com/yuluo554/patent-fee-annuity-calculator/releases/tag/v0.2.0)）。**
+
+> **v0.1.0 → v0.2.0 的破坏性变更**：`requires-python` 由 `>=3.8` 抬到 **`>=3.12`**（3.8 已于 2024-10 EOL；
+> PEP 639 元数据要求 `setuptools>=77`，它不支持 3.8）。
+> **用户可感知的新增**：`selfcheck` 输出新增**规则包复核锚**一行（`复核周期` / `下次复核`，
+> 逾期只提示、**不改退出码**）；`pipeline.review_status()` 可从代码取同一份判定。
 > 32 条规则条目已**逐项回到官方原文/费率表页复核，全部 `status=verified`**（复核痕迹在每条 `basis.note`）；《专利法实施细则》（国务院令第 769 号）第 115 条 / 第 5 条已定位，滞纳金 6 个月补缴期与自然月口径落值入库。`calc` 正常计算（退出码 0）；`--preview` 退出码仍为 1（预览不是达标）；M2 新增 `calc --with-late`（滞纳金）与 `patfee reduction`（费减判定）；M3 新增 `patfee scan`（组合批量排期 + 失败隔离 + 到期预警 + 跨轮对账 + 报告落盘）；M4 基准指标固化（B1–B4 达标率与实测耗时进评测基准表，计时门槛 `max_seconds` 随 manifest 下发并实际生效）、探活矩阵补全；M5 新增 `patfee gui`（PySide6 桌面界面，AST 门禁三条锁定零判定逻辑）、`scan --format xlsx`（XLSX 双格式逐字节可复现导出）、`--selftest`（冻结态自检）与 PyInstaller onedir 双 exe 打包、技术报告（plan/技术报告.md）。
 
 ---
