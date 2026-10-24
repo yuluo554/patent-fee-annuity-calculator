@@ -381,14 +381,19 @@ def test_desensitize_audit_tracked_has_no_hard_hits():
 #:   * 少一处  → 这两处已不在历史里了（例如有人改写了历史 / 换了仓库），白名单必须同步删除，
 #:               否则它就成了「永久豁免」的化石。
 #:
-#: 来源：`17dc75d`（v0.2.0 发布提交）新增的 `.verify-out/selftest-*.json` 第 4 行 `detail`
-#: 含本机绝对路径。该提交已推送并已被 `v0.2.0` tag 指向，改写它会破坏「按 tag 可复现」。
+#: 来源：
+#:   * `17dc75d`（v0.2.0 发布提交）新增的 `.verify-out/selftest-*.json` 第 4 行 `detail`
+#:     含本机绝对路径。该提交已推送并已被 `v0.2.0` tag 指向，改写它会破坏「按 tag 可复现」。
+#:   * `13e785e`（乙案落地提交）在 `plan/RELEASE-v0.2.0.md` §六 里**引用了该路径的字面原文**
+#:     来说明缺陷，被本仓同一道门当场命中（CI 三条 job 红）。工作树已改为占位符描述，
+#:     但该提交已推送 → 同样不可修复。**教训：声明泄露时不要复制泄露本身。**
 #: 工作树版本**已脱敏**（另见 `test_desensitize_audit_tracked_has_no_hard_hits`）。
 #: 声明位置：`plan/RELEASE-v0.2.0.md` §已知缺陷、`README.md` §限制与免责、
 #: `v0.2.0` 的 Release 说明。
 KNOWN_HISTORY_HARD_HITS = frozenset({
     "17dc75d4:.verify-out/selftest-cli.json:4",
     "17dc75d4:.verify-out/selftest-gui.json:4",
+    "13e785ee:plan/RELEASE-v0.2.0.md:87",
 })
 
 

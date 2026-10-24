@@ -81,11 +81,10 @@ gui_offscreen_smoke True  PySide6 未内嵌（CLI-only 包），跳过
 ### 6.1 事实
 
 `v0.2.0` 的发布提交 **`17dc75d`** 新增了 `.verify-out/selftest-cli.json` 与
-`.verify-out/selftest-gui.json`，两份文件第 4 行 `detail` 字段是构建机的绝对路径：
-
-```json
-"detail": "D:\\ProgramData\\zcode\\10-14-patent-fee-annuity-calculator\\dist\\patfee-cli\\_internal\\data"
-```
+`.verify-out/selftest-gui.json`，两份文件第 4 行 `detail` 字段是构建机的绝对路径
+（`<盘符>:\<系统级程序数据目录>\<工作根>\...\dist\patfee-{cli,gui}\_internal\data`）——
+**本节刻意不写该路径的字面原文**：写出来等于把泄露再复制一份进仓库，本仓的脱敏门会当场命中
+（2026-10-24 实测，见 6.6）。
 
 `tests/test_repo_guards.py` 的历史脱敏门因此命中两条 HARD（`kind=work_root`）：
 
@@ -134,6 +133,27 @@ KNOWN_HISTORY_HARD_HITS = frozenset({
 
 - 报「历史出现新的硬门命中」→ **是真问题**，当场处理（这正是收窄后保留的能力）。
 - 报「白名单里的位置已不在历史命中中」→ 说明历史被改写了或仓库换了，先查清再动白名单。
+
+### 6.6 我自己在落地这一节时踩了同一个坑（实测记录）
+
+第一版 §6.1 为了「说清楚缺陷」，把那条本机路径的**字面原文**贴进了本文档。
+推上去后 CI 三条 job 立刻红：
+
+```
+AssertionError: 硬门命中: plan/RELEASE-v0.2.0.md:87 work_root
+AssertionError: 历史出现新的硬门命中: 13e785ee:plan/RELEASE-v0.2.0.md:87 work_root
+FAILED tests/test_repo_guards.py::test_desensitize_audit_tracked_has_no_hard_hits
+FAILED tests/test_repo_guards.py::test_desensitize_audit_history_has_no_unknown_hard_hits
+```
+
+这件事本身是个**有价值的验证**：它证明收窄后的门并没有被改瞎 —— 我自己新造的命中被当场抓住，
+而且**先在工作树侧红**（`tracked`）**再在历史侧红**（`history`）。但代价是 `13e785e` 已推送，
+于是白名单从 2 条变 3 条。
+
+- 工作树已改为占位符描述（`<盘符>:\<系统级程序数据目录>\<工作根>\...`），`tracked` 归零。
+- 历史里那条**不可修复**，已登记进 `KNOWN_HISTORY_HARD_HITS` 并注明来源。
+- **方法论**：声明一处泄露时，**不要复制泄露本身**。写「第 4 行 `detail` 字段含构建机
+  绝对路径」就够了；贴原文只会让读者多拿到一份，还把自己变成新的泄露点。
 
 ## 七、一处配方更正（2026-10-24 实测）
 

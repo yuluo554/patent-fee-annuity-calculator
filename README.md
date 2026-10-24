@@ -300,7 +300,8 @@ python tools/audit_desensitize.py --selftest # 只跑审计器的阳性/阴性�
 
 `v0.2.0` 发布提交（`17dc75d`）新增的 `.verify-out/selftest-cli.json` 与
 `.verify-out/selftest-gui.json` 第 4 行 `detail` 字段含构建机的绝对路径
-（`D:\ProgramData\...\dist\patfee-{cli,gui}\_internal\data`）。
+（`<盘符>:\<系统级程序数据目录>\<工作根>\...\dist\patfee-{cli,gui}\_internal\data`
+—— 本文刻意不写路径字面原文，写出来等于再复制一份泄露）。
 
 - **工作树侧已修**：两份 json 的 `detail` 换成占位符 `<解压目录>/_internal/data`，
   `name` / `ok` / `frozen` 及全部结论**一字未动**（「实测到了什么」这条证据仍成立）。
