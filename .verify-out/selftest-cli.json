@@ -1,7 +1,7 @@
 {
   "checks": [
     {
-      "detail": "D:\\ProgramData\\zcode\\10-14-patent-fee-annuity-calculator\\dist\\patfee-cli\\_internal\\data",
+      "detail": "<解压目录>/_internal/data",
       "name": "data_dir_found",
       "ok": true
     },

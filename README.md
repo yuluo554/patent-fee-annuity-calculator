@@ -296,6 +296,22 @@ python tools/audit_desensitize.py --selftest # 只跑审计器的阳性/阴性�
 - 演示与基准一律使用**合成专利组合**，不含任何真实专利或申请人信息。
 - 滞纳金月数口径已依《专利法实施细则》（国务院令第 769 号）第 5 条 / 第 115 条核定为**自然月**、上限 **6 个月**，随规则包入库（`late.month_basis` / `late.grace_months`），不在代码里写死。
 
+### 已知缺陷：`v0.2.0` 的 tag 树含本机绝对路径（不可修复，2026-10-24 声明）
+
+`v0.2.0` 发布提交（`17dc75d`）新增的 `.verify-out/selftest-cli.json` 与
+`.verify-out/selftest-gui.json` 第 4 行 `detail` 字段含构建机的绝对路径
+（`D:\ProgramData\...\dist\patfee-{cli,gui}\_internal\data`）。
+
+- **工作树侧已修**：两份 json 的 `detail` 换成占位符 `<解压目录>/_internal/data`，
+  `name` / `ok` / `frozen` 及全部结论**一字未动**（「实测到了什么」这条证据仍成立）。
+- **历史侧不可修**：该提交已推送并被 `v0.2.0` tag 指向，改写它会破坏「按 tag 可复现」，
+  故**不改写历史**（用户 2026-10-24 拍板）。
+- **这条门会长期红在同一个位置**：`tests/test_repo_guards.py` 的
+  `test_desensitize_audit_history_has_no_unknown_hard_hits` 把允许集合**钉死**为
+  `{17dc75d:.verify-out/selftest-cli.json:4, 17dc75d:.verify-out/selftest-gui.json:4}`。
+  该集合既限上界（**新增命中会红**）也限下界（**这两处若消失也红**，防白名单变化石）。
+- 详细经过与代价对比见 `plan/RELEASE-v0.2.0.md` §六。
+
 ## 许可
 
 MIT，见 [LICENSE](LICENSE)。

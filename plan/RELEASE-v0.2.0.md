@@ -75,3 +75,78 @@ gui_offscreen_smoke True  PySide6 未内嵌（CLI-only 包），跳过
 
 **不需要。** 费率表 32 条、阶梯、滞纳金、费减、基准门槛**逐字节未改**，
 `--selftest` 六项（含 B1–B4 达标）实测全绿。新增的是**提示与机读字段**，不参与判定。
+
+## 六、已知缺陷：tag 树含本机绝对路径（不可修复）
+
+### 6.1 事实
+
+`v0.2.0` 的发布提交 **`17dc75d`** 新增了 `.verify-out/selftest-cli.json` 与
+`.verify-out/selftest-gui.json`，两份文件第 4 行 `detail` 字段是构建机的绝对路径：
+
+```json
+"detail": "D:\\ProgramData\\zcode\\10-14-patent-fee-annuity-calculator\\dist\\patfee-cli\\_internal\\data"
+```
+
+`tests/test_repo_guards.py` 的历史脱敏门因此命中两条 HARD（`kind=work_root`）：
+
+```
+17dc75d4:.verify-out/selftest-cli.json:4
+17dc75d4:.verify-out/selftest-gui.json:4
+```
+
+### 6.2 为什么不可修复
+
+该提交**已推送**，且 `v0.2.0` tag 指向它。让它变绿的唯一方式是改写 `17dc75d`
+后 force push —— 那会破坏本仓与整个计划反复确立的「**按 tag 可复现**」原则
+（下一个人 `git clone --branch v0.2.0` 拿到的就不是 CI 验过的那棵树）。
+**用户 2026-10-24 拍板：走乙案 —— 不改写历史，显式声明。**
+
+### 6.3 已做的两侧处置
+
+| 侧 | 处置 | 状态 |
+|---|---|---|
+| 工作树 | 两份 json 的 `detail` → `<解压目录>/_internal/data`；`name`/`ok`/`frozen` 与全部结论一字未动 | ✅ `test_desensitize_audit_tracked_has_no_hard_hits` 通过 |
+| 历史 | **不改**（见 6.2） | ❌ 两条命中长期存在，已声明 |
+| 门禁 | `test_desensitize_audit_history_has_no_hard_hits` → 更名 `..._has_no_unknown_hard_hits`，判据从「集合为空」收窄为「**差集为空**」，允许集合钉死为上述两处 | ✅ 见 6.4 |
+
+### 6.4 门是怎么「收窄」而不是「改瞎」的
+
+```python
+KNOWN_HISTORY_HARD_HITS = frozenset({
+    "17dc75d4:.verify-out/selftest-cli.json:4",
+    "17dc75d4:.verify-out/selftest-gui.json:4",
+})
+# 断言 1：unexpected = found - expected 必须为空  → 新增命中会红
+# 断言 2：vanished   = expected - found 必须为空  → 这两处消失也会红（防白名单变化石）
+```
+
+**没有**用 `pytest.skip` / `xfail(strict=True)`：那会让这条门对**任何**新命中都不再报红。
+
+**负控（2026-10-24 实测，通过 pytest 插件替换 `audit_history()` 的返回集）**：
+
+| # | 施加 | 期望 | 实测 |
+|---|---|---|---|
+| NC3 | 真实命中集（基线） | 通过 | ✅ `3 passed` |
+| NC1 | 注入第三条硬命中 `.verify-out/injected.json:1` | **红** | ✅ `AssertionError: 历史出现新的硬门命中: 17dc75d4:.verify-out/injected.json:1 work_root` |
+| NC2 | 从命中集里删掉 `selftest-cli.json:4` | **红** | ✅ `AssertionError: 已知缺陷白名单里的位置已不在历史命中中: …selftest-cli.json:4 …` |
+
+### 6.5 看到这条门红时怎么判
+
+- 报「历史出现新的硬门命中」→ **是真问题**，当场处理（这正是收窄后保留的能力）。
+- 报「白名单里的位置已不在历史命中中」→ 说明历史被改写了或仓库换了，先查清再动白名单。
+
+## 七、一处配方更正（2026-10-24 实测）
+
+`plan/DIST-sha256-v0.2.0.txt` 原写「文件条目 `ZIP_DEFLATED(level=9)`」——**这是笔误**。
+2026-10-24 重建发布物时按 level=9 打出的 sha256 与台账对不上（cli 7,349,032 B vs 台账
+7,390,097 B；gui 49,679,646 B vs 49,899,218 B），逐条目比对确认 27/27 与 197/197 条目名、
+size、CRC 全同，只有 `compress_size` 差 → 压缩级别不符。
+
+扫描 `zlib` 的 `level(1–9) × memLevel(1–9) × strategy` 组合后，**`level=6`（zlib 默认值，
+也是 `zipfile.writestr` 不传 `compresslevel` 时的实际行为）逐字节命中台账值**。
+台账已加更正行，配方其余部分（目录条目 `ZIP_STORED`、`date_time=(1980,1,1,0,0,0)`、
+`create_system=0`、`external_attr=0o644<<16`、UTF-8 字节序排序、目录条目必须在）**实测无误**。
+
+> **注意**：本节的更正落在**工作树**。`v0.2.0` tag 树（`17dc75d`）里的台账仍是原写法，
+> 二者不同是预期的 —— tag 是不可变的发布快照。
+

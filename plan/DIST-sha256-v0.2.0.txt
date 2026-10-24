@@ -2,7 +2,12 @@
 # 打包面 = dist/patfee-{cli,gui} 目录树（PyInstaller onedir 产物）
 #
 # 配方（本轮首次留档；形态对齐 v0.1.0 的实测结构）：
-#   · 目录条目 ZIP_STORED（external_attr=0o40755<<16 | 0x10），文件条目 ZIP_DEFLATED(level=9)
+#   · 目录条目 ZIP_STORED（external_attr=0o40755<<16 | 0x10），文件条目 ZIP_DEFLATED(level=6)
+#     ↑ 2026-10-24 更正：原文写 level=9 是笔误。按 9 打出的 sha256 与下表对不上
+#       （cli 7,349,032 B / gui 49,679,646 B），逐条目比对确认 27/27 与 197/197 的
+#       条目名、size、CRC 全同、只有 compress_size 差；扫 level(1–9)×memLevel(1–9)×strategy
+#       后 level=6（zlib 默认值，即 zipfile.writestr 不传 compresslevel 的行为）逐字节命中。
+#       更正只落在工作树，v0.2.0 tag 树里仍是原写法（tag 是不可变快照）。
 #   · 全条目 date_time=(1980,1,1,0,0,0) + create_system=0 + external_attr=0o644<<16（文件）
 #   · 条目名按 UTF-8 字节序排序；zip 内顶层目录 patfee-cli/ 、 patfee-gui/
 #   · **目录条目必须在**：v0.1.0 的 cli.zip 是 27 条目（6 个目录 + 21 文件），

@@ -372,12 +372,49 @@ def test_desensitize_audit_tracked_has_no_hard_hits():
     assert not hard, "硬门命中: %s" % ", ".join("%s %s" % (h.location, h.kind) for h in hard)
 
 
-def test_desensitize_audit_history_has_no_hard_hits():
-    """历史同样不得含硬门命中（防"删了文件但历史还在"）。"""
+#: 历史脱敏门的**已知缺陷白名单**（2026-10-24 用户拍板「乙案」：不改写已推送历史）。
+#:
+#: 为什么是白名单而不是 skip：`pytest.skip` / `xfail` 会让这条门对**任何**新命中都不再报红，
+#: 等于把门改瞎。这里收窄成「允许集合恰好等于这两处」——多一处、少一处都会红：
+#:
+#:   * 多一处  → 有新的本机路径进了历史（必须当场知道）
+#:   * 少一处  → 这两处已不在历史里了（例如有人改写了历史 / 换了仓库），白名单必须同步删除，
+#:               否则它就成了「永久豁免」的化石。
+#:
+#: 来源：`17dc75d`（v0.2.0 发布提交）新增的 `.verify-out/selftest-*.json` 第 4 行 `detail`
+#: 含本机绝对路径。该提交已推送并已被 `v0.2.0` tag 指向，改写它会破坏「按 tag 可复现」。
+#: 工作树版本**已脱敏**（另见 `test_desensitize_audit_tracked_has_no_hard_hits`）。
+#: 声明位置：`plan/RELEASE-v0.2.0.md` §已知缺陷、`README.md` §限制与免责、
+#: `v0.2.0` 的 Release 说明。
+KNOWN_HISTORY_HARD_HITS = frozenset({
+    "17dc75d4:.verify-out/selftest-cli.json:4",
+    "17dc75d4:.verify-out/selftest-gui.json:4",
+})
+
+
+def test_desensitize_audit_history_has_no_unknown_hard_hits():
+    """历史硬门命中**只允许**已知的这两处（见 ``KNOWN_HISTORY_HARD_HITS``）。
+
+    判据是「差集为空」而不是「集合为空」——这条门原本守的是「删了文件但历史还在」，
+    乙案下那件事已经发生且不可修复；剩下的价值是**盯住有没有新增**。
+    """
     module = _audit_module()
     result = module.audit_history()
-    hard = result.by_grade(module.HARD)
-    assert not hard, "历史硬门命中: %s" % ", ".join("%s %s" % (h.location, h.kind) for h in hard)
+    hits = result.by_grade(module.HARD)
+    found = {(h.location, h.kind) for h in hits}
+    expected = {(loc, "work_root") for loc in KNOWN_HISTORY_HARD_HITS}
+
+    unexpected = sorted(found - expected)
+    assert not unexpected, "历史出现新的硬门命中: %s" % ", ".join(
+        "%s %s" % (loc, kind) for loc, kind in unexpected
+    )
+
+    vanished = sorted(expected - found)
+    assert not vanished, (
+        "已知缺陷白名单里的位置已不在历史命中中：%s —— "
+        "若确实已修复（例如历史被改写），请同步删除 KNOWN_HISTORY_HARD_HITS 里对应条目"
+        % ", ".join("%s %s" % (loc, kind) for loc, kind in vanished)
+    )
 
 
 def test_audit_history_scanner_is_alive():
